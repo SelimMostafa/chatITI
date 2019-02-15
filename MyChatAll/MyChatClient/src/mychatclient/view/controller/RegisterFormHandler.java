@@ -35,6 +35,10 @@ public class RegisterFormHandler implements EventHandler {
     User user = new User();
     ServerService serverservice;
 
+    RegisterFormHandler(ServerService serverservice) {
+        this.serverservice=serverservice;
+    }
+
     @Override
     public void handle(Event event) {
         try {

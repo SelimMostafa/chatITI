@@ -14,7 +14,7 @@ import java.rmi.RemoteException;
  * @author AmrHesham
  */
 public interface ServerService extends Remote {
-    public boolean login(String phone , String password) throws RemoteException;
+    public User login(String phone , String password) throws RemoteException;
     public boolean register(User user) throws RemoteException;
     //chat session msh 3arfen da a asln we yalla chatbot kaman aha
     public void sendMessage(Message message)throws RemoteException;

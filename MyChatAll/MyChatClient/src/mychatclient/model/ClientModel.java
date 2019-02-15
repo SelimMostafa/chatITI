@@ -8,6 +8,7 @@ package mychatclient.model;
 import mychatclient.controller.*;
 import mychatclient.view.view.RegisterForm;
 import commonservice.ServerService;
+import commonservice.User;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
@@ -24,7 +25,7 @@ import java.util.logging.Logger;
 public class ClientModel  {
     public static ServerService serverservice;
     
-
+    
     public ClientModel() {
         try {
             Registry registry=LocateRegistry.getRegistry("127.0.0.1",5000);
@@ -35,15 +36,27 @@ public class ClientModel  {
             Logger.getLogger(ClientModel.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        new ClientModel();
-        
+    public User checkUser(String phoneNum, String password) {
+        User user=null;
+        try {
+            user=serverservice.login(phoneNum, password);
+        } catch (RemoteException ex) {
+            ex.printStackTrace();
+        }
+        return user;
     }
+
+    public boolean registerNewUser(User user) {
+        boolean registred=false;
+        try {
+            registred=serverservice.register(user);
+        } catch (RemoteException ex) {
+            Logger.getLogger(ClientModel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return registred;
+    }
+    
+    
 
 }

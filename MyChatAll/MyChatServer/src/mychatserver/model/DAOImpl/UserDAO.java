@@ -25,7 +25,7 @@ public class UserDAO implements UserDAOInterface {
     PreparedStatement preparedStatementForDelete = null;
     PreparedStatement registerPreparedStatement;
     boolean registerDone = false;
-
+    int registerDoneint = 0;
     String updateQuery = "update chatdb.user set Name = ? , Gender = ? , "
             + " Country = ? , DOB = ?  , Password = ? ,"
             + " Email = ? , BIO = ? , Mode = ?, Picture = ?, ChatBotStatus = ?, Status = ?  where PhoneNum = ? ";
@@ -53,7 +53,7 @@ public class UserDAO implements UserDAOInterface {
             preparedStatementForUpdate.setInt(10, user.getChatBotStatus());
             preparedStatementForUpdate.setString(11, user.getStatus());
             preparedStatementForUpdate.setString(12, user.getPhoneNum());
-            
+
             int check = preparedStatementForUpdate.executeUpdate();
 
             if (check == 1) {
@@ -94,6 +94,7 @@ public class UserDAO implements UserDAOInterface {
     @Override
     public boolean addUser(User user) {
         try {
+            System.out.println("inside add user in service implementaiton");
             String insertQuery = "INSERT INTO user VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
             Connection connection = MyChatServer.mysqlDataSource.getConnection();
             registerPreparedStatement = connection.prepareStatement(insertQuery);
@@ -111,10 +112,15 @@ public class UserDAO implements UserDAOInterface {
                 registerPreparedStatement.setString(10, user.getEmail());
                 registerPreparedStatement.setString(11, user.getBIO());
                 registerPreparedStatement.setString(12, "available");
-                registerDone = registerPreparedStatement.execute();
-
+                registerDoneint = registerPreparedStatement.executeUpdate();
+                System.out.println(registerDoneint);
+                if (registerDoneint != 0) {
+                    registerDone = true;
+                    
+                } 
             } catch (SQLException ex) {
-                Logger.getLogger(MyChatServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+               registerDone=false;
+               ex.printStackTrace();
             } finally {
                 return registerDone;
             }
@@ -125,15 +131,16 @@ public class UserDAO implements UserDAOInterface {
     }
 
     @Override
-    public User retrieveUser(String phoneNumber) {
+    public User retrieveUser(String phoneNumber, String password) {
         User user = null;
         try {
 
-            String query = " select Name, PhoneNum, Gender, Country, DOB, Picture, Password, Status, ChatBotStatus, Email, BIO ,Mode from user where PhoneNum = ?";
+            String query = " select Name, PhoneNum, Gender, Country, DOB, Picture, Password, Status, ChatBotStatus, Email, BIO ,Mode from user where PhoneNum = ? and Password = ?";
 
             // create the mysql insert preparedstatement
             PreparedStatement preparedStmt = mysqlDataSource.getConnection().prepareStatement(query);
             preparedStmt.setString(1, phoneNumber);
+            preparedStmt.setString(2, password);
             // execute the preparedstatement
             preparedStmt.execute();
             ResultSet resultSet = preparedStmt.getResultSet();

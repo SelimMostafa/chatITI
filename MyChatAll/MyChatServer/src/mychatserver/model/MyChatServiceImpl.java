@@ -30,8 +30,10 @@ public class MyChatServiceImpl extends UnicastRemoteObject implements Remote, co
     }
 
     @Override
-    public boolean login(String phone, String password) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public User login(String phone, String password) throws RemoteException {
+        
+        return userDAO.retrieveUser(phone, password);
+        
     }
 
     @Override
