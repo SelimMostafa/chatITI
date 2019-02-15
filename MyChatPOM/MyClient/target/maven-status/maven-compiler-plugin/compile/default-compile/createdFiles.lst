@@ -1,6 +1,0 @@
-mychatclient\model\ClientModel.class
-mychatclient\view\controller\RegisterFormHandler.class
-mychatclient\view\view\RegisterForm.class
-com\mycompany\myclient\MainApp.class
-com\mycompany\myclient\FXMLController.class
-mychatclient\controller\MyChatClient.class
