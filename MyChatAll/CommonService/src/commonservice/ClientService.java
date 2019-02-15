@@ -3,15 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package commoninterfaces;
+package commonservice;
 
-import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 /**
  *
  * @author AmrHesham
  */
-public interface ClientServiceInterface extends Remote {
-    public void receive(String message)throws RemoteException;
+public interface ClientService {
+    //public void receiveMsg(Message message)throws RemoteException;
+    //public void receiveFile(Message message)throws RemoteException;
 }
