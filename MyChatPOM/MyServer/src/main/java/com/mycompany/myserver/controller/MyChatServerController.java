@@ -3,8 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
-// ha a l klam ya jemy ?
 package mychatserver.controller;
 
 import commonservice.User;
