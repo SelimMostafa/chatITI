@@ -19,11 +19,11 @@ public interface ServerService extends Remote {
     //chat session msh 3arfen da a asln we yalla chatbot kaman aha
     public void sendMessage(Message message)throws RemoteException;
     //public void sendFile(File file);
-    public void updateProfile(User user)throws RemoteException;
-    public void notifyOnlineOffline(User user)throws RemoteException;
+    public void updateProfile()throws RemoteException;
+    public void notifyOnlineOffline()throws RemoteException;
     public User addNewContact(String phoneNumber)throws RemoteException;
-    public void showFriendsStatus(User user)throws RemoteException;
-    public void signout(User user)throws RemoteException;
+    public void showFriendsStatus()throws RemoteException;
+    public void signout()throws RemoteException;
     
     
 }

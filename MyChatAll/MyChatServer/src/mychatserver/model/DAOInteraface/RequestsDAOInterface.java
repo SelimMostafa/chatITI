@@ -3,11 +3,18 @@
  */
 package mychatserver.model.DAOInteraface;
 
+import commonservice.User;
+import java.util.ArrayList;
+
 /**
  *
  * @author Mohamed Jamal
  */
 public interface RequestsDAOInterface {
-    public boolean addFriendRequest();
-    public boolean retrieveFriendRequest();
+    
+    public boolean addFriendRequest(String phoneNumber);
+    public boolean checkFriendRequest(String phoneNumber);
+    public ArrayList<String> retrieveOutgoingRequests();
+    public ArrayList<String> retrieveIncomingRequests();
+    public boolean deleteRequest(String phoneNumber);
 }
