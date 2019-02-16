@@ -45,7 +45,7 @@ public class LoginFormController implements Initializable {
     }
 
     @FXML
-    private void handleSigninButton(ActionEvent event) {
+    private void handleNextButton(ActionEvent event) {
     }
     User user = null;
     MyChatClient controller;
