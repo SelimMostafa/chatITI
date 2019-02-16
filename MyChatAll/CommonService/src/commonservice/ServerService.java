@@ -24,6 +24,6 @@ public interface ServerService extends Remote {
     public User addNewContact(String phoneNumber)throws RemoteException;
     public void showFriendsStatus()throws RemoteException;
     public void signout()throws RemoteException;
-    
+    public boolean checkUserAvailability(String phoneNumber)throws RemoteException;
     
 }
