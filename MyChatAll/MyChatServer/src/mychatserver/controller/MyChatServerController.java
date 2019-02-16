@@ -21,7 +21,8 @@ import mychatserver.model.MyChatServer;
 public class MyChatServerController {
 
     public static void main(String[] args) {
-        
+
+        try {
             MyChatServer start = new MyChatServer();
             // new UserDAO();
             //User user = new User("Kamal","012345","kamal@gmail.com","1234","M","italy","1999-09-19","Hellllllllo");
@@ -45,9 +46,10 @@ public class MyChatServerController {
 //       
 //       new UserDAO().retrieveUser("0111");
 //       new UserDAO().addUser(user);
-         //new FriendsDAO(DataSourceFactory.getMySQLDataSource().getConnection(), new UserDAO().retrieveUser("8989")).deleteFriend("12345");
-         
-         
-        
+            new FriendsDAO(DataSourceFactory.getMySQLDataSource().getConnection(), new UserDAO().retrieveUser("01234567891", "123456789")).retrieveFriend("");
+        } catch (SQLException ex) {
+            Logger.getLogger(MyChatServerController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 }

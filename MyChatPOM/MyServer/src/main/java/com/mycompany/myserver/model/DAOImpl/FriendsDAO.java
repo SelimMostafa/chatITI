@@ -59,7 +59,7 @@ public class FriendsDAO implements FriendsDAOInterface {
     public User retrieveFriend(String phoneNumber) {
         User friend = null;
         try {
-            
+
             System.out.println("inside retrieve");
             String query = " select Friend from friends where friend = ? AND user =? ";
 
