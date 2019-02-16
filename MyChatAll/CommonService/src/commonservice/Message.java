@@ -15,8 +15,17 @@ public class Message implements Serializable{
     private boolean underlined;
     private Timestamp timestamp;
     private User sender;
+    private User receiver;
 
-    public Message(User sender) {
+    public User getReceiver() {
+        return receiver;
+    }
+
+    public void setReciever(User receiver) {
+        this.receiver = receiver;
+    }
+
+    public Message(User sender,User receiver) {
         fontColor = "BLUE";
         fontStyle = "comic-sans";
         fontSize = "10";
@@ -26,6 +35,7 @@ public class Message implements Serializable{
         underlined=false;
         timestamp=getTimestamp();
         this.sender=sender;
+        this.receiver=receiver;
     }
 
     public String getFontStyle() {

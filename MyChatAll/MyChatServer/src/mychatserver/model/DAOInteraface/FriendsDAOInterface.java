@@ -4,6 +4,7 @@
 package mychatserver.model.DAOInteraface;
 
 import commonservice.User;
+import java.util.ArrayList;
 
 /**
  *
@@ -12,7 +13,10 @@ import commonservice.User;
 public interface FriendsDAOInterface {
     
     public boolean addFriend(String phoneNumber);
-    //Will retrieve iserId from the FriedList Table and then retrieve User profile from the User Table
+    //Will retrieve userId from the FriedList Table and then retrieve User profile from the User Table
     public User retrieveFriend(String phoneNumber);
     public boolean deleteFriend(String phoneNumber);
+    public boolean isFriend(String phoneNumber);
+    public ArrayList<User> retrieveAllFriends() ;
+    
 }

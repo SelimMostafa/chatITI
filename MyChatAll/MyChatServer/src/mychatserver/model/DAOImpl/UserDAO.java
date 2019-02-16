@@ -131,16 +131,16 @@ public class UserDAO implements UserDAOInterface {
     }
 
     @Override
-    public User retrieveUser(String phoneNumber, String password) {
+    public User retrieveUser(String phoneNumber) {
         User user = null;
         try {
 
-            String query = " select Name, PhoneNum, Gender, Country, DOB, Picture, Password, Status, ChatBotStatus, Email, BIO ,Mode from user where PhoneNum = ? and Password = ?";
+            String query = " select Name, PhoneNum, Gender, Country, DOB, Picture, Password, Status, ChatBotStatus, Email, BIO ,Mode from user where PhoneNum = ?";
 
             // create the mysql insert preparedstatement
             PreparedStatement preparedStmt = mysqlDataSource.getConnection().prepareStatement(query);
             preparedStmt.setString(1, phoneNumber);
-            preparedStmt.setString(2, password);
+           
             // execute the preparedstatement
             preparedStmt.execute();
             ResultSet resultSet = preparedStmt.getResultSet();
