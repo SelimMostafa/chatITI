@@ -11,20 +11,20 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
+import javafx.scene.control.PasswordField;
 
 /**
  * FXML Controller class
  *
  * @author HP
  */
-public class LoginFormController implements Initializable {
+public class PasswordLoginController implements Initializable {
     @FXML
-    private TextField phoneNumberTF;
+    private Button signInButton;
     @FXML
-    private Button nextButton;
+    private Button backButton;
     @FXML
-    private Button signUpButton;
+    private PasswordField passwordTF;
 
     /**
      * Initializes the controller class.

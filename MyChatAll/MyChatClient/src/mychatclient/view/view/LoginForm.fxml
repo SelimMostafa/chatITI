@@ -2,20 +2,20 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="755.0" prefWidth="359.0" style="-fx-background-color: #ACF6EE;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mychatclient.view.controller.LoginFormController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="544.0" prefWidth="304.0" style="-fx-background-color: #6495ED;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mychatclient.view.controller.LoginFormController">
    <children>
-      <TextField layoutX="86.0" layoutY="261.0" promptText="ex:01116243075" fx:id="phoneNumberTF"/>
+      <TextField fx:id="phoneNumberTF" layoutX="86.0" layoutY="261.0" promptText="ex:01116243075" />
       <Label layoutX="86.0" layoutY="240.0" text="PhoneNumber" />
-      <Label layoutX="86.0" layoutY="341.0" text="Password:" />
-      <Button layoutX="147.0" layoutY="451.0" mnemonicParsing="false" text="Sign In" fx:id="signInButton" onAction="#handleSigninButton"/>
-      <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="80.0" layoutY="58.0" pickOnBounds="true" preserveRatio="true" />
-      <Button layoutX="144.0" layoutY="518.0" mnemonicParsing="false" text="Sign Up" fx:id="signUpButton" onAction="#handleSignupButton"/>
-      <PasswordField layoutX="86.0" layoutY="362.0" promptText="minimum 8 letters or digits" fx:id="passswordPF"/>
+      <Button fx:id="nextButton" layoutX="116.0" layoutY="368.0" mnemonicParsing="false" onAction="#handleSigninButton" prefHeight="25.0" prefWidth="58.0" text="Next" />
+      <ImageView fitHeight="144.0" fitWidth="149.0" layoutX="80.0" layoutY="58.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@logo.png" />
+         </image></ImageView>
+      <Button fx:id="signUpButton" layoutX="116.0" layoutY="425.0" mnemonicParsing="false" onAction="#handleSignupButton" text="Sign Up" />
    </children>
 </AnchorPane>
