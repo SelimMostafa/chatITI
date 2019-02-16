@@ -46,6 +46,9 @@ public class LoginFormController implements Initializable {
 
     @FXML
     private void handleNextButton(ActionEvent event) {
+        String phone;
+        phone=phoneNumberTF.getText();
+        // a b2a ?
     }
     User user = null;
     MyChatClient controller;
