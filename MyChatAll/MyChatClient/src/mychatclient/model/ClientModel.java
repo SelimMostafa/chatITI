@@ -37,14 +37,15 @@ public class ClientModel  {
         }
     }
 
-    public User checkUser(String phoneNum, String password) {
-        User user=null;
+    public boolean checkUser(String phoneNum) {
+            boolean isUser=false;
         try {
-            user=serverservice.login(phoneNum, password);
+            isUser= serverservice.checkUserAvailability(phoneNum);
         } catch (RemoteException ex) {
-            ex.printStackTrace();
-        }
-        return user;
+            Logger.getLogger(ClientModel.class.getName()).log(Level.SEVERE, null, ex);
+        }finally{return isUser;}
+        
+       
     }
 
     public boolean registerNewUser(User user) {

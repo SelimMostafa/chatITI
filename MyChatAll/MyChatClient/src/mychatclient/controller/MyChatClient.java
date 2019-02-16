@@ -38,7 +38,7 @@ public class MyChatClient extends Application {
 
    
     ClientModel model;
-
+    
     public MyChatClient() {
 
         model = new ClientModel();
@@ -66,12 +66,12 @@ public class MyChatClient extends Application {
      */
     public static void main(String[] args) {
         launch(args);
-        new MyChatClient();
+        MyChatClient myChatClient=new MyChatClient();
 
     }
 
-    public User checkUser(String phoneNum, String password) {
-        return model.checkUser(phoneNum,password);
+    public boolean checkUser(String phoneNum) {
+        return model.checkUser(phoneNum);
     }
 
     public boolean registerNewUser(User user) {

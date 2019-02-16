@@ -17,6 +17,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -28,6 +29,10 @@ import mychatclient.controller.MyChatClient;
  * @author HP
  */
 public class LoginFormController implements Initializable {
+
+    public LoginFormController() {
+        controller = new MyChatClient();
+    }
 
     @FXML
     private TextField phoneNumberTF;
@@ -43,16 +48,34 @@ public class LoginFormController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
     }
+    User user = null;
+    MyChatClient controller;
+    Stage stage;
 
     @FXML
     private void handleNextButton(ActionEvent event) {
         String phone;
-        phone=phoneNumberTF.getText();
+        phone = phoneNumberTF.getText();
+        boolean isUser = controller.checkUser(phone);
+        if (isUser) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/mychatclient/view/view/passwordLogin.fxml"));
+                stage = (Stage) nextButton.getScene().getWindow();
+                Parent root = loader.load();
+                Scene scene = new Scene(root);
+                stage.setScene(scene);
+                stage.show();
+            } catch (IOException ex) {
+                Logger.getLogger(LoginFormController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        } else {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setContentText("user does not exist");
+            alert.showAndWait();
+        }
         // a b2a ?
     }
-    User user = null;
-    MyChatClient controller;
-    Stage stage;
 
     @FXML
     public void handleSignupButton(ActionEvent event) {

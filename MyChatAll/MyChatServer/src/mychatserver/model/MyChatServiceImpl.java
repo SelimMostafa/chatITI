@@ -16,6 +16,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.scene.control.Alert;
 import mychatserver.model.DAOImpl.FriendsDAO;
 import mychatserver.model.DAOImpl.RequestsDAO;
 import mychatserver.model.DAOImpl.UserDAO;
@@ -41,23 +42,24 @@ public class MyChatServiceImpl extends UnicastRemoteObject implements Remote, co
         User userTest = userDAO.retrieveUser(phone);
         if (userTest == null) {
             System.out.println("This number doesn't exist");
-           
+
         } else if (!userTest.getPassword().equals(password)) {
             System.out.println("This password doesn't match ");
-            
+
         } else {
             this.user = userTest;
             try {
                 this.friendDAO = new FriendsDAO(mysqlDataSource.getConnection(), user);
                 this.requestDAO = new RequestsDAO(mysqlDataSource.getConnection(), user);
-				System.out.println("user is logined successfully");
+                System.out.println("user is logined successfully");
             } catch (SQLException ex) {
                 ex.printStackTrace();
-            }finally{return userTest;}
-            
-            
+            } finally {
+                return userTest;
+            }
+
         }
-		return userTest;
+        return userTest;
     }
 
     @Override
@@ -137,5 +139,18 @@ public class MyChatServiceImpl extends UnicastRemoteObject implements Remote, co
         return userDAO.addUser(user);
 
     }
+
+    @Override
+    public boolean checkUserAvailability(String phoneNumber) throws RemoteException {
+        User userTest = userDAO.retrieveUser(phoneNumber);
+        if (userTest == null) {
+            
+            return false;
+
+        } else {
+            return true;
+        }
+        }
+    
 
 }
