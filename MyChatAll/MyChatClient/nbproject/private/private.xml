@@ -5,9 +5,10 @@
         <group>
             <file>file:/D:/ITI/chatITI/MyChatAll/MyChatClient/src/mychatclient/model/ClientModel.java</file>
             <file>file:/D:/ITI/chatITI/MyChatAll/MyChatClient/src/mychatclient/view/controller/RegisterFormController.java</file>
-            <file>file:/D:/ITI/chatITI/MyChatAll/MyChatClient/src/mychatclient/view/view/RegisterForm.fxml</file>
+            <file>file:/D:/ITI/chatITI/MyChatAll/MyChatClient/src/mychatclient/view/view/passwordLogin.fxml</file>
             <file>file:/D:/ITI/chatITI/MyChatAll/MyChatClient/src/mychatclient/controller/MyChatClient.java</file>
             <file>file:/D:/ITI/chatITI/MyChatAll/MyChatClient/src/mychatclient/view/controller/LoginFormController.java</file>
+            <file>file:/D:/ITI/chatITI/MyChatAll/MyChatClient/src/mychatclient/view/controller/PasswordLoginController.java</file>
         </group>
     </open-files>
 </project-private>
