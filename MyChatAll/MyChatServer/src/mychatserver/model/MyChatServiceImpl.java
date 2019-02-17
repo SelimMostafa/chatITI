@@ -45,6 +45,7 @@ public class MyChatServiceImpl extends UnicastRemoteObject implements Remote, co
 
         } else if (!userTest.getPassword().equals(password)) {
             System.out.println("This password doesn't match ");
+            userTest=null;
 
         } else {
             this.user = userTest;

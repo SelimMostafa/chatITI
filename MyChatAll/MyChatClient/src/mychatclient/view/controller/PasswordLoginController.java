@@ -66,6 +66,7 @@ public class PasswordLoginController implements Initializable {
         if (user == null) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setContentText("not valid!");
+            alert.show();
         } else {
             stage=(Stage)signInButton.getScene().getWindow();
             Parent root=new HomePageBase(stage, user);
