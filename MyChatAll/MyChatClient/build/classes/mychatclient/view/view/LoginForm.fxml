@@ -11,11 +11,11 @@
    <children>
       <TextField fx:id="phoneNumberTF" layoutX="86.0" layoutY="261.0" promptText="ex:01116243075" />
       <Label layoutX="86.0" layoutY="240.0" text="PhoneNumber" />
-      <Button fx:id="nextButton" layoutX="116.0" layoutY="368.0" mnemonicParsing="false" onAction="#handleNextButton" prefHeight="25.0" prefWidth="58.0" text="Next" />
+      <Button fx:id="nextButton" layoutX="116.0" layoutY="368.0" mnemonicParsing="false" onAction="#handleNextButton" prefHeight="31.0" prefWidth="73.0" text="Next" />
       <ImageView fitHeight="144.0" fitWidth="149.0" layoutX="80.0" layoutY="58.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@logo.png" />
          </image></ImageView>
-      <Button fx:id="signUpButton" layoutX="116.0" layoutY="425.0" mnemonicParsing="false" onAction="#handleSignupButton" text="Sign Up" />
+      <Button fx:id="signUpButton" layoutX="116.0" layoutY="425.0" mnemonicParsing="false" onAction="#handleSignupButton" prefHeight="31.0" prefWidth="73.0" text="Sign Up" />
    </children>
 </AnchorPane>

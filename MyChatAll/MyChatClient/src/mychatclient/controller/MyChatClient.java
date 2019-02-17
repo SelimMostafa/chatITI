@@ -36,9 +36,8 @@ import mychatclient.model.ClientModel;
  */
 public class MyChatClient extends Application {
 
-   
     ClientModel model;
-    
+
     public MyChatClient() {
 
         model = new ClientModel();
@@ -47,11 +46,11 @@ public class MyChatClient extends Application {
     public void start(Stage primaryStage) {
         try {
             //RegisterForm root = new RegisterForm();
-            
+
             //it didnt work the normal and we checked stackoverflow and they suggested that we put the path into the url anad pass it
             // to the FXMLLoader.load()
             //URL url = new File("/mychatclient/view/view/LoginForm.fxml").toURL();
-            Parent root=FXMLLoader.load(getClass().getResource("/mychatclient/view/view/LoginForm.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/mychatclient/view/view/LoginForm.fxml"));
             Scene scene = new Scene(root);
             primaryStage.setTitle("My Chat");
             primaryStage.setScene(scene);
@@ -66,7 +65,7 @@ public class MyChatClient extends Application {
      */
     public static void main(String[] args) {
         launch(args);
-        MyChatClient myChatClient=new MyChatClient();
+        MyChatClient myChatClient = new MyChatClient();
 
     }
 
@@ -76,6 +75,10 @@ public class MyChatClient extends Application {
 
     public boolean registerNewUser(User user) {
         return model.registerNewUser(user);
+    }
+
+    public User checkPassword(String phonenumber, String password) {
+        return model.checkPassword(phonenumber, password);
     }
 
 }
