@@ -14,6 +14,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.control.Alert;
@@ -151,6 +152,20 @@ public class MyChatServiceImpl extends UnicastRemoteObject implements Remote, co
             return true;
         }
         }
+
+    @Override
+    public ArrayList<String> getIncomingRequests(User user) throws RemoteException {
+        ArrayList list = null;
+        try {
+            list =  new RequestsDAO(mysqlDataSource.getConnection(), user).retrieveIncomingRequests();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        finally{
+            return list ;
+        }
+    
+    }
     
 
 }

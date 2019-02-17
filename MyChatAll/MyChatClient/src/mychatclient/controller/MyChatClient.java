@@ -17,6 +17,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
@@ -77,5 +78,11 @@ public class MyChatClient extends Application {
     public boolean registerNewUser(User user) {
         return model.registerNewUser(user);
     }
+    
+    public ArrayList<String> getRequests(User user) {
+        return model.getRequests(user);
+    }
+    
+    
 
 }

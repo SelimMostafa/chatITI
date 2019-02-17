@@ -15,6 +15,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,42 +23,52 @@ import java.util.logging.Logger;
  *
  * @author AmrHesham
  */
-public class ClientModel  {
+public class ClientModel {
+
     public static ServerService serverservice;
-    
-    
+
     public ClientModel() {
         try {
-            Registry registry=LocateRegistry.getRegistry("127.0.0.1",5000);
+            Registry registry = LocateRegistry.getRegistry("127.0.0.1", 5000);
             serverservice = (ServerService) registry.lookup("chatService");
         } catch (NotBoundException ex) {
             Logger.getLogger(ClientModel.class.getName()).log(Level.SEVERE, null, ex);
-        }  catch (RemoteException ex) {
+        } catch (RemoteException ex) {
             Logger.getLogger(ClientModel.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     public boolean checkUser(String phoneNum) {
-            boolean isUser=false;
+        boolean isUser = false;
         try {
-            isUser= serverservice.checkUserAvailability(phoneNum);
+            isUser = serverservice.checkUserAvailability(phoneNum);
         } catch (RemoteException ex) {
             Logger.getLogger(ClientModel.class.getName()).log(Level.SEVERE, null, ex);
-        }finally{return isUser;}
-        
-       
+        } finally {
+            return isUser;
+        }
+
     }
 
     public boolean registerNewUser(User user) {
-        boolean registred=false;
+        boolean registred = false;
         try {
-            registred=serverservice.register(user);
+            registred = serverservice.register(user);
         } catch (RemoteException ex) {
             Logger.getLogger(ClientModel.class.getName()).log(Level.SEVERE, null, ex);
         }
         return registred;
     }
-    
-    
+
+    public ArrayList<String> getRequests(User user) {
+        ArrayList<String> requests = null;
+        try {
+            requests =  serverservice.getIncomingRequests(user);
+        } catch (RemoteException ex) {
+            ex.printStackTrace();
+        }finally{
+            return requests;
+        }
+    }
 
 }
