@@ -17,7 +17,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
+//import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -59,10 +59,12 @@ public class LoginFormController implements Initializable {
         boolean isUser = controller.checkUser(phone);
         if (isUser) {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/mychatclient/view/view/passwordLogin.fxml"));
-                stage = (Stage) nextButton.getScene().getWindow();
-                Parent root = loader.load();
+                FXMLLoader loader2=new FXMLLoader();
+                PasswordLoginController controller=new PasswordLoginController(phone);
+                loader2.setController(controller);
+                Parent root = loader2.load(getClass().getResource("/mychatclient/view/view/passwordLogin.fxml").openStream());
                 Scene scene = new Scene(root);
+                stage=(Stage)nextButton.getScene().getWindow();
                 stage.setScene(scene);
                 stage.show();
             } catch (IOException ex) {
@@ -70,9 +72,10 @@ public class LoginFormController implements Initializable {
             }
 
         } else {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setContentText("user does not exist");
-            alert.showAndWait();
+//            Alert alert = new Alert(Alert.AlertType.WARNING);
+//            alert.setContentText("user does not exist");
+//            alert.showAndWait();
+            System.out.println("user does not exist");
         }
         // a b2a ?
     }

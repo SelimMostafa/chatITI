@@ -5,6 +5,7 @@
  */
 package mychatclient.view.controller;
 
+import commonservice.User;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -16,9 +17,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+//import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.stage.Stage;
+import mychatclient.controller.MyChatClient;
+import mychatclient.view.view.HomePageBase;
 
 /**
  * FXML Controller class
@@ -26,6 +30,7 @@ import javafx.stage.Stage;
  * @author HP
  */
 public class PasswordLoginController implements Initializable {
+
     @FXML
     private Button signInButton;
     @FXML
@@ -36,27 +41,54 @@ public class PasswordLoginController implements Initializable {
     /**
      * Initializes the controller class.
      */
+    MyChatClient controller;
+    String phone;
+
+    PasswordLoginController(String phone) {
+        this.phone = phone;
+        controller=new MyChatClient();
+    }
+
+    public PasswordLoginController() {
+        controller=new MyChatClient();
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
-    }    
+    }
 
     @FXML
     private void handleSigninButton(ActionEvent event) {
+        String password = passwordTF.getText();
+        User user = controller.checkPassword(phone, password);
+
+        if (user == null) {
+//            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+//            alert.setContentText("not valid!");
+            System.out.println("NotVALID!");
+        } else {
+            stage=(Stage)signInButton.getScene().getWindow();
+            Parent root=new HomePageBase(stage, user);
+            Scene scene=new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+           
+        }
     }
 
     @FXML
     private void handleBackButton(ActionEvent event) {
         try {
-            
-            Parent root= FXMLLoader.load(getClass().getResource("/mychatclient/view/view/LoginForm.fxml"));
-            Scene scene=new Scene(root);
-            stage=(Stage)backButton.getScene().getWindow();
+
+            Parent root = FXMLLoader.load(getClass().getResource("/mychatclient/view/view/LoginForm.fxml"));
+            Scene scene = new Scene(root);
+            stage = (Stage) backButton.getScene().getWindow();
             stage.setScene(scene);
             stage.show();
         } catch (IOException ex) {
             Logger.getLogger(PasswordLoginController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
 }

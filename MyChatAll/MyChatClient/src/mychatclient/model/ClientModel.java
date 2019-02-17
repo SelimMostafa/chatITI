@@ -60,6 +60,7 @@ public class ClientModel {
         return registred;
     }
 
+
     public ArrayList<String> getRequests(User user) {
         ArrayList<String> requests = null;
         try {
@@ -68,7 +69,17 @@ public class ClientModel {
             ex.printStackTrace();
         }finally{
             return requests;
-        }
+        }}
+    public User checkPassword(String PhoneNumber,String password) {
+        User user=null;
+        try {
+            user=serverservice.login(PhoneNumber, password);
+            
+        } catch (RemoteException ex) {
+            Logger.getLogger(ClientModel.class.getName()).log(Level.SEVERE, null, ex);
+        }finally{return user;}
+        
+
     }
 
 }
