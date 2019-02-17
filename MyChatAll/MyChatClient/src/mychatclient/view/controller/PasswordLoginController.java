@@ -17,7 +17,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
+//import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.stage.Stage;
@@ -64,9 +64,15 @@ public class PasswordLoginController implements Initializable {
         User user = controller.checkPassword(phone, password);
 
         if (user == null) {
+<<<<<<< HEAD
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setContentText("not valid!");
             alert.show();
+=======
+//            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+//            alert.setContentText("not valid!");
+            System.out.println("NotVALID!");
+>>>>>>> 3a122f27eb51ee936a72758bfa095768527dbee0
         } else {
             stage=(Stage)signInButton.getScene().getWindow();
             Parent root=new HomePageBase(stage, user);

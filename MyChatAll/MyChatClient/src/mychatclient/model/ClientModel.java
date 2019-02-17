@@ -15,6 +15,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -59,6 +60,16 @@ public class ClientModel {
         return registred;
     }
 
+
+    public ArrayList<String> getRequests(User user) {
+        ArrayList<String> requests = null;
+        try {
+            requests =  serverservice.getIncomingRequests(user);
+        } catch (RemoteException ex) {
+            ex.printStackTrace();
+        }finally{
+            return requests;
+        }}
     public User checkPassword(String PhoneNumber,String password) {
         User user=null;
         try {
@@ -68,6 +79,7 @@ public class ClientModel {
             Logger.getLogger(ClientModel.class.getName()).log(Level.SEVERE, null, ex);
         }finally{return user;}
         
+
     }
 
 }

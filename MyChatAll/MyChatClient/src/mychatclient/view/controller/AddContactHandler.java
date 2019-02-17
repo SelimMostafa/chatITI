@@ -14,6 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.Event;
 import javafx.event.EventHandler;
+import mychatclient.model.ClientModel;
 import mychatclient.view.view.HomePageBase;
 
 /**
@@ -30,7 +31,8 @@ public class AddContactHandler implements EventHandler {
     public AddContactHandler(HomePageBase addContactObject) {
 
         this.addContactObject = addContactObject;
-        this.serverservice = this.addContactObject.serverservice;
+      //  this.serverservice = this.addContactObject.serverservice;
+        this.serverservice = ClientModel.serverservice;
         this.user = addContactObject.getUser();
 //        this.phone = this.addContactObject.getPhoneTF().getText();
     }

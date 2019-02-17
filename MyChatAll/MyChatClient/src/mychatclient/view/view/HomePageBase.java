@@ -1,8 +1,15 @@
-package mychatclient.view.view ;
+package mychatclient.view.view;
 
 import commonservice.ServerService;
 import commonservice.User;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
@@ -48,7 +55,7 @@ public class HomePageBase extends AnchorPane {
     protected final ListView offlineListView;
     protected final Tab RequestTab;
     protected final AnchorPane anchorPane2;
-    protected final ListView requestListView;
+    protected final ListView<String> requestListView;
     protected final Tab updateTab;
     protected final AnchorPane anchorPane3;
     protected final Label label;
@@ -82,17 +89,22 @@ public class HomePageBase extends AnchorPane {
     protected final RadioMenuItem awayItem;
     protected final CheckBox chatbotCheckBox;
 
-    public ServerService serverservice;
+    
+    ArrayList<String> friendRequests;
+
+    ObservableList<String> requests;
+    //public ServerService serverService ;
     User user;
     double y = 230.0;
     ArrayList<TextField> contactsTF;
+    ClientModel client;
 
     public HomePageBase(Stage Stage, User user) {
 
-        this.serverservice = ClientModel.serverservice;
         this.user = user;
         this.contactsTF = new ArrayList<TextField>();
-
+        this.client = new ClientModel();
+        
         pane = new Pane();
         menuBar = new MenuBar();
         menu = new Menu();
@@ -112,7 +124,7 @@ public class HomePageBase extends AnchorPane {
         offlineListView = new ListView();
         RequestTab = new Tab();
         anchorPane2 = new AnchorPane();
-        requestListView = new ListView();
+        requestListView = new ListView<String>();
         updateTab = new Tab();
         anchorPane3 = new AnchorPane();
         label = new Label();
@@ -458,6 +470,29 @@ public class HomePageBase extends AnchorPane {
                 }
             }
         });
+
+        Runnable viewRequestsTask = () -> {
+
+            friendRequests = client.getRequests(user);
+
+            requests = FXCollections.<String>observableArrayList();
+            for (String friend : friendRequests) {
+                requests.add(friend);
+            }
+
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+
+                    requestListView.setItems(requests);
+                }
+            });
+        };
+        
+        
+        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
+        executorService.scheduleAtFixedRate(viewRequestsTask,0,2,TimeUnit.SECONDS);
+        
     }
 
     public TextField getPhoneAddedTF() {

@@ -8,6 +8,7 @@ package commonservice;
 import java.io.File;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 
 /**
  *
@@ -25,5 +26,5 @@ public interface ServerService extends Remote {
     public void showFriendsStatus()throws RemoteException;
     public void signout()throws RemoteException;
     public boolean checkUserAvailability(String phoneNumber)throws RemoteException;
-    
+    public ArrayList<String> getIncomingRequests(User user) throws RemoteException;
 }
