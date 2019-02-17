@@ -46,7 +46,7 @@ public class MyChatServiceImpl extends UnicastRemoteObject implements Remote, co
 
         } else if (!userTest.getPassword().equals(password)) {
             System.out.println("This password doesn't match ");
-            userTest=null;
+            userTest = null;
 
         } else {
             this.user = userTest;
@@ -146,27 +146,38 @@ public class MyChatServiceImpl extends UnicastRemoteObject implements Remote, co
     public boolean checkUserAvailability(String phoneNumber) throws RemoteException {
         User userTest = userDAO.retrieveUser(phoneNumber);
         if (userTest == null) {
-            
+
             return false;
 
         } else {
             return true;
         }
-        }
+    }
 
     @Override
     public ArrayList<String> getIncomingRequests(User user) throws RemoteException {
         ArrayList list = null;
         try {
-            list =  new RequestsDAO(mysqlDataSource.getConnection(), user).retrieveIncomingRequests();
+            list = new RequestsDAO(mysqlDataSource.getConnection(), user).retrieveIncomingRequests();
         } catch (SQLException ex) {
             ex.printStackTrace();
+        } finally {
+            return list;
         }
-        finally{
-            return list ;
-        }
-    
+
     }
-    
+
+    @Override
+    public ArrayList<User> getFriends(User user) throws RemoteException {
+        ArrayList list = null;
+        try {
+
+            list = new FriendsDAO(mysqlDataSource.getConnection(), user).retrieveAllFriends();
+        } catch (SQLException ex) {
+            Logger.getLogger(MyChatServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            return list;
+        }
+    }
 
 }

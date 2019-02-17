@@ -70,6 +70,15 @@ public class ClientModel {
         }finally{
             return requests;
         }}
+    public ArrayList<User> getFriends(User user) {
+        ArrayList<User> friends = null;
+        try {
+            friends =  serverservice.getFriends(user);
+        } catch (RemoteException ex) {
+            ex.printStackTrace();
+        }finally{
+            return friends;
+        }}
     public User checkPassword(String PhoneNumber,String password) {
         User user=null;
         try {

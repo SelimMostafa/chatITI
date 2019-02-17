@@ -52,7 +52,7 @@ public class HomePageBase extends AnchorPane {
     protected final ListView onlineListView;
     protected final Tab offlineTab;
     protected final AnchorPane anchorPane1;
-    protected final ListView offlineListView;
+    protected final ListView<User> friendsListView;
     protected final Tab RequestTab;
     protected final AnchorPane anchorPane2;
     protected final ListView<String> requestListView;
@@ -89,22 +89,21 @@ public class HomePageBase extends AnchorPane {
     protected final RadioMenuItem awayItem;
     protected final CheckBox chatbotCheckBox;
 
-    
     ArrayList<String> friendRequests;
-
-    ObservableList<String> requests;
+    ArrayList<User> friends;
+    ObservableList<String> requestsObsrvList;
+    ObservableList<User> friendsObsrvList;
     //public ServerService serverService ;
     User user;
     double y = 230.0;
     ArrayList<TextField> contactsTF;
-    ClientModel client;
+    ClientModel model;
 
     public HomePageBase(Stage Stage, User user) {
 
         this.user = user;
         this.contactsTF = new ArrayList<TextField>();
-        this.client = new ClientModel();
-        
+        this.model = new ClientModel();
         pane = new Pane();
         menuBar = new MenuBar();
         menu = new Menu();
@@ -121,7 +120,7 @@ public class HomePageBase extends AnchorPane {
         onlineListView = new ListView();
         offlineTab = new Tab();
         anchorPane1 = new AnchorPane();
-        offlineListView = new ListView();
+        friendsListView = new ListView<User>();
         RequestTab = new Tab();
         anchorPane2 = new AnchorPane();
         requestListView = new ListView<String>();
@@ -225,10 +224,10 @@ public class HomePageBase extends AnchorPane {
         anchorPane1.setPrefHeight(180.0);
         anchorPane1.setPrefWidth(200.0);
 
-        offlineListView.setLayoutX(14.0);
-        offlineListView.setLayoutY(25.0);
-        offlineListView.setPrefHeight(424.0);
-        offlineListView.setPrefWidth(325.0);
+        friendsListView.setLayoutX(14.0);
+        friendsListView.setLayoutY(25.0);
+        friendsListView.setPrefHeight(424.0);
+        friendsListView.setPrefWidth(325.0);
         offlineTab.setContent(anchorPane1);
 
         RequestTab.setText("Requests");
@@ -415,7 +414,7 @@ public class HomePageBase extends AnchorPane {
         pane.getChildren().add(userNameLabel);
         anchorPane0.getChildren().add(onlineListView);
         tabPane.getTabs().add(onlineTab);
-        anchorPane1.getChildren().add(offlineListView);
+        anchorPane1.getChildren().add(friendsListView);
         tabPane.getTabs().add(offlineTab);
         anchorPane2.getChildren().add(requestListView);
         tabPane.getTabs().add(RequestTab);
@@ -473,26 +472,43 @@ public class HomePageBase extends AnchorPane {
 
         Runnable viewRequestsTask = () -> {
 
-            friendRequests = client.getRequests(user);
+            friendRequests = model.getRequests(user);
 
-            requests = FXCollections.<String>observableArrayList();
+            requestsObsrvList = FXCollections.<String>observableArrayList();
             for (String friend : friendRequests) {
-                requests.add(friend);
+                requestsObsrvList.add(friend);
             }
 
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
 
-                    requestListView.setItems(requests);
+                    requestListView.setItems(requestsObsrvList);
+
                 }
             });
         };
-        
-        
-        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
-        executorService.scheduleAtFixedRate(viewRequestsTask,0,2,TimeUnit.SECONDS);
-        
+
+        Runnable viewFriendsTask = () -> {
+            friends = model.getFriends(user);
+            friendsObsrvList = FXCollections.<User>observableArrayList();
+
+            for (User friend : friends) {
+                friendsObsrvList.add(friend);
+            }
+
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    friendsListView.setItems(friendsObsrvList);
+                }
+            });
+        };
+
+        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(2);
+        executorService.scheduleAtFixedRate(viewRequestsTask, 0, 2, TimeUnit.SECONDS);
+        executorService.scheduleAtFixedRate(viewFriendsTask, 0, 2, TimeUnit.SECONDS);
+
     }
 
     public TextField getPhoneAddedTF() {
