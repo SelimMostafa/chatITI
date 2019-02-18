@@ -15,5 +15,6 @@ public interface UserDAOInterface {
     public User retrieveUser(String phoneNumber);
     public boolean updateUser(User user);
     public boolean deleteUser(User user);
+    public boolean updateEntryTimes(User user);
     
 }

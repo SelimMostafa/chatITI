@@ -60,35 +60,61 @@ public class ClientModel {
         return registred;
     }
 
-
     public ArrayList<String> getRequests(User user) {
         ArrayList<String> requests = null;
         try {
-            requests =  serverservice.getIncomingRequests(user);
+            requests = serverservice.getIncomingRequests(user);
         } catch (RemoteException ex) {
             ex.printStackTrace();
-        }finally{
+        } finally {
             return requests;
-        }}
+        }
+    }
+
     public ArrayList<User> getFriends(User user) {
         ArrayList<User> friends = null;
         try {
-            friends =  serverservice.getFriends(user);
+            friends = serverservice.getFriends(user);
         } catch (RemoteException ex) {
             ex.printStackTrace();
-        }finally{
+        } finally {
             return friends;
-        }}
-    public User checkPassword(String PhoneNumber,String password) {
-        User user=null;
+        }
+    }
+
+    public User checkPassword(String PhoneNumber, String password) {
+        User user = null;
         try {
-            user=serverservice.login(PhoneNumber, password);
-            
+            user = serverservice.login(PhoneNumber, password);
+
         } catch (RemoteException ex) {
             Logger.getLogger(ClientModel.class.getName()).log(Level.SEVERE, null, ex);
-        }finally{return user;}
-        
+        } finally {
+            return user;
+        }
 
+    }
+
+    public ArrayList<User> getOnlineFriends(User user) {
+        ArrayList<User> friends = null;
+        try {
+            friends = serverservice.getOnlineFriends(user);
+        } catch (RemoteException ex) {
+            ex.printStackTrace();
+        } finally {
+            return friends;
+        }
+    }
+
+    public ArrayList<User> getOfflineFriends(User user) {
+        ArrayList<User> friends = null;
+        try {
+            friends = serverservice.getOfflineFriends(user);
+        } catch (RemoteException ex) {
+            ex.printStackTrace();
+        } finally {
+            return friends;
+        }
     }
 
 }

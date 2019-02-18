@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import mychatclient.model.ClientModel;
@@ -31,7 +32,7 @@ public class AddContactHandler implements EventHandler {
     public AddContactHandler(HomePageBase addContactObject) {
 
         this.addContactObject = addContactObject;
-      //  this.serverservice = this.addContactObject.serverservice;
+        //  this.serverservice = this.addContactObject.serverservice;
         this.serverservice = ClientModel.serverservice;
         this.user = addContactObject.getUser();
 //        this.phone = this.addContactObject.getPhoneTF().getText();
@@ -44,7 +45,7 @@ public class AddContactHandler implements EventHandler {
             User friend = null;
             String phone = this.addContactObject.getContactsTF().get(counter).getText();
 
-            if (!phone.equals("") && !phone.equals(user.getPhoneNum()) ) {
+            if (!phone.equals("") && !phone.equals(user.getPhoneNum())) {
                 try {
 
                     friend = this.serverservice.addNewContact(this.addContactObject.getContactsTF().get(counter).getText());
@@ -55,20 +56,28 @@ public class AddContactHandler implements EventHandler {
 
                         System.out.println("Exist And his name is " + friend.getName());
                         friend = null;
-   
+
                     }
 
                 } catch (RemoteException ex) {
                     ex.printStackTrace();
                 }
-            }
-            else {
-                if(phone.equals(""))
+            } else {
+                if (phone.equals("")) {
                     System.out.println("Empty TF");
-                else if (phone.equals(user.getPhoneNum()))
+                } else if (phone.equals(user.getPhoneNum())) {
                     System.out.println("Cannot add yourself!!");
+                }
             }
         }
-    }
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
 
+//                addContactObject.getAnchorPane4().getChildren().removeAll(addContactObject.getContactsTF());
+                addContactObject.getContactsTF().clear();
+                addContactObject.getPhoneAddedTF().setText("");
+            }
+        });
+    }
 }

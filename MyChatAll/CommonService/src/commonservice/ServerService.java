@@ -28,4 +28,8 @@ public interface ServerService extends Remote {
     public boolean checkUserAvailability(String phoneNumber)throws RemoteException;
     public ArrayList<String> getIncomingRequests(User user) throws RemoteException;
     public ArrayList<User> getFriends(User user) throws RemoteException;
+    public ArrayList<User> getOnlineFriends(User user) throws RemoteException;
+    public ArrayList<User> getOfflineFriends(User user) throws RemoteException;
+    
+
 }

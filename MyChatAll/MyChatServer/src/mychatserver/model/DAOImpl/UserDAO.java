@@ -28,7 +28,7 @@ public class UserDAO implements UserDAOInterface {
     int registerDoneint = 0;
     String updateQuery = "update chatdb.user set Name = ? , Gender = ? , "
             + " Country = ? , DOB = ?  , Password = ? ,"
-            + " Email = ? , BIO = ? , Mode = ?, Picture = ?, ChatBotStatus = ?, Status = ?  where PhoneNum = ? ";
+            + " Email = ? , BIO = ? , Mode = ?, Picture = ?, ChatBotStatus = ?, Status = ?  , EntryTimes = ? where PhoneNum = ? ";
 
     String deleteQuery = " Delete from chatdb.user where PhoneNum = ? ";
 
@@ -52,7 +52,8 @@ public class UserDAO implements UserDAOInterface {
             preparedStatementForUpdate.setBytes(9, user.getPicture());
             preparedStatementForUpdate.setInt(10, user.getChatBotStatus());
             preparedStatementForUpdate.setString(11, user.getStatus());
-            preparedStatementForUpdate.setString(12, user.getPhoneNum());
+            preparedStatementForUpdate.setInt(12, user.getEntryTimes());
+            preparedStatementForUpdate.setString(13, user.getPhoneNum());
 
             int check = preparedStatementForUpdate.executeUpdate();
 
@@ -116,11 +117,11 @@ public class UserDAO implements UserDAOInterface {
                 System.out.println(registerDoneint);
                 if (registerDoneint != 0) {
                     registerDone = true;
-                    
-                } 
+
+                }
             } catch (SQLException ex) {
-               registerDone=false;
-               ex.printStackTrace();
+                registerDone = false;
+                ex.printStackTrace();
             } finally {
                 return registerDone;
             }
@@ -135,12 +136,12 @@ public class UserDAO implements UserDAOInterface {
         User user = null;
         try {
 
-            String query = " select Name, PhoneNum, Gender, Country, DOB, Picture, Password, Status, ChatBotStatus, Email, BIO ,Mode from user where PhoneNum = ?";
+            String query = " select Name, PhoneNum, Gender, Country, DOB, Picture, Password, Status, ChatBotStatus, Email, BIO ,Mode , EntryTimes from user where PhoneNum = ?";
 
             // create the mysql insert preparedstatement
             PreparedStatement preparedStmt = mysqlDataSource.getConnection().prepareStatement(query);
             preparedStmt.setString(1, phoneNumber);
-           
+
             // execute the preparedstatement
             preparedStmt.execute();
             ResultSet resultSet = preparedStmt.getResultSet();
@@ -165,6 +166,7 @@ public class UserDAO implements UserDAOInterface {
                 user.setEmail(resultSet.getString(10));
                 user.setBIO(resultSet.getString(11));
                 user.setMode(resultSet.getString(12));
+                user.setEntryTimes(resultSet.getInt(13));
 
             }
         } catch (SQLException ex) {
@@ -173,4 +175,30 @@ public class UserDAO implements UserDAOInterface {
             return user;
         }
     }
+
+    @Override
+    public boolean updateEntryTimes(User user) {
+        boolean updateDone = false;
+
+        try {
+            String query = "update chatdb.user set EntryTimes = ? where PhoneNum = ? ";
+
+            preparedStatementForUpdate = mysqlDataSource.getConnection().prepareStatement(query);
+            preparedStatementForUpdate.setInt(1, user.getEntryTimes());
+            preparedStatementForUpdate.setString(2, user.getPhoneNum());
+
+            int check = preparedStatementForUpdate.executeUpdate();
+
+            if (check == 1) {
+                updateDone = true;
+            } else {
+                updateDone = false;
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return updateDone;
+    }
+
 }

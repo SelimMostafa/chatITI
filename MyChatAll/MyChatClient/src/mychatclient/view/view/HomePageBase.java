@@ -52,7 +52,7 @@ public class HomePageBase extends AnchorPane {
     protected final ListView onlineListView;
     protected final Tab offlineTab;
     protected final AnchorPane anchorPane1;
-    protected final ListView<User> friendsListView;
+    protected final ListView<String> friendsListView;
     protected final Tab RequestTab;
     protected final AnchorPane anchorPane2;
     protected final ListView<String> requestListView;
@@ -91,11 +91,16 @@ public class HomePageBase extends AnchorPane {
 
     ArrayList<String> friendRequests;
     ArrayList<User> friends;
+    ArrayList<User> onlineFriends;
+    ArrayList<User> offlineFriends;
     ObservableList<String> requestsObsrvList;
-    ObservableList<User> friendsObsrvList;
-    //public ServerService serverService ;
+    ObservableList<String> friendsObsrvList;
+    ObservableList<String> onlineFriendsObsrvList;
+    ObservableList<String> offlineFriendsObsrvList;
+
+//public ServerService serverService ;
     User user;
-    double y = 230.0;
+    double y = 60.0;
     ArrayList<TextField> contactsTF;
     ClientModel model;
 
@@ -120,7 +125,7 @@ public class HomePageBase extends AnchorPane {
         onlineListView = new ListView();
         offlineTab = new Tab();
         anchorPane1 = new AnchorPane();
-        friendsListView = new ListView<User>();
+        friendsListView = new ListView<String>();
         RequestTab = new Tab();
         anchorPane2 = new AnchorPane();
         requestListView = new ListView<String>();
@@ -458,14 +463,16 @@ public class HomePageBase extends AnchorPane {
         this.addMoreBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                if (contactsTF.size() < 4) {
+                if (contactsTF.size() < 5) {
                     TextField newPhoneTF = new TextField();
                     y += 50;
                     newPhoneTF.setLayoutX(25.0);
                     newPhoneTF.setLayoutY(y);
                     newPhoneTF.setPromptText("Phone Number");
-                    getChildren().add(newPhoneTF);
+                    anchorPane4.getChildren().add(newPhoneTF);
                     contactsTF.add(newPhoneTF);
+                    // contactsTFIndx.add();
+
                 }
             }
         });
@@ -491,10 +498,10 @@ public class HomePageBase extends AnchorPane {
 
         Runnable viewFriendsTask = () -> {
             friends = model.getFriends(user);
-            friendsObsrvList = FXCollections.<User>observableArrayList();
+            friendsObsrvList = FXCollections.<String>observableArrayList();
 
             for (User friend : friends) {
-                friendsObsrvList.add(friend);
+                friendsObsrvList.add(friend.getName() + " : " + friend.getPhoneNum());
             }
 
             Platform.runLater(new Runnable() {
@@ -505,9 +512,43 @@ public class HomePageBase extends AnchorPane {
             });
         };
 
-        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(2);
+        Runnable viewOnlineFriendsTask = () -> {
+            onlineFriends = model.getOnlineFriends(user);
+            onlineFriendsObsrvList = FXCollections.<String>observableArrayList();
+
+            for (User friend : onlineFriends) {
+                onlineFriendsObsrvList.add(friend.getName() + " : " + friend.getPhoneNum());
+            }
+
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    onlineListView.setItems(onlineFriendsObsrvList);
+                }
+            });
+        };
+
+        Runnable viewOfflineFriendsTask = () -> {
+            offlineFriends = model.getOfflineFriends(user);
+            offlineFriendsObsrvList = FXCollections.<String>observableArrayList();
+
+            for (User friend : offlineFriends) {
+                offlineFriendsObsrvList.add(friend.getName() + " : " + friend.getPhoneNum());
+            }
+
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    friendsListView.setItems(offlineFriendsObsrvList);
+                }
+            });
+        };
+
+        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(4);
         executorService.scheduleAtFixedRate(viewRequestsTask, 0, 2, TimeUnit.SECONDS);
-        executorService.scheduleAtFixedRate(viewFriendsTask, 0, 2, TimeUnit.SECONDS);
+        //executorService.scheduleAtFixedRate(viewFriendsTask, 0, 2, TimeUnit.SECONDS);
+        executorService.scheduleAtFixedRate(viewOnlineFriendsTask, 0, 2, TimeUnit.SECONDS);
+        executorService.scheduleAtFixedRate(viewOfflineFriendsTask, 0, 2, TimeUnit.SECONDS);
 
     }
 
@@ -522,4 +563,9 @@ public class HomePageBase extends AnchorPane {
     public User getUser() {
         return user;
     }
+
+    public AnchorPane getAnchorPane4() {
+        return anchorPane4;
+    }
+
 }

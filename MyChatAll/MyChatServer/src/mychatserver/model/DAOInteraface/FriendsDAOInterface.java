@@ -18,5 +18,7 @@ public interface FriendsDAOInterface {
     public boolean deleteFriend(String phoneNumber);
     public boolean isFriend(String phoneNumber);
     public ArrayList<User> retrieveAllFriends() ;
+    public ArrayList<User> retrieveOnlineFriends() ;
+    public ArrayList<User> retrieveOfflineFriends() ;
     
 }
