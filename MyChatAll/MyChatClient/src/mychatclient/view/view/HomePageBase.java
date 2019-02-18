@@ -549,7 +549,7 @@ public class HomePageBase extends AnchorPane {
         //executorService.scheduleAtFixedRate(viewFriendsTask, 0, 2, TimeUnit.SECONDS);
         executorService.scheduleAtFixedRate(viewOnlineFriendsTask, 0, 2, TimeUnit.SECONDS);
         executorService.scheduleAtFixedRate(viewOfflineFriendsTask, 0, 2, TimeUnit.SECONDS);
-
+        this.userNameLabel.setText(user.getName()+" : "+user.getPhoneNum());
     }
 
     public TextField getPhoneAddedTF() {
