@@ -202,38 +202,154 @@ public class FriendsDAO implements FriendsDAOInterface {
                 preparedStmt.execute();
                 ResultSet resultSet2 = preparedStmt.getResultSet();
 
-                if (!resultSet.next()) {
+                if (!resultSet2.next()) {
                     System.out.println("Doesn't Exist");
                 } else {
 
-                    String Name = resultSet.getString(1);
+                    String Name = resultSet2.getString(1);
                     System.out.println("Friend Exists -> " + Name);
 
                     User friend = new User();
-                    friend.setName(resultSet.getString(1));
-                    friend.setPhoneNum(resultSet.getString(2));
-                    friend.setGender(resultSet.getString(3));
-                    friend.setCountry(resultSet.getString(4));
-                    friend.setDateOfBirth(resultSet.getString(5));
+                    friend.setName(resultSet2.getString(1));
+                    friend.setPhoneNum(resultSet2.getString(2));
+                    friend.setGender(resultSet2.getString(3));
+                    friend.setCountry(resultSet2.getString(4));
+                    friend.setDateOfBirth(resultSet2.getString(5));
                     //friend.setPicture(resultSet.getBytes(6));
-                    friend.setPassword(resultSet.getString(7));
-                    friend.setStatus(resultSet.getString(8));
-                    friend.setChatBotStatus(resultSet.getInt(9));
-                    friend.setEmail(resultSet.getString(10));
-                    friend.setBIO(resultSet.getString(11));
-                    friend.setMode(resultSet.getString(12));
+                    friend.setPassword(resultSet2.getString(7));
+                    friend.setStatus(resultSet2.getString(8));
+                    friend.setChatBotStatus(resultSet2.getInt(9));
+                    friend.setEmail(resultSet2.getString(10));
+                    friend.setBIO(resultSet2.getString(11));
+                    friend.setMode(resultSet2.getString(12));
 
                     friends.add(friend);
                 }
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
-        }
-        finally{
+        } finally {
             return friends;
         }
 
     }
+
+    @Override
+    public ArrayList<User> retrieveOnlineFriends() {
+        ArrayList<User> friends = new ArrayList<User>();
+
+        try {
+
+            System.out.println("inside online retrieve");
+            String query = " select Friend from friends where  user =? ";
+
+            // create the mysql insert preparedstatement
+            PreparedStatement preparedStmt = connection.prepareStatement(query);
+            preparedStmt.setString(1, user.getPhoneNum());
+            // execute the preparedstatement
+            preparedStmt.execute();
+            ResultSet resultSet = preparedStmt.getResultSet();
+            while (resultSet.next()) {
+//              System.out.println("this number is a friend to the user ");
+
+                query = " select Name, PhoneNum, Gender, Country, DOB, Picture, Password, Status, ChatBotStatus, Email, BIO ,Mode from user where PhoneNum = ? AND Status IN('online','Online')";
+
+                // create the mysql insert preparedstatement
+                preparedStmt = connection.prepareStatement(query);
+                preparedStmt.setString(1, resultSet.getString(1));
+                // execute the preparedstatement
+                preparedStmt.execute();
+                ResultSet resultSet2 = preparedStmt.getResultSet();
+
+                if (!resultSet2.next()) {
+                    System.out.println("Doesn't Exist");
+                } else {
+
+                    String Name = resultSet2.getString(1);
+                    System.out.println("Friend Exists -> " + Name);
+
+                    User friend = new User();
+                    friend.setName(resultSet2.getString(1));
+                    friend.setPhoneNum(resultSet2.getString(2));
+                    friend.setGender(resultSet2.getString(3));
+                    friend.setCountry(resultSet2.getString(4));
+                    friend.setDateOfBirth(resultSet2.getString(5));
+                    //friend.setPicture(resultSet.getBytes(6));
+                    friend.setPassword(resultSet2.getString(7));
+                    friend.setStatus(resultSet2.getString(8));
+                    friend.setChatBotStatus(resultSet2.getInt(9));
+                    friend.setEmail(resultSet2.getString(10));
+                    friend.setBIO(resultSet2.getString(11));
+                    friend.setMode(resultSet2.getString(12));
+
+                    friends.add(friend);
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        } finally {
+            return friends;
+        }
+
+    }
+
+    @Override
+    public ArrayList<User> retrieveOfflineFriends() {
+        ArrayList<User> friends = new ArrayList<User>();
+
+        try {
+
+            System.out.println("inside offline retrieve");
+            String query = " select Friend from friends where  user =? ";
+
+            // create the mysql insert preparedstatement
+            PreparedStatement preparedStmt = connection.prepareStatement(query);
+            preparedStmt.setString(1, user.getPhoneNum());
+            // execute the preparedstatement
+            preparedStmt.execute();
+            ResultSet resultSet = preparedStmt.getResultSet();
+            while (resultSet.next()) {
+//              System.out.println("this number is a friend to the user ");
+
+                query = " select Name, PhoneNum, Gender, Country, DOB, Picture, Password, Status, ChatBotStatus, Email, BIO ,Mode from user where PhoneNum = ? AND Status IN('offline','Offline')";
+
+                // create the mysql insert preparedstatement
+                preparedStmt = connection.prepareStatement(query);
+                preparedStmt.setString(1, resultSet.getString(1));
+                // execute the preparedstatement
+                preparedStmt.execute();
+                ResultSet resultSet2 = preparedStmt.getResultSet();
+
+                if (!resultSet2.next()) {
+                    System.out.println("Doesn't Exist");
+                } else {
+
+                    String Name = resultSet2.getString(1);
+                    System.out.println("Friend Exists -> " + Name);
+
+                    User friend = new User();
+                    friend.setName(resultSet2.getString(1));
+                    friend.setPhoneNum(resultSet2.getString(2));
+                    friend.setGender(resultSet2.getString(3));
+                    friend.setCountry(resultSet2.getString(4));
+                    friend.setDateOfBirth(resultSet2.getString(5));
+                    //friend.setPicture(resultSet.getBytes(6));
+                    friend.setPassword(resultSet2.getString(7));
+                    friend.setStatus(resultSet2.getString(8));
+                    friend.setChatBotStatus(resultSet2.getInt(9));
+                    friend.setEmail(resultSet2.getString(10));
+                    friend.setBIO(resultSet2.getString(11));
+                    friend.setMode(resultSet2.getString(12));
+
+                    friends.add(friend);
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        } finally {
+            return friends;
+        }
+
+    }
+
 }
-
-

@@ -17,7 +17,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.scene.control.Alert;
+//import javafx.scene.control.Alert;
 import mychatserver.model.DAOImpl.FriendsDAO;
 import mychatserver.model.DAOImpl.RequestsDAO;
 import mychatserver.model.DAOImpl.UserDAO;
@@ -49,10 +49,15 @@ public class MyChatServiceImpl extends UnicastRemoteObject implements Remote, co
             userTest = null;
 
         } else {
+            int times = userTest.getEntryTimes()+1;
+            userTest.setEntryTimes(times);
             this.user = userTest;
             try {
+                
                 this.friendDAO = new FriendsDAO(mysqlDataSource.getConnection(), user);
                 this.requestDAO = new RequestsDAO(mysqlDataSource.getConnection(), user);
+                this.userDAO.updateEntryTimes(user);
+                System.out.println("Times of login = "+user.getEntryTimes());
                 System.out.println("user is logined successfully");
             } catch (SQLException ex) {
                 ex.printStackTrace();
@@ -179,5 +184,33 @@ public class MyChatServiceImpl extends UnicastRemoteObject implements Remote, co
             return list;
         }
     }
+
+    @Override
+    public ArrayList<User> getOnlineFriends(User user) throws RemoteException {
+        ArrayList list = null;
+        try {
+
+            list = new FriendsDAO(mysqlDataSource.getConnection(), user).retrieveOnlineFriends();
+        } catch (SQLException ex) {
+            Logger.getLogger(MyChatServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            return list;
+        }
+    }
+
+    @Override
+    public ArrayList<User> getOfflineFriends(User user) throws RemoteException {
+        ArrayList list = null;
+        try {
+
+            list = new FriendsDAO(mysqlDataSource.getConnection(), user).retrieveOfflineFriends();
+        } catch (SQLException ex) {
+            Logger.getLogger(MyChatServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            return list;
+        }
+    }
+    
+    
 
 }

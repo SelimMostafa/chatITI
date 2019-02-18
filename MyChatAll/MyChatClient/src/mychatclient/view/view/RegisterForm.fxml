@@ -26,6 +26,7 @@
       <Label layoutX="47.0" layoutY="399.0" prefHeight="21.0" prefWidth="74.0" text="Country : " />
       <Label layoutX="47.0" layoutY="436.0" prefHeight="17.0" prefWidth="59.0" text="Bio :" />
       <Button fx:id="registerButton" layoutX="246.0" layoutY="474.0" mnemonicParsing="false" onAction="#handleRegisterButton" text="Register" />
+      
       <TextField fx:id="phoneNumberTF" layoutX="189.0" layoutY="118.0" prefHeight="31.0" prefWidth="211.0" />
       <TextField fx:id="nameTF" layoutX="190.0" layoutY="154.0" prefHeight="31.0" prefWidth="211.0" />
       <PasswordField fx:id="passwordTF" layoutX="189.0" layoutY="189.0" prefHeight="31.0" prefWidth="211.0" />
