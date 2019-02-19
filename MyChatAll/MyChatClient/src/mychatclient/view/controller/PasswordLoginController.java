@@ -45,13 +45,13 @@ public class PasswordLoginController implements Initializable {
     MyChatClient controller;
     String phone;
 
-    PasswordLoginController(String phone) {
+    PasswordLoginController(String phone,MyChatClient controller) {
         this.phone = phone;
-        controller=new MyChatClient();
+        this.controller=controller;
     }
 
     public PasswordLoginController() {
-        controller=new MyChatClient();
+//        controller=new MyChatClient();
     }
 
     @Override
@@ -75,6 +75,7 @@ public class PasswordLoginController implements Initializable {
             System.out.println("NotVALID!");
 
         } else {
+//            controller.getModel().connectToServer();
             stage=(Stage)signInButton.getScene().getWindow();
             Parent root=new HomePageBase(stage, user);
             Scene scene=new Scene(root);

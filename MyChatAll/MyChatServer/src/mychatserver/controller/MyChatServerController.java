@@ -23,12 +23,13 @@ public class MyChatServerController {
     public static void main(String[] args) {
         
         MyChatServer start = new MyChatServer();
-        Controller.countOffline();
-        Controller.countFemale();
-        Controller.countMale();
-        Controller.countOnline();
-        Controller.groupByCountry();
-        Controller.getEntryTimes();
+        Controller control = new Controller();
+        control.countOffline();
+        control.countFemale();
+        control.countMale();
+        control.countOnline();
+        control.groupByCountry();
+        control.getEntryTimes();
         
     }
     

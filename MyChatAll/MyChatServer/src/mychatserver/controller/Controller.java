@@ -5,6 +5,7 @@
  */
 package mychatserver.controller;
 
+import com.mysql.cj.jdbc.MysqlDataSource;
 import commonservice.ClientService;
 import commonservice.Message;
 import commonservice.User;
@@ -17,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import static mychatserver.model.MyChatServer.mysqlDataSource;
+import mychatserver.model.DAOImpl.UserStatisticsDAO;
 
 /**
  *
@@ -25,162 +26,79 @@ import static mychatserver.model.MyChatServer.mysqlDataSource;
  */
 public class Controller {
 
-    static ArrayList<User> onlineUsers = new ArrayList<User>();
-  //  static ArrayList<ClientService> onlineClientInterface = new ArrayList<ClientService>();
+    ArrayList<User> onlineUsers = new ArrayList<User>();
+    Map<User,ClientService> client = new HashMap<User,ClientService>();
     
-    private static int online = 0;
-    private static int offline = 0;
-    private static int female = 0;
-    private static int male = 0;
-    static Map<String, Integer> countryStatistics = new HashMap<String, Integer>();
-    static Map<String, Integer> entryStatistics = new HashMap<String, Integer>();
-    //static ClientService clientService;
-
-    public static void addOnlineUser(User user) {
+    private int online = 0;
+    private int offline = 0;
+    private int female = 0;
+    private int male = 0;
+    private Map<String, Integer> countryStatistics = new HashMap<String, Integer>();
+    private Map<String, Integer> entryStatistics = new HashMap<String, Integer>();
+    private UserStatisticsDAO userStatObject = new UserStatisticsDAO();
+    
+    
+    public void addOnlineUser(User user , ClientService clientService) {
         onlineUsers.add(user);
+        client.put(user, clientService);
 //        online++;
     }
 
-    public static void removeOnlineUser(User user) {
+    public void removeOnlineUser(User user ,ClientService clientService) {
         onlineUsers.remove(user);
+        client.remove(user, clientService);
         //      online--;
     }
 
-    public static int countOffline() {
-        try {
-            String query = " select count(PhoneNum) from user where Status IN('offline','Offline')";
-
-            PreparedStatement preparedStmt = mysqlDataSource.getConnection().prepareStatement(query);
-            // execute the preparedstatement
-            preparedStmt.execute();
-            ResultSet resultSet = preparedStmt.getResultSet();
-
-            if (resultSet.next()) {
-                offline = resultSet.getInt(1);
-                System.out.println(offline);
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        } finally {
-            return offline;
-        }
-    }
-
-    public static int countOnline() {
-        try {
-            String query = " select count(PhoneNum) from user where Status IN('online','Online')";
-
-            PreparedStatement preparedStmt = mysqlDataSource.getConnection().prepareStatement(query);
-            // execute the preparedstatement
-            preparedStmt.execute();
-            ResultSet resultSet = preparedStmt.getResultSet();
-
-            if (resultSet.next()) {
-                online = resultSet.getInt(1);
-                System.out.println(online);
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        } finally {
-            return online;
-        }
+    public int countOffline() {
+        offline = userStatObject.countOffline();
+        return offline;
 
     }
 
-    public static int countFemale() {
-        try {
-            String query = " select count(PhoneNum) from user where Gender='F'";
-
-            PreparedStatement preparedStmt = mysqlDataSource.getConnection().prepareStatement(query);
-            // execute the preparedstatement
-            preparedStmt.execute();
-            ResultSet resultSet = preparedStmt.getResultSet();
-
-            if (resultSet.next()) {
-                female = resultSet.getInt(1);
-                System.out.println(female);
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        } finally {
-            return female;
-        }
+    public int countOnline() {
+        online = userStatObject.countOnline();
+        return online;
 
     }
 
-    public static int countMale() {
-        try {
-            String query = " select count(PhoneNum) from user where Gender='M'";
+    public int countFemale() {
+        female = userStatObject.countFemale();
+        return female;
+    }
 
-            PreparedStatement preparedStmt = mysqlDataSource.getConnection().prepareStatement(query);
-            // execute the preparedstatement
-            preparedStmt.execute();
-            ResultSet resultSet = preparedStmt.getResultSet();
+    public int countMale() {
+        male = userStatObject.countMale();
+        return male;
+    }
 
-            if (resultSet.next()) {
-                male = resultSet.getInt(1);
-                System.out.println(male);
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        } finally {
-            return male;
-        }
+    public Map<String, Integer> groupByCountry() {
+        countryStatistics = userStatObject.groupByCountry();
+        return countryStatistics;
 
     }
 
-    public static Map<String, Integer> groupByCountry() {
-        try {
-            String query = " SELECT Country,count(PhoneNum) FROM user group by Country";
-
-            PreparedStatement preparedStmt = mysqlDataSource.getConnection().prepareStatement(query);
-            // execute the preparedstatement
-            preparedStmt.execute();
-            ResultSet resultSet = preparedStmt.getResultSet();
-
-            while (resultSet.next()) {
-                countryStatistics.put(resultSet.getString(1), resultSet.getInt(2));
-                System.out.println(resultSet.getString(1) + " = " + resultSet.getInt(2));
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        } finally {
-            return countryStatistics;
-        }
+    public Map<String, Integer> getEntryTimes() {
+        entryStatistics = userStatObject.getEntryTimes();
+        return entryStatistics;
 
     }
 
-    public static Map<String, Integer> getEntryTimes() {
-        try {
-            String query = " SELECT PhoneNum , EntryTimes FROM user";
-
-            PreparedStatement preparedStmt = mysqlDataSource.getConnection().prepareStatement(query);
-            // execute the preparedstatement
-            preparedStmt.execute();
-            ResultSet resultSet = preparedStmt.getResultSet();
-
-            while (resultSet.next()) {
-                entryStatistics.put(resultSet.getString(1), resultSet.getInt(2));
-                System.out.println(resultSet.getString(1) + " = " + resultSet.getInt(2));
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        } finally {
-            return entryStatistics;
-        }
-
+    public ArrayList<User> getOnlineUsers() {
+        return onlineUsers;
     }
+
+    //lesa m7taga tzbet
+/*    public void broadCast(Message message) {
+     for (User user : onlineUsers) {
+     try {
+     clientService.receiveMsg(message);
+     } catch (RemoteException ex) {
+     ex.printStackTrace();
+     }
+     }
+     }
+     */
 
     
-    //lesa m7taga tzbet
-/*    public static void broadCast(Message message) {
-        for (User user : onlineUsers) {
-            try {
-                clientService.receiveMsg(message);
-            } catch (RemoteException ex) {
-                ex.printStackTrace();
-            }
-        }
-    }
-*/
 }

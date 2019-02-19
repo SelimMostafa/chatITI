@@ -60,8 +60,8 @@ public class LoginFormController implements Initializable {
         if (isUser) {
             try {
                 FXMLLoader loader2=new FXMLLoader();
-                PasswordLoginController controller=new PasswordLoginController(phone);
-                loader2.setController(controller);
+                PasswordLoginController passwordController=new PasswordLoginController(phone,controller);
+                loader2.setController(passwordController);
                 Parent root = loader2.load(getClass().getResource("/mychatclient/view/view/passwordLogin.fxml").openStream());
                 Scene scene = new Scene(root);
                 stage=(Stage)nextButton.getScene().getWindow();

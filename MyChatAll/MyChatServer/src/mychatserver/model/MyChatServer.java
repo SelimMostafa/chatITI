@@ -23,7 +23,7 @@ import java.util.logging.Logger;
  */
 public class MyChatServer  {
     
-    public static MysqlDataSource mysqlDataSource=DataSourceFactory.getMySQLDataSource();
+    public MysqlDataSource mysqlDataSource=DataSourceFactory.getMySQLDataSource();
     
     public MyChatServer() {
         try {

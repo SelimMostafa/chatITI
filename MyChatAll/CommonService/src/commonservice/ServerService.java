@@ -15,12 +15,15 @@ import java.util.ArrayList;
  * @author AmrHesham
  */
 public interface ServerService extends Remote {
+    
+    public void connectToServer(ClientService clientService)throws RemoteException;
     public User login(String phone , String password) throws RemoteException;
     public boolean register(User user) throws RemoteException;
     //chat session msh 3arfen da a asln we yalla chatbot kaman aha
     public void sendMessage(Message message)throws RemoteException;
     //public void sendFile(File file);
-    public void updateProfile()throws RemoteException;
+    public boolean updateProfile(User user)throws RemoteException;
+    public void updateMode(User user)throws RemoteException;
     public void notifyOnlineOffline()throws RemoteException;
     public User addNewContact(String phoneNumber)throws RemoteException;
     public void showFriendsStatus()throws RemoteException;

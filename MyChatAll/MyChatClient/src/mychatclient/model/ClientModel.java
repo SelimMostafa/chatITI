@@ -5,6 +5,7 @@
  */
 package mychatclient.model;
 
+import commonservice.ClientService;
 import mychatclient.controller.*;
 import mychatclient.view.view.RegisterForm;
 import commonservice.ServerService;
@@ -26,7 +27,7 @@ import java.util.logging.Logger;
 public class ClientModel {
 
     public static ServerService serverservice;
-
+    public ClientService clientService ;
     public ClientModel() {
         try {
             Registry registry = LocateRegistry.getRegistry("127.0.0.1", 5000);
@@ -117,4 +118,34 @@ public class ClientModel {
         }
     }
 
+    /* public boolean updateProfile(User user) {
+     boolean check = false ;
+     try {
+     check = serverservice.updateProfile(user);
+     } catch (RemoteException ex) {
+     ex.printStackTrace();
+     }
+     finally{
+     return check ;
+     }
+        
+     }*/
+    public void updateMode(User user) {
+        try {
+            serverservice.updateMode(user);
+        } catch (RemoteException ex) {
+            ex.printStackTrace();
+        }
+    }
+    
+/*    public void connectToServer()
+    {
+        clientService = new ClientServiceImpl ();
+        try {
+            serverservice.connectToServer(clientService);
+        } catch (RemoteException ex) {
+            ex.printStackTrace();
+        }
+    }
+*/
 }

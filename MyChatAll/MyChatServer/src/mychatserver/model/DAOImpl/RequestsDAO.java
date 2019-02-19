@@ -36,7 +36,7 @@ public class RequestsDAO implements RequestsDAOInterface {
         if (!friendDAO.isFriend(phoneNumber)) {
             try {
 
-                if (!checkFriendRequest(phoneNumber)) {
+                if (!checkFriendRequest(user.getPhoneNum(),phoneNumber)) {
                     System.out.println("this user doesn't request this number before");
                     String query = " insert into requests values (?,?) ";
 
@@ -67,15 +67,15 @@ public class RequestsDAO implements RequestsDAOInterface {
     }
 
     @Override
-    public boolean checkFriendRequest(String phoneNumber) {
+    public boolean checkFriendRequest(String sender,String receiver) {
         boolean check = false;
 
         try {
             String query = " select Sender from requests where Sender = ? AND Receiver =? ";
 
             PreparedStatement preparedStmt = connection.prepareStatement(query);
-            preparedStmt.setString(1, user.getPhoneNum());
-            preparedStmt.setString(2, phoneNumber);
+            preparedStmt.setString(1, sender);
+            preparedStmt.setString(2, receiver);
             // execute the preparedstatement
             preparedStmt.execute();
             ResultSet resultSet = preparedStmt.getResultSet();
@@ -152,18 +152,18 @@ public class RequestsDAO implements RequestsDAOInterface {
 
     
     @Override
-    public boolean deleteRequest(String phoneNumber) {
+    public boolean deleteRequest(String sender,String receiver) {
 
         boolean check = false;
 
         try {
-            if (checkFriendRequest(phoneNumber)) {
+            if (checkFriendRequest(sender,receiver)) {
 //                System.out.println("this user doesn't request this number before");
                 String query = " delete from requests where Sender = ? AND Receiver =?  ";
 
                 PreparedStatement preparedStmt = connection.prepareStatement(query);
-                preparedStmt.setString(1, user.getPhoneNum());
-                preparedStmt.setString(2, phoneNumber);
+                preparedStmt.setString(1, sender);
+                preparedStmt.setString(2, receiver);
                 // execute the preparedstatement
                 preparedStmt.execute();
                 check = true;

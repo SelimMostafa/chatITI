@@ -88,4 +88,15 @@ public class MyChatClient extends Application {
         return model.checkPassword(phonenumber, password);
     }
 
+
+    
+    
+    /*    public boolean updateProfile(User user)
+    {
+        return model.updateProfile(user);
+    }*/
+
+    public ClientModel getModel() {
+        return model;
+    }
 }

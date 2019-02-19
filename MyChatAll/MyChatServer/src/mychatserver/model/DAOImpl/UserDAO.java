@@ -3,6 +3,7 @@
  */
 package mychatserver.model.DAOImpl;
 
+import com.mysql.cj.jdbc.MysqlDataSource;
 import commonservice.User;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,8 +12,8 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mychatserver.model.DAOInteraface.UserDAOInterface;
+import mychatserver.model.DataSourceFactory;
 import mychatserver.model.MyChatServer;
-import static mychatserver.model.MyChatServer.mysqlDataSource;
 import mychatserver.model.MyChatServiceImpl;
 
 /**
@@ -20,6 +21,8 @@ import mychatserver.model.MyChatServiceImpl;
  * @author Mohamed Jamal
  */
 public class UserDAO implements UserDAOInterface {
+
+    MysqlDataSource mysqlDataSource = DataSourceFactory.getMySQLDataSource();
 
     PreparedStatement preparedStatementForUpdate = null;
     PreparedStatement preparedStatementForDelete = null;
@@ -96,9 +99,8 @@ public class UserDAO implements UserDAOInterface {
     public boolean addUser(User user) {
         try {
             System.out.println("inside add user in service implementaiton");
-            String insertQuery = "INSERT INTO user VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
-            Connection connection = MyChatServer.mysqlDataSource.getConnection();
-            registerPreparedStatement = connection.prepareStatement(insertQuery);
+            String insertQuery = "INSERT INTO user VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            registerPreparedStatement = mysqlDataSource.getConnection().prepareStatement(insertQuery);
             try {
 
                 registerPreparedStatement.setString(1, user.getName());
@@ -113,6 +115,8 @@ public class UserDAO implements UserDAOInterface {
                 registerPreparedStatement.setString(10, user.getEmail());
                 registerPreparedStatement.setString(11, user.getBIO());
                 registerPreparedStatement.setString(12, "available");
+                registerPreparedStatement.setInt(13, 0);
+
                 registerDoneint = registerPreparedStatement.executeUpdate();
                 System.out.println(registerDoneint);
                 if (registerDoneint != 0) {
@@ -192,6 +196,59 @@ public class UserDAO implements UserDAOInterface {
             if (check == 1) {
                 updateDone = true;
             } else {
+                updateDone = false;
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return updateDone;
+    }
+
+    @Override
+    public boolean updateStatus(User user) {
+        boolean updateDone = false;
+
+        try {
+            String query = "update chatdb.user set Status = ? where PhoneNum = ? ";
+
+            preparedStatementForUpdate = mysqlDataSource.getConnection().prepareStatement(query);
+            preparedStatementForUpdate.setString(1, user.getStatus());
+            preparedStatementForUpdate.setString(2, user.getPhoneNum());
+
+            int check = preparedStatementForUpdate.executeUpdate();
+
+            if (check == 1) {
+                updateDone = true;
+            } else {
+                updateDone = false;
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return updateDone;
+    }
+
+    @Override
+    public boolean updateMode(User user) {
+        boolean updateDone = false;
+
+        try {
+            String query = "update chatdb.user set Mode = ? where PhoneNum = ? ";
+
+            preparedStatementForUpdate = mysqlDataSource.getConnection().prepareStatement(query);
+            preparedStatementForUpdate.setString(1, user.getMode());
+            preparedStatementForUpdate.setString(2, user.getPhoneNum());
+
+            int check = preparedStatementForUpdate.executeUpdate();
+
+            if (check == 1) {
+                System.out.println("update mode done");
+                updateDone = true;
+            } else {
+                System.out.println("update mode is failed");
+
                 updateDone = false;
             }
 

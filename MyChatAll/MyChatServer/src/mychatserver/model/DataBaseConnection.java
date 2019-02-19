@@ -25,7 +25,7 @@ public class DataBaseConnection {
         try {
             properties=new Properties();
             outputStream=new FileOutputStream("db.properties");
-            properties.setProperty("MYSQL_DB_URL","jdbc:mysql://localhost:3000/chatdb");
+            properties.setProperty("MYSQL_DB_URL","jdbc:mysql://localhost:3333/chatdb");
             properties.setProperty("MYSQL_DB_USERNAME","root");
             properties.setProperty("MYSQL_DB_PASSWORD","root");
             properties.store(outputStream,null);

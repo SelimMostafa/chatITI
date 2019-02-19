@@ -14,6 +14,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Menu;
@@ -82,11 +83,14 @@ public class HomePageBase extends AnchorPane {
     protected final Button addBtn;
     protected final Button signoutBtn;
     protected final ImageView imageView;
-    protected final SplitMenuButton statusMenu;
-    protected final RadioMenuItem availableItem;
-    protected final ToggleGroup status;
-    protected final RadioMenuItem busyItem;
-    protected final RadioMenuItem awayItem;
+    // protected final SplitMenuButton statusMenu;
+    protected final ComboBox statusMenu;
+
+    /*protected final RadioMenuItem availableItem;
+     protected final ToggleGroup status;
+     protected final RadioMenuItem busyItem;
+     protected final RadioMenuItem awayItem;
+     */
     protected final CheckBox chatbotCheckBox;
 
     ArrayList<String> friendRequests;
@@ -155,11 +159,14 @@ public class HomePageBase extends AnchorPane {
         addBtn = new Button();
         signoutBtn = new Button();
         imageView = new ImageView();
-        statusMenu = new SplitMenuButton();
-        availableItem = new RadioMenuItem();
-        status = new ToggleGroup();
-        busyItem = new RadioMenuItem();
-        awayItem = new RadioMenuItem();
+        //statusMenu = new SplitMenuButton();
+        statusMenu = new ComboBox();
+
+        /*   availableItem = new RadioMenuItem();
+         status = new ToggleGroup();
+         busyItem = new RadioMenuItem();
+         awayItem = new RadioMenuItem();
+         */
         chatbotCheckBox = new CheckBox();
 
         pane.setMaxHeight(USE_PREF_SIZE);
@@ -388,22 +395,22 @@ public class HomePageBase extends AnchorPane {
 
         statusMenu.setLayoutX(88.0);
         statusMenu.setLayoutY(65.0);
-        statusMenu.setMnemonicParsing(false);
-        statusMenu.setText("What are you doing ?");
+        /*   // statusMenu.setMnemonicParsing(false);
+         // statusMenu.setText("What are you doing ?");
 
-        availableItem.setMnemonicParsing(false);
-        availableItem.setText("Available");
+         availableItem.setMnemonicParsing(false);
+         availableItem.setText("Available");
 
-        availableItem.setToggleGroup(status);
+         availableItem.setToggleGroup(status);
 
-        busyItem.setMnemonicParsing(false);
-        busyItem.setText("Busy");
-        busyItem.setToggleGroup(status);
+         busyItem.setMnemonicParsing(false);
+         busyItem.setText("Busy");
+         busyItem.setToggleGroup(status);
 
-        awayItem.setMnemonicParsing(false);
-        awayItem.setText("Away");
-        awayItem.setToggleGroup(status);
-
+         awayItem.setMnemonicParsing(false);
+         awayItem.setText("Away");
+         awayItem.setToggleGroup(status);
+         */
         chatbotCheckBox.setLayoutX(28.0);
         chatbotCheckBox.setLayoutY(107.0);
         chatbotCheckBox.setMnemonicParsing(false);
@@ -449,14 +456,31 @@ public class HomePageBase extends AnchorPane {
         pane.getChildren().add(anchorPane);
         pane.getChildren().add(signoutBtn);
         pane.getChildren().add(imageView);
-        statusMenu.getItems().add(availableItem);
-        statusMenu.getItems().add(busyItem);
-        statusMenu.getItems().add(awayItem);
+
+        /*statusMenu.getItems().add(availableItem);
+         statusMenu.getItems().add(busyItem);
+         statusMenu.getItems().add(awayItem);
+         */
+        this.statusMenu.getItems().add("Available");
+        this.statusMenu.getItems().add("Busy");
+        this.statusMenu.getItems().add("Away");
+
         pane.getChildren().add(statusMenu);
         pane.getChildren().add(chatbotCheckBox);
         getChildren().add(pane);
 
         contactsTF.add(this.phoneAddedTF);
+
+        this.statusMenu.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+                user.setStatus((String) statusMenu.getValue());
+                model.updateMode(user);
+                System.out.println(user.getStatus());
+
+            }
+        });
 
         this.addBtn.setOnAction(new AddContactHandler(this));
 
@@ -474,6 +498,14 @@ public class HomePageBase extends AnchorPane {
                     // contactsTFIndx.add();
 
                 }
+            }
+        });
+
+        this.updateBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                User updatedUser = new User();
+
             }
         });
 
@@ -549,7 +581,8 @@ public class HomePageBase extends AnchorPane {
         //executorService.scheduleAtFixedRate(viewFriendsTask, 0, 2, TimeUnit.SECONDS);
         executorService.scheduleAtFixedRate(viewOnlineFriendsTask, 0, 2, TimeUnit.SECONDS);
         executorService.scheduleAtFixedRate(viewOfflineFriendsTask, 0, 2, TimeUnit.SECONDS);
-        this.userNameLabel.setText(user.getName()+" : "+user.getPhoneNum());
+        this.userNameLabel.setText(user.getName() + " : " + user.getPhoneNum());
+
     }
 
     public TextField getPhoneAddedTF() {

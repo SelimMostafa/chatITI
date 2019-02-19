@@ -16,5 +16,7 @@ public interface UserDAOInterface {
     public boolean updateUser(User user);
     public boolean deleteUser(User user);
     public boolean updateEntryTimes(User user);
-    
+    public boolean updateStatus(User user);
+    public boolean updateMode(User user);
+
 }

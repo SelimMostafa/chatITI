@@ -190,6 +190,7 @@ public class FriendsDAO implements FriendsDAOInterface {
             // execute the preparedstatement
             preparedStmt.execute();
             ResultSet resultSet = preparedStmt.getResultSet();
+            
             while (resultSet.next()) {
 //              System.out.println("this number is a friend to the user ");
 
