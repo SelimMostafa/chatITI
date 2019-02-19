@@ -137,7 +137,7 @@ public class UserStatisticsDAO implements UserStatisticsDAOInterface {
         Map<String, Integer> entryStatistics = new HashMap<String, Integer>();
 
         try {
-            String query = " SELECT PhoneNum , EntryTimes FROM user";
+            String query = " SELECT Name , EntryTimes FROM user";
 
             PreparedStatement preparedStmt = mysqlDataSource.getConnection().prepareStatement(query);
             // execute the preparedstatement
