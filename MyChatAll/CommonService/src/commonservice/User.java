@@ -147,7 +147,7 @@ public class User implements Serializable {
     
     @Override
     public String toString() {
-        return "UserEntity{" + "name=" + name + ", phoneNumber=" + phoneNum + ", country=" + country + ", dateOfBirth=" + dateOfBirth + ", password=" + password + ", email=" + Email + ", bio=" + BIO + '}';
+        return  name ;
     }
 
 }

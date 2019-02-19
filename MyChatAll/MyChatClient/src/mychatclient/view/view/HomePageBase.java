@@ -2,16 +2,22 @@ package mychatclient.view.view;
 
 import commonservice.ServerService;
 import commonservice.User;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -33,6 +39,7 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import mychatclient.model.ClientModel;
 import mychatclient.view.controller.AddContactHandler;
+import mychatclient.view.controller.ChatwindowController;
 //import mychatclient.view.controller.AddContactHandler;
 
 public class HomePageBase extends AnchorPane {
@@ -99,7 +106,7 @@ public class HomePageBase extends AnchorPane {
     ArrayList<User> offlineFriends;
     ObservableList<String> requestsObsrvList;
     ObservableList<String> friendsObsrvList;
-    ObservableList<String> onlineFriendsObsrvList;
+    ObservableList<User> onlineFriendsObsrvList;
     ObservableList<String> offlineFriendsObsrvList;
 
 //public ServerService serverService ;
@@ -471,6 +478,26 @@ public class HomePageBase extends AnchorPane {
 
         contactsTF.add(this.phoneAddedTF);
 
+        onlineListView.setOnMouseClicked((event) -> {
+            if(event.getClickCount()==2){
+                try {
+                    System.out.println("open the chat window with"+((User)(onlineListView.getSelectionModel().getSelectedItem())).getPhoneNum());
+                    FXMLLoader loader =new FXMLLoader();
+                    User userFromOnlineFriendsList=(User)(onlineListView.getSelectionModel().getSelectedItem());
+                    ChatwindowController chatwindowController=new ChatwindowController(userFromOnlineFriendsList);
+                    loader.setController(chatwindowController);
+                    Parent root=loader.load(getClass().getResource("/mychatclient/view/view/chatwindow.fxml").openStream());
+                    Scene scene=new Scene(root);
+                    Stage stage=new Stage();
+                    stage.setScene(scene);
+                    stage.show();
+                } catch (IOException ex) {
+                    Logger.getLogger(HomePageBase.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+            }
+        });
+        
         this.statusMenu.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
@@ -546,10 +573,10 @@ public class HomePageBase extends AnchorPane {
 
         Runnable viewOnlineFriendsTask = () -> {
             onlineFriends = model.getOnlineFriends(user);
-            onlineFriendsObsrvList = FXCollections.<String>observableArrayList();
+            onlineFriendsObsrvList = FXCollections.<User>observableArrayList();
 
             for (User friend : onlineFriends) {
-                onlineFriendsObsrvList.add(friend.getName() + " : " + friend.getPhoneNum());
+                onlineFriendsObsrvList.add(friend);
             }
 
             Platform.runLater(new Runnable() {
