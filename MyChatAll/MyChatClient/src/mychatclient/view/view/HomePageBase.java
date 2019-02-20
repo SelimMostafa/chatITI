@@ -44,6 +44,7 @@ import mychatclient.view.controller.ChatwindowController;
 
 public class HomePageBase extends AnchorPane {
 
+    ArrayList<String> activeChats;
     protected final Pane pane;
     protected final MenuBar menuBar;
     protected final Menu menu;
@@ -116,7 +117,7 @@ public class HomePageBase extends AnchorPane {
     ClientModel model;
 
     public HomePageBase(Stage Stage, User user) {
-
+        activeChats = new ArrayList<>();
         this.user = user;
         this.contactsTF = new ArrayList<TextField>();
         this.model = new ClientModel();
@@ -479,25 +480,34 @@ public class HomePageBase extends AnchorPane {
         contactsTF.add(this.phoneAddedTF);
 
         onlineListView.setOnMouseClicked((event) -> {
-            if(event.getClickCount()==2){
+            if (event.getClickCount() == 2) {
                 try {
-                    System.out.println("open the chat window with"+((User)(onlineListView.getSelectionModel().getSelectedItem())).getPhoneNum());
-                    FXMLLoader loader =new FXMLLoader();
-                    User userFromOnlineFriendsList=(User)(onlineListView.getSelectionModel().getSelectedItem());
-                    ChatwindowController chatwindowController=new ChatwindowController(userFromOnlineFriendsList);
-                    loader.setController(chatwindowController);
-                    Parent root=loader.load(getClass().getResource("/mychatclient/view/view/chatwindow.fxml").openStream());
-                    Scene scene=new Scene(root);
-                    Stage stage=new Stage();
-                    stage.setScene(scene);
-                    stage.show();
+                    System.out.println("open the chat window with" + ((User) (onlineListView.getSelectionModel().getSelectedItem())).getPhoneNum());
+                    FXMLLoader loader = new FXMLLoader();
+                    User userFromOnlineFriendsList = (User) (onlineListView.getSelectionModel().getSelectedItem());
+                    if (!activeChats.contains((String) userFromOnlineFriendsList.getPhoneNum())) {
+                        activeChats.add(userFromOnlineFriendsList.getPhoneNum());
+                        ChatwindowController chatwindowController = new ChatwindowController(userFromOnlineFriendsList,user);
+                        loader.setController(chatwindowController);
+                        Parent root = loader.load(getClass().getResource("/mychatclient/view/view/chatwindow.fxml").openStream());
+                        Scene scene = new Scene(root);
+                        Stage stage = new Stage();
+                        stage.setScene(scene);
+                        stage.setTitle(userFromOnlineFriendsList.getPhoneNum());
+                        stage.show();
+                    
+                    }
+                    else{
+                        System.out.println("session is already opened");
+                    }
+
                 } catch (IOException ex) {
                     Logger.getLogger(HomePageBase.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                
+
             }
         });
-        
+
         this.statusMenu.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override

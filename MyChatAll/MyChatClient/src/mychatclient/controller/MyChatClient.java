@@ -5,6 +5,7 @@
  */
 package mychatclient.controller;
 
+import commonservice.ClientService;
 import mychatclient.view.view.RegisterForm;
 import commonservice.ServerService;
 import commonservice.User;
@@ -30,6 +31,7 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import mychatclient.model.ClientModel;
+import mychatclient.model.ClientServiceImpl;
 
 /**
  *
@@ -38,10 +40,16 @@ import mychatclient.model.ClientModel;
 public class MyChatClient extends Application {
 
     ClientModel model;
-
+    public ClientServiceImpl clientServiceImpl ;
     public MyChatClient() {
 
-        model = new ClientModel();
+        try {
+            model = new ClientModel();
+            clientServiceImpl=new ClientServiceImpl(this);
+        } catch (RemoteException ex) {
+            Logger.getLogger(MyChatClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }
 
     public void start(Stage primaryStage) {
@@ -77,26 +85,24 @@ public class MyChatClient extends Application {
     public boolean registerNewUser(User user) {
         return model.registerNewUser(user);
     }
-    
+
     public ArrayList<String> getRequests(User user) {
         return model.getRequests(user);
     }
-    
-    
 
     public User checkPassword(String phonenumber, String password) {
-        return model.checkPassword(phonenumber, password);
+        return model.checkPassword(phonenumber, password,clientServiceImpl);
     }
 
-
-    
-    
     /*    public boolean updateProfile(User user)
     {
         return model.updateProfile(user);
     }*/
-
     public ClientModel getModel() {
         return model;
+    }
+
+    public void sendMessage(String message, ArrayList<String> phoneNumbersList, String senderPhoneNumber) {
+        model.sendMessage(message,phoneNumbersList,senderPhoneNumber);
     }
 }

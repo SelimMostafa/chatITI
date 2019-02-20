@@ -89,7 +89,7 @@ public class Controller {
     }
 
     //lesa m7taga tzbet
-/*    public void broadCast(Message message) {
+/*public void announcement(String message) {
      for (User user : onlineUsers) {
      try {
      clientService.receiveMsg(message);
@@ -97,8 +97,8 @@ public class Controller {
      ex.printStackTrace();
      }
      }
-     }
-     */
+     }*/
+     
 
     
 }

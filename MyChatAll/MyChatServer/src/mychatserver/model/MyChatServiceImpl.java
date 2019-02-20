@@ -44,7 +44,10 @@ public class MyChatServiceImpl extends UnicastRemoteObject implements Remote, co
     }
 
     @Override
-    public User login(String phone, String password) throws RemoteException {
+    public User login(String phone, String password,ClientService clientInterface) throws RemoteException {
+        if(clientInterface != null){
+            clientInterface.receiveMsg(phone);
+        }
         User userTest = userDAO.retrieveUser(phone);
         if (userTest == null) {
             System.out.println("This number doesn't exist");
@@ -76,8 +79,8 @@ public class MyChatServiceImpl extends UnicastRemoteObject implements Remote, co
     }
 
     @Override
-    public void sendMessage(Message message) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void sendMessage(String message,ArrayList<String> phoneNumbersList,String senderPhoneNumber) throws RemoteException {
+        System.err.println(message);
     }
 
     @Override

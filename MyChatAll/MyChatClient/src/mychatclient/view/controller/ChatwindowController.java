@@ -7,13 +7,17 @@ package mychatclient.view.controller;
 
 import commonservice.User;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.web.HTMLEditor;
+import javafx.stage.Stage;
+import mychatclient.controller.MyChatClient;
 
 /**
  * FXML Controller class
@@ -34,9 +38,19 @@ public class ChatwindowController implements Initializable {
     @FXML
     private Label sendFileLabel;
     User user;
-    public ChatwindowController(User user) {
-        this.user=user;
-        
+    User userFromOnlineList;
+    ArrayList<String> chatUsers;
+
+    MyChatClient controller;
+    public ChatwindowController(User userFromOnlineList, User user) {
+        this.user = user;
+        this.userFromOnlineList = userFromOnlineList;
+        controller = new MyChatClient();
+        chatUsers = new ArrayList<>();
+        chatUsers.add(user.getPhoneNum());
+        chatUsers.add(userFromOnlineList.getPhoneNum());
+//        System.out.println(user.getPhoneNum());
+//        System.out.println(userFromOnlineList.getPhoneNum());
     }
 
     /**
@@ -44,7 +58,16 @@ public class ChatwindowController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }    
-    
+        
+        htmlEditor.setOnKeyPressed((event) -> {
+            if (event.getCode().equals(KeyCode.ENTER)) {
+                String msg = htmlEditor.getHtmlText();
+                controller.sendMessage(msg,chatUsers,user.getPhoneNum());
+                htmlEditor.setHtmlText("");
+                
+            }
+        });
+
+    }
+
 }

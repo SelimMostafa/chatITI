@@ -5,14 +5,15 @@
  */
 package commonservice;
 
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 /**
  *
  * @author AmrHesham
  */
-public interface ClientService {
-    //public void receiveMsg(Message message)throws RemoteException;
+public interface ClientService extends Remote{
+    public void receiveMsg(String message)throws RemoteException;
     //public void receiveFile(Message message)throws RemoteException;
     public void notifyOnline(User friend)throws RemoteException;
     public void notifyOffline(User friend)throws RemoteException;

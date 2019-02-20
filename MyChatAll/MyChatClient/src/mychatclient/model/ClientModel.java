@@ -27,7 +27,7 @@ import java.util.logging.Logger;
 public class ClientModel {
 
     public static ServerService serverservice;
-    public ClientService clientService ;
+    
     public ClientModel() {
         try {
             Registry registry = LocateRegistry.getRegistry("127.0.0.1", 5000);
@@ -83,10 +83,10 @@ public class ClientModel {
         }
     }
 
-    public User checkPassword(String PhoneNumber, String password) {
+    public User checkPassword(String PhoneNumber, String password,ClientServiceImpl clientServiceImpl) {
         User user = null;
         try {
-            user = serverservice.login(PhoneNumber, password);
+            user = serverservice.login(PhoneNumber, password,clientServiceImpl);
 
         } catch (RemoteException ex) {
             Logger.getLogger(ClientModel.class.getName()).log(Level.SEVERE, null, ex);
@@ -148,4 +148,11 @@ public class ClientModel {
         }
     }
 */
+    public void sendMessage(String message,ArrayList<String> phoneNumbersList,String senderPhoneNumber){
+        try {
+            serverservice.sendMessage(message, phoneNumbersList, senderPhoneNumber);
+        } catch (RemoteException ex) {
+            Logger.getLogger(ClientModel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }
