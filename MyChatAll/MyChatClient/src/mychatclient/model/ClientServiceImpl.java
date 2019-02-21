@@ -34,8 +34,8 @@ public class ClientServiceImpl extends UnicastRemoteObject implements ClientServ
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                Notifications onlineNotification = Notifications.create().title(friend.getName() + " IS Online")
-                        .text(friend.getName() + " IS Online").graphic(null)
+                Notifications onlineNotification = Notifications.create().title(friend.getName() + " go Online")
+                        .text(friend.getName() + " go Online").graphic(null)
                         .hideAfter(Duration.seconds(10)).position(Pos.BOTTOM_RIGHT);
 
                 onlineNotification.show();
@@ -43,22 +43,81 @@ public class ClientServiceImpl extends UnicastRemoteObject implements ClientServ
             }
         });
 
-        //  this.controller.getHome().notifyOnline(friend);
+        this.controller.getHome().updateOnlineList(friend);
     }
 
     @Override
     public void notifyOffline(User friend) throws RemoteException {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                Notifications offlineNotification = Notifications.create().title(friend.getName() + " go Offline")
+                        .text(friend.getName() + " go Offline").graphic(null)
+                        .hideAfter(Duration.seconds(10)).position(Pos.BOTTOM_RIGHT);
+
+                offlineNotification.show();
+
+            }
+        });
+
+        this.controller.getHome().updateOfflineList(friend);
 
     }
 
     @Override
     public void notifyRequest(String phoneNumber) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                Notifications requestNotification = Notifications.create().title("New Friend Request")
+                        .text(phoneNumber).graphic(null)
+                        .hideAfter(Duration.seconds(10)).position(Pos.BOTTOM_RIGHT);
+
+                requestNotification.show();
+
+            }
+        });
+
+        this.controller.getHome().updateRequestList(phoneNumber);
+
     }
 
     @Override
     public void notifyMode(User friend) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+         Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                Notifications modeNotification = Notifications.create().title(friend.getName() + " go "+friend.getMode())
+                        .text(friend.getName() + " go "+friend.getMode()).graphic(null)
+                        .hideAfter(Duration.seconds(10)).position(Pos.BOTTOM_RIGHT);
+
+                modeNotification.show();
+
+            }
+        });
+
+      //  this.controller.getHome().updateModeList(friend);
+    }
+    
+    
+    
+    
+    @Override
+    public void notifyAdd(User friend) throws RemoteException {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                Notifications addNotification = Notifications.create().title("New Friend is added to your Contacts")
+                        .text(friend.getPhoneNum()+" : "+friend.getName()).graphic(null)
+                        .hideAfter(Duration.seconds(10)).position(Pos.BOTTOM_RIGHT);
+
+                addNotification.show();
+
+            }
+        });
+
+       // this.controller.getHome().updateRequestList(phoneNumber);
+
     }
 
     @Override

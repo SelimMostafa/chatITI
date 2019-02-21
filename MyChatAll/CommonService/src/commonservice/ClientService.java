@@ -19,5 +19,6 @@ public interface ClientService extends Remote{
     public void notifyOffline(User friend)throws RemoteException;
     public void notifyRequest(String phoneNumber)throws RemoteException;
     public void notifyMode(User friend)throws RemoteException;
+    public void notifyAdd(User friend)throws RemoteException;
     
 }
