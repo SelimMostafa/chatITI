@@ -23,7 +23,7 @@ public class MyChatServerController {
     public static void main(String[] args) {
         
         MyChatServer start = new MyChatServer();
-        Controller control = new Controller();
+        Controller control = Controller.getInstance();
         control.countOffline();
         control.countFemale();
         control.countMale();
