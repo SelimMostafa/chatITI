@@ -32,6 +32,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import mychatclient.model.ClientModel;
 import mychatclient.model.ClientServiceImpl;
+import mychatclient.view.view.HomePageBase;
 
 /**
  *
@@ -41,6 +42,7 @@ public class MyChatClient extends Application {
 
     ClientModel model;
     public ClientServiceImpl clientServiceImpl ;
+    public HomePageBase home = null ;
     public MyChatClient() {
 
         try {
@@ -105,4 +107,14 @@ public class MyChatClient extends Application {
     public void sendMessage(String message, ArrayList<String> phoneNumbersList, String senderPhoneNumber) {
         model.sendMessage(message,phoneNumbersList,senderPhoneNumber);
     }
+
+    public HomePageBase getHome() {
+        return home;
+    }
+
+    public void setHome(HomePageBase home) {
+        this.home = home;
+    }
+    
+    
 }

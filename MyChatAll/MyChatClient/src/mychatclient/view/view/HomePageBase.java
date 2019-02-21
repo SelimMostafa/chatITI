@@ -61,7 +61,7 @@ public class HomePageBase extends AnchorPane {
     protected final ListView onlineListView;
     protected final Tab offlineTab;
     protected final AnchorPane anchorPane1;
-    protected final ListView<String> friendsListView;
+    protected final ListView<String> offlineListView;
     protected final Tab RequestTab;
     protected final AnchorPane anchorPane2;
     protected final ListView<String> requestListView;
@@ -137,7 +137,7 @@ public class HomePageBase extends AnchorPane {
         onlineListView = new ListView();
         offlineTab = new Tab();
         anchorPane1 = new AnchorPane();
-        friendsListView = new ListView<String>();
+        offlineListView = new ListView<String>();
         RequestTab = new Tab();
         anchorPane2 = new AnchorPane();
         requestListView = new ListView<String>();
@@ -244,10 +244,10 @@ public class HomePageBase extends AnchorPane {
         anchorPane1.setPrefHeight(180.0);
         anchorPane1.setPrefWidth(200.0);
 
-        friendsListView.setLayoutX(14.0);
-        friendsListView.setLayoutY(25.0);
-        friendsListView.setPrefHeight(424.0);
-        friendsListView.setPrefWidth(325.0);
+        offlineListView.setLayoutX(14.0);
+        offlineListView.setLayoutY(25.0);
+        offlineListView.setPrefHeight(424.0);
+        offlineListView.setPrefWidth(325.0);
         offlineTab.setContent(anchorPane1);
 
         RequestTab.setText("Requests");
@@ -434,7 +434,7 @@ public class HomePageBase extends AnchorPane {
         pane.getChildren().add(userNameLabel);
         anchorPane0.getChildren().add(onlineListView);
         tabPane.getTabs().add(onlineTab);
-        anchorPane1.getChildren().add(friendsListView);
+        anchorPane1.getChildren().add(offlineListView);
         tabPane.getTabs().add(offlineTab);
         anchorPane2.getChildren().add(requestListView);
         tabPane.getTabs().add(RequestTab);
@@ -487,7 +487,7 @@ public class HomePageBase extends AnchorPane {
                     User userFromOnlineFriendsList = (User) (onlineListView.getSelectionModel().getSelectedItem());
                     if (!activeChats.contains((String) userFromOnlineFriendsList.getPhoneNum())) {
                         activeChats.add(userFromOnlineFriendsList.getPhoneNum());
-                        ChatwindowController chatwindowController = new ChatwindowController(userFromOnlineFriendsList,user);
+                        ChatwindowController chatwindowController = new ChatwindowController(userFromOnlineFriendsList, user);
                         loader.setController(chatwindowController);
                         Parent root = loader.load(getClass().getResource("/mychatclient/view/view/chatwindow.fxml").openStream());
                         Scene scene = new Scene(root);
@@ -495,9 +495,8 @@ public class HomePageBase extends AnchorPane {
                         stage.setScene(scene);
                         stage.setTitle(userFromOnlineFriendsList.getPhoneNum());
                         stage.show();
-                    
-                    }
-                    else{
+
+                    } else {
                         System.out.println("session is already opened");
                     }
 
@@ -546,26 +545,25 @@ public class HomePageBase extends AnchorPane {
             }
         });
 
-        Runnable viewRequestsTask = () -> {
+//        Runnable viewRequestsTask = () -> {
+        friendRequests = model.getRequests(user);
 
-            friendRequests = model.getRequests(user);
+        requestsObsrvList = FXCollections.<String>observableArrayList();
+        for (String friend : friendRequests) {
+            requestsObsrvList.add(friend);
+        }
 
-            requestsObsrvList = FXCollections.<String>observableArrayList();
-            for (String friend : friendRequests) {
-                requestsObsrvList.add(friend);
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+
+                requestListView.setItems(requestsObsrvList);
+
             }
+        });
+        //      };
 
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-
-                    requestListView.setItems(requestsObsrvList);
-
-                }
-            });
-        };
-
-        Runnable viewFriendsTask = () -> {
+/*        Runnable viewFriendsTask = () -> {
             friends = model.getFriends(user);
             friendsObsrvList = FXCollections.<String>observableArrayList();
 
@@ -576,48 +574,49 @@ public class HomePageBase extends AnchorPane {
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
-                    friendsListView.setItems(friendsObsrvList);
+                    offlineListView.setItems(friendsObsrvList);
                 }
             });
-        };
+        };*/
 
-        Runnable viewOnlineFriendsTask = () -> {
-            onlineFriends = model.getOnlineFriends(user);
-            onlineFriendsObsrvList = FXCollections.<User>observableArrayList();
+        
+        //    Runnable viewOnlineFriendsTask = () -> {
+        onlineFriends = model.getOnlineFriends(user);
+        onlineFriendsObsrvList = FXCollections.<User>observableArrayList();
 
-            for (User friend : onlineFriends) {
-                onlineFriendsObsrvList.add(friend);
+        for (User friend : onlineFriends) {
+            onlineFriendsObsrvList.add(friend);
+        }
+
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                onlineListView.setItems(onlineFriendsObsrvList);
             }
+        });
+      //  };
 
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    onlineListView.setItems(onlineFriendsObsrvList);
-                }
-            });
-        };
+        //Runnable viewOfflineFriendsTask = () -> {
+        offlineFriends = model.getOfflineFriends(user);
+        offlineFriendsObsrvList = FXCollections.<String>observableArrayList();
 
-        Runnable viewOfflineFriendsTask = () -> {
-            offlineFriends = model.getOfflineFriends(user);
-            offlineFriendsObsrvList = FXCollections.<String>observableArrayList();
+        for (User friend : offlineFriends) {
+            offlineFriendsObsrvList.add(friend.getName() + " : " + friend.getPhoneNum());
+        }
 
-            for (User friend : offlineFriends) {
-                offlineFriendsObsrvList.add(friend.getName() + " : " + friend.getPhoneNum());
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                offlineListView.setItems(offlineFriendsObsrvList);
             }
+        });
+       // };
 
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    friendsListView.setItems(offlineFriendsObsrvList);
-                }
-            });
-        };
-
-        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(4);
-        executorService.scheduleAtFixedRate(viewRequestsTask, 0, 2, TimeUnit.SECONDS);
-        //executorService.scheduleAtFixedRate(viewFriendsTask, 0, 2, TimeUnit.SECONDS);
-        executorService.scheduleAtFixedRate(viewOnlineFriendsTask, 0, 2, TimeUnit.SECONDS);
-        executorService.scheduleAtFixedRate(viewOfflineFriendsTask, 0, 2, TimeUnit.SECONDS);
+        /*  ScheduledExecutorService executorService = Executors.newScheduledThreadPool(4);
+         executorService.scheduleAtFixedRate(viewRequestsTask, 0, 2, TimeUnit.SECONDS);
+         //executorService.scheduleAtFixedRate(viewFriendsTask, 0, 2, TimeUnit.SECONDS);
+         executorService.scheduleAtFixedRate(viewOnlineFriendsTask, 0, 2, TimeUnit.SECONDS);
+         executorService.scheduleAtFixedRate(viewOfflineFriendsTask, 0, 2, TimeUnit.SECONDS);*/
         this.userNameLabel.setText(user.getName() + " : " + user.getPhoneNum());
 
     }
@@ -637,5 +636,57 @@ public class HomePageBase extends AnchorPane {
     public AnchorPane getAnchorPane4() {
         return anchorPane4;
     }
+
+    public void updateOnlineList(User onlineFriend) {
+        onlineFriends.add(onlineFriend);
+        onlineFriendsObsrvList.add(onlineFriend);
+        
+        boolean check1 = offlineFriends.remove(onlineFriend);
+        boolean check2 = offlineFriendsObsrvList.remove(onlineFriend.getName()+" : "+onlineFriend.getPhoneNum());
+        
+        System.out.println(check1);
+        System.out.println(check2);
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                onlineListView.setItems(onlineFriendsObsrvList);
+                offlineListView.setItems(offlineFriendsObsrvList);
+            }
+        });
+    }
+
+    public void updateOfflineList(User offlineFriend) {
+        offlineFriends.add(offlineFriend);
+        offlineFriendsObsrvList.add(offlineFriend.getName() + " : " + offlineFriend.getPhoneNum());
+        
+        onlineFriends.remove(offlineFriend);
+        onlineFriendsObsrvList.remove(offlineFriend);
+        
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                
+                onlineListView.setItems(onlineFriendsObsrvList);
+                offlineListView.setItems(offlineFriendsObsrvList);
+            }
+        });
+    }
+
+
+    public void updateRequestList(String requestNumber) {
+
+            requestsObsrvList.add(requestNumber);
+        
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+
+                requestListView.setItems(requestsObsrvList);
+
+            }
+        });
+    }
+
+    
 
 }
