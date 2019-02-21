@@ -35,8 +35,9 @@ public class MyChatServiceImpl extends UnicastRemoteObject implements Remote, co
     FriendsDAO friendDAO;
     RequestsDAO requestDAO;
     User user;
-    ClientService clientService;
-
+    ClientService clientInterface;
+    Controller control = Controller.getInstance();
+    ClientConnection clientConnection;
     MysqlDataSource mysqlDataSource = DataSourceFactory.getMySQLDataSource();
 
     public MyChatServiceImpl() throws RemoteException {
@@ -44,10 +45,7 @@ public class MyChatServiceImpl extends UnicastRemoteObject implements Remote, co
     }
 
     @Override
-    public User login(String phone, String password,ClientService clientInterface) throws RemoteException {
-        if(clientInterface != null){
-            clientInterface.receiveMsg(phone);
-        }
+    public User login(String phone, String password, ClientService clientInterface) throws RemoteException {
         User userTest = userDAO.retrieveUser(phone);
         if (userTest == null) {
             System.out.println("This number doesn't exist");
@@ -57,17 +55,24 @@ public class MyChatServiceImpl extends UnicastRemoteObject implements Remote, co
             userTest = null;
 
         } else {
+            userTest.setStatus("Online");
             int times = userTest.getEntryTimes() + 1;
             userTest.setEntryTimes(times);
             this.user = userTest;
             try {
 
+                this.clientInterface = clientInterface;
                 this.friendDAO = new FriendsDAO(mysqlDataSource.getConnection(), user);
                 this.requestDAO = new RequestsDAO(mysqlDataSource.getConnection(), user);
                 this.userDAO.updateEntryTimes(user);
-    //            Controller.addOnlineUser(user, clientService);
+                this.userDAO.updateStatus(user);
+                control.addOnlineUser(this.user, clientInterface);
                 System.out.println("Times of login = " + user.getEntryTimes());
                 System.out.println("user is logined successfully");
+                clientConnection = new ClientConnection(this);
+
+                clientConnection.onlineNotificationFriends();
+
             } catch (SQLException ex) {
                 ex.printStackTrace();
             } finally {
@@ -79,7 +84,7 @@ public class MyChatServiceImpl extends UnicastRemoteObject implements Remote, co
     }
 
     @Override
-    public void sendMessage(String message,ArrayList<String> phoneNumbersList,String senderPhoneNumber) throws RemoteException {
+    public void sendMessage(String message, ArrayList<String> phoneNumbersList, String senderPhoneNumber) throws RemoteException {
         System.err.println(message);
     }
 
@@ -116,7 +121,7 @@ public class MyChatServiceImpl extends UnicastRemoteObject implements Remote, co
 
     @Override
     public void signout() throws RemoteException {
-      //  Controller.removeOnlineUser(user, clientService);
+        //  Controller.removeOnlineUser(user, clientService);
 
     }
 
@@ -164,11 +169,6 @@ public class MyChatServiceImpl extends UnicastRemoteObject implements Remote, co
     @Override
     public ArrayList<User> getOfflineFriends(User user) throws RemoteException {
         return this.friendDAO.retrieveOfflineFriends();
-    }
-
-    @Override
-    public void connectToServer(ClientService clientService) throws RemoteException {
-        this.clientService = clientService;
     }
 
     @Override
