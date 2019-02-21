@@ -10,26 +10,45 @@ import commonservice.User;
 import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import javafx.application.Platform;
+import javafx.geometry.Pos;
+import javafx.util.Duration;
 import mychatclient.controller.MyChatClient;
+import org.controlsfx.control.Notifications;
 
 /**
  *
  * @author HP
  */
-public class ClientServiceImpl extends UnicastRemoteObject implements ClientService{
- MyChatClient controller;
-    public ClientServiceImpl(MyChatClient controller) throws RemoteException{
-        this.controller=controller;
+public class ClientServiceImpl extends UnicastRemoteObject implements ClientService {
+
+    MyChatClient controller;
+
+    public ClientServiceImpl(MyChatClient controller) throws RemoteException {
+        this.controller = controller;
     }
-   
+
     @Override
     public void notifyOnline(User friend) throws RemoteException {
-        
+
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                Notifications onlineNotification = Notifications.create().title(friend.getName() + " IS Online")
+                        .text(friend.getName() + " IS Online").graphic(null)
+                        .hideAfter(Duration.seconds(10)).position(Pos.BOTTOM_RIGHT);
+
+                onlineNotification.show();
+
+            }
+        });
+
+        //  this.controller.getHome().notifyOnline(friend);
     }
 
     @Override
     public void notifyOffline(User friend) throws RemoteException {
-        
+
     }
 
     @Override
@@ -46,5 +65,5 @@ public class ClientServiceImpl extends UnicastRemoteObject implements ClientServ
     public void receiveMsg(String message) throws RemoteException {
         System.err.println(message);
     }
-    
+
 }
