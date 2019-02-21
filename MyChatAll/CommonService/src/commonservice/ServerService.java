@@ -22,7 +22,7 @@ public interface ServerService extends Remote {
 
     //chat session msh 3arfen da a asln we yalla chatbot kaman aha
 
-    public void sendMessage(String message, ArrayList<String> phoneNumberList, String SenderPhoneNumber) throws RemoteException;
+    public void sendMessage(String message, ArrayList<User> phoneNumberList, String SenderPhoneNumber) throws RemoteException;
 
     //public void sendFile(File file);
 

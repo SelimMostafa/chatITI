@@ -148,7 +148,7 @@ public class ClientModel {
         }
     }
 */
-    public void sendMessage(String message,ArrayList<String> phoneNumbersList,String senderPhoneNumber){
+    public void sendMessage(String message,ArrayList<User> phoneNumbersList,String senderPhoneNumber){
         try {
             serverservice.sendMessage(message, phoneNumbersList, senderPhoneNumber);
         } catch (RemoteException ex) {

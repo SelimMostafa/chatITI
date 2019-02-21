@@ -487,7 +487,7 @@ public class HomePageBase extends AnchorPane {
                     User userFromOnlineFriendsList = (User) (onlineListView.getSelectionModel().getSelectedItem());
                     if (!activeChats.contains((String) userFromOnlineFriendsList.getPhoneNum())) {
                         activeChats.add(userFromOnlineFriendsList.getPhoneNum());
-                        ChatwindowController chatwindowController = new ChatwindowController(userFromOnlineFriendsList,user);
+                        ChatwindowController chatwindowController = new ChatwindowController(userFromOnlineFriendsList,user,activeChats);
                         loader.setController(chatwindowController);
                         Parent root = loader.load(getClass().getResource("/mychatclient/view/view/chatwindow.fxml").openStream());
                         Scene scene = new Scene(root);
@@ -495,7 +495,9 @@ public class HomePageBase extends AnchorPane {
                         stage.setScene(scene);
                         stage.setTitle(userFromOnlineFriendsList.getPhoneNum());
                         stage.show();
-                    
+                        stage.setOnCloseRequest((event2) -> {
+                            activeChats.remove((String) userFromOnlineFriendsList.getPhoneNum());
+                        });
                     }
                     else{
                         System.out.println("session is already opened");

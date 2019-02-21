@@ -84,8 +84,14 @@ public class MyChatServiceImpl extends UnicastRemoteObject implements Remote, co
     }
 
     @Override
-    public void sendMessage(String message, ArrayList<String> phoneNumbersList, String senderPhoneNumber) throws RemoteException {
-        System.err.println(message);
+    public void sendMessage(String message, ArrayList<User> phoneNumbersList, String senderPhoneNumber) throws RemoteException {
+        phoneNumbersList.forEach((c) -> {
+            try {
+                control.getClientInterfaceObject(c).receiveMsg(message);
+            } catch (RemoteException ex) {
+                ex.printStackTrace();
+            }
+        });
     }
 
     @Override

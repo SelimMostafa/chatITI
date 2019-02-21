@@ -102,7 +102,7 @@ public class MyChatClient extends Application {
         return model;
     }
 
-    public void sendMessage(String message, ArrayList<String> phoneNumbersList, String senderPhoneNumber) {
+    public void sendMessage(String message, ArrayList<User> phoneNumbersList, String senderPhoneNumber) {
         model.sendMessage(message,phoneNumbersList,senderPhoneNumber);
     }
 }

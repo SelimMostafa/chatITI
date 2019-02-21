@@ -39,18 +39,25 @@ public class ChatwindowController implements Initializable {
     private Label sendFileLabel;
     User user;
     User userFromOnlineList;
-    ArrayList<String> chatUsers;
-
+    ArrayList<User> chatUsers;
+    ArrayList<String> activeChats;
     MyChatClient controller;
-    public ChatwindowController(User userFromOnlineList, User user) {
+
+    public ChatwindowController(User userFromOnlineList, User user, ArrayList<String> activeChats) {
         this.user = user;
         this.userFromOnlineList = userFromOnlineList;
         controller = new MyChatClient();
         chatUsers = new ArrayList<>();
-        chatUsers.add(user.getPhoneNum());
-        chatUsers.add(userFromOnlineList.getPhoneNum());
+        chatUsers.add(user);
+        chatUsers.add(userFromOnlineList);
+        this.activeChats = activeChats;
 //        System.out.println(user.getPhoneNum());
 //        System.out.println(userFromOnlineList.getPhoneNum());
+
+//        Stage stage = (Stage) sendFileLabel.getScene().getWindow();
+//        stage.setOnCloseRequest((event) -> {
+//            
+//        });
     }
 
     /**
@@ -58,13 +65,13 @@ public class ChatwindowController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
+
         htmlEditor.setOnKeyPressed((event) -> {
             if (event.getCode().equals(KeyCode.ENTER)) {
                 String msg = htmlEditor.getHtmlText();
-                controller.sendMessage(msg,chatUsers,user.getPhoneNum());
+                controller.sendMessage(msg, chatUsers, user.getPhoneNum());
                 htmlEditor.setHtmlText("");
-                
+
             }
         });
 
