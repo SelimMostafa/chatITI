@@ -25,9 +25,9 @@ public class DataBaseConnection {
         try {
             properties=new Properties();
             outputStream=new FileOutputStream("db.properties");
-            properties.setProperty("MYSQL_DB_URL","jdbc:mysql://localhost:3000/chatdb");
-            properties.setProperty("MYSQL_DB_USERNAME","root");
-            properties.setProperty("MYSQL_DB_PASSWORD","root");
+            properties.setProperty("MYSQL_DB_URL","jdbc:mysql://localhost:3306/chatdb");
+            properties.setProperty("MYSQL_DB_USERNAME","conuser");
+            properties.setProperty("MYSQL_DB_PASSWORD","admin123");
             properties.store(outputStream,null);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(DataBaseConnection.class.getName()).log(Level.SEVERE, null, ex);
