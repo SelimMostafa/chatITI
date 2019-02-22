@@ -12,10 +12,10 @@ import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
-
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -24,8 +24,10 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import mychatclient.controller.MyChatClient;
-
-import javafx.scene.web.HTMLEditor;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 /**
  * FXML Controller class
@@ -67,11 +69,6 @@ public class ChatwindowController implements Initializable {
 //        });
     }
 
-    public ChatwindowController(User user) {
-        this.user = user;
-
-    }
-
     /**
      * Initializes the controller class.
      */
@@ -84,27 +81,38 @@ public class ChatwindowController implements Initializable {
                 String senderPhone = user.getPhoneNum();
                 controller.sendMessage(msg, chatUsers, senderPhone);
                 htmlEditor.setHtmlText("");
-                display(msg);
+                display(msg,true);
 
             }
         });
 
     }
 
-    public void display(String message) {
+    public void display(String message,boolean isSender) {
         System.out.println("inside display method in chatWindowController");
         System.out.println("Delivered Successfully " + message);
-
-        //Label label = new Label(message);
-        //label.setPrefSize(300, 100);
-        Platform.runLater(() -> {
+        
+        /*
+        
+        Document document = Jsoup.parse(message);
+        Elements element = document.getElementsByTag("font");
+        String msg = element.first().text().trim();
+        */
+            Platform.runLater(() -> {
+            
             WebView webView = new WebView();
-            webView.getEngine().loadContent(message, "text/html");
+            webView.getEngine().loadContent(message);
+            webView.setStyle("-fx-background-color: #1B887D");
             HBox hbox = new HBox(webView);
+            
+            if(isSender){
+                hbox.setAlignment(Pos.BASELINE_RIGHT);
+            }else{
+                hbox.setAlignment(Pos.BASELINE_LEFT);
+            }
             chatArea.getChildren().add(hbox);
         });
 
     }
 
-    // TODO
 }

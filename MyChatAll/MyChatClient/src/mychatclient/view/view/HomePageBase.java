@@ -46,11 +46,9 @@ import mychatclient.view.controller.ChatwindowController;
 //import mychatclient.view.controller.AddContactHandler;
 
 public class HomePageBase extends AnchorPane {
-
-    ChatwindowController cc;
+ChatwindowController cc;
     User friend;
     Map<String, ChatwindowController> activeChats;
-
     protected final Pane pane;
     protected final MenuBar menuBar;
     protected final Menu menu;
@@ -67,7 +65,7 @@ public class HomePageBase extends AnchorPane {
     protected final ListView onlineListView;
     protected final Tab offlineTab;
     protected final AnchorPane anchorPane1;
-    protected final ListView<String> friendsListView;
+    protected final ListView<String> offlineListView;
     protected final Tab RequestTab;
     protected final AnchorPane anchorPane2;
     protected final ListView<String> requestListView;
@@ -128,7 +126,6 @@ public class HomePageBase extends AnchorPane {
         activeChats = new HashMap<>();
         this.user = user;
         System.out.println("i am " + user.getPhoneNum());
-        this.user = user;
         this.contactsTF = new ArrayList<TextField>();
         this.model = new ClientModel();
         pane = new Pane();
@@ -147,7 +144,7 @@ public class HomePageBase extends AnchorPane {
         onlineListView = new ListView();
         offlineTab = new Tab();
         anchorPane1 = new AnchorPane();
-        friendsListView = new ListView<String>();
+        offlineListView = new ListView<String>();
         RequestTab = new Tab();
         anchorPane2 = new AnchorPane();
         requestListView = new ListView<String>();
@@ -254,10 +251,10 @@ public class HomePageBase extends AnchorPane {
         anchorPane1.setPrefHeight(180.0);
         anchorPane1.setPrefWidth(200.0);
 
-        friendsListView.setLayoutX(14.0);
-        friendsListView.setLayoutY(25.0);
-        friendsListView.setPrefHeight(424.0);
-        friendsListView.setPrefWidth(325.0);
+        offlineListView.setLayoutX(14.0);
+        offlineListView.setLayoutY(25.0);
+        offlineListView.setPrefHeight(424.0);
+        offlineListView.setPrefWidth(325.0);
         offlineTab.setContent(anchorPane1);
 
         RequestTab.setText("Requests");
@@ -444,7 +441,7 @@ public class HomePageBase extends AnchorPane {
         pane.getChildren().add(userNameLabel);
         anchorPane0.getChildren().add(onlineListView);
         tabPane.getTabs().add(onlineTab);
-        anchorPane1.getChildren().add(friendsListView);
+        anchorPane1.getChildren().add(offlineListView);
         tabPane.getTabs().add(offlineTab);
         anchorPane2.getChildren().add(requestListView);
         tabPane.getTabs().add(RequestTab);
@@ -492,7 +489,6 @@ public class HomePageBase extends AnchorPane {
         onlineListView.setOnMouseClicked((event) -> {
             if (event.getClickCount() == 2) {
                 try {
-
                     System.out.println("open the chat window with" + ((User) (onlineListView.getSelectionModel().getSelectedItem())).getPhoneNum());
                     FXMLLoader loader = new FXMLLoader();
                     //get the friend phone number to add to the hashmap
@@ -512,7 +508,6 @@ public class HomePageBase extends AnchorPane {
                         stage.setTitle(userFromOnlineFriendsList.getPhoneNum());
                         stage.show();
                         activeChats.put(userFromOnlineFriendsList.getPhoneNum(), loader.getController());
-                        System.out.println("testing hashmap return wla la " + activeChats.get((String) userFromOnlineFriendsList.getPhoneNum()));
                         stage.setOnCloseRequest((event2) -> {
                             activeChats.remove((String) userFromOnlineFriendsList.getPhoneNum());
                         });
@@ -566,26 +561,25 @@ public class HomePageBase extends AnchorPane {
             }
         });
 
-        Runnable viewRequestsTask = () -> {
+//        Runnable viewRequestsTask = () -> {
+        friendRequests = model.getRequests(user);
 
-            friendRequests = model.getRequests(user);
+        requestsObsrvList = FXCollections.<String>observableArrayList();
+        for (String friend : friendRequests) {
+            requestsObsrvList.add(friend);
+        }
 
-            requestsObsrvList = FXCollections.<String>observableArrayList();
-            for (String friend : friendRequests) {
-                requestsObsrvList.add(friend);
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+
+                requestListView.setItems(requestsObsrvList);
+
             }
+        });
+        //      };
 
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-
-                    requestListView.setItems(requestsObsrvList);
-
-                }
-            });
-        };
-
-        Runnable viewFriendsTask = () -> {
+        /*        Runnable viewFriendsTask = () -> {
             friends = model.getFriends(user);
             friendsObsrvList = FXCollections.<String>observableArrayList();
 
@@ -596,48 +590,47 @@ public class HomePageBase extends AnchorPane {
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
-                    friendsListView.setItems(friendsObsrvList);
+                    offlineListView.setItems(friendsObsrvList);
                 }
             });
-        };
+        };*/
+        //    Runnable viewOnlineFriendsTask = () -> {
+        onlineFriends = model.getOnlineFriends(user);
+        onlineFriendsObsrvList = FXCollections.<User>observableArrayList();
 
-        Runnable viewOnlineFriendsTask = () -> {
-            onlineFriends = model.getOnlineFriends(user);
-            onlineFriendsObsrvList = FXCollections.<User>observableArrayList();
+        for (User friend : onlineFriends) {
+            onlineFriendsObsrvList.add(friend);
+        }
 
-            for (User friend : onlineFriends) {
-                onlineFriendsObsrvList.add(friend);
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                onlineListView.setItems(onlineFriendsObsrvList);
             }
+        });
+        //  };
 
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    onlineListView.setItems(onlineFriendsObsrvList);
-                }
-            });
-        };
+        //Runnable viewOfflineFriendsTask = () -> {
+        offlineFriends = model.getOfflineFriends(user);
+        offlineFriendsObsrvList = FXCollections.<String>observableArrayList();
 
-        Runnable viewOfflineFriendsTask = () -> {
-            offlineFriends = model.getOfflineFriends(user);
-            offlineFriendsObsrvList = FXCollections.<String>observableArrayList();
+        for (User friend : offlineFriends) {
+            offlineFriendsObsrvList.add(friend.getName() + " : " + friend.getPhoneNum());
+        }
 
-            for (User friend : offlineFriends) {
-                offlineFriendsObsrvList.add(friend.getName() + " : " + friend.getPhoneNum());
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                offlineListView.setItems(offlineFriendsObsrvList);
             }
+        });
+        // };
 
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    friendsListView.setItems(offlineFriendsObsrvList);
-                }
-            });
-        };
-
-        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(4);
-        executorService.scheduleAtFixedRate(viewRequestsTask, 0, 2, TimeUnit.SECONDS);
-        //executorService.scheduleAtFixedRate(viewFriendsTask, 0, 2, TimeUnit.SECONDS);
-        executorService.scheduleAtFixedRate(viewOnlineFriendsTask, 0, 2, TimeUnit.SECONDS);
-        executorService.scheduleAtFixedRate(viewOfflineFriendsTask, 0, 2, TimeUnit.SECONDS);
+        /*  ScheduledExecutorService executorService = Executors.newScheduledThreadPool(4);
+         executorService.scheduleAtFixedRate(viewRequestsTask, 0, 2, TimeUnit.SECONDS);
+         //executorService.scheduleAtFixedRate(viewFriendsTask, 0, 2, TimeUnit.SECONDS);
+         executorService.scheduleAtFixedRate(viewOnlineFriendsTask, 0, 2, TimeUnit.SECONDS);
+         executorService.scheduleAtFixedRate(viewOfflineFriendsTask, 0, 2, TimeUnit.SECONDS);*/
         this.userNameLabel.setText(user.getName() + " : " + user.getPhoneNum());
 
     }
@@ -671,7 +664,7 @@ public class HomePageBase extends AnchorPane {
             @Override
             public void run() {
                 onlineListView.setItems(onlineFriendsObsrvList);
-                // offlineListView.setItems(offlineFriendsObsrvList);
+                offlineListView.setItems(offlineFriendsObsrvList);
             }
         });
     }
@@ -688,7 +681,7 @@ public class HomePageBase extends AnchorPane {
             public void run() {
 
                 onlineListView.setItems(onlineFriendsObsrvList);
-                //offlineListView.setItems(offlineFriendsObsrvList);
+                offlineListView.setItems(offlineFriendsObsrvList);
             }
         });
     }
@@ -719,30 +712,32 @@ public class HomePageBase extends AnchorPane {
             loader.setController(cc);
             Platform.runLater(() -> {
                 try {
-                    if (!activeChats.containsKey((String) friend.getPhoneNum())) {
-                        Parent root = loader.load(getClass().getResource("/mychatclient/view/view/chatwindow.fxml").openStream());
-
-                        System.out.println("3adda el loader.load inside display");
-                        Scene scene = new Scene(root);
-                        Stage stage = new Stage();
-                        stage.setScene(scene);
-                        stage.setTitle(friend.getPhoneNum());
-                        stage.show();
-                        activeChats.put(friend.getPhoneNum(), cc);
-                        System.out.println("testing hashmap return wla la " + friend.getName() + activeChats.get((String) friend.getPhoneNum()));
-                        cc.display(message);
-                        stage.setOnCloseRequest((event2) -> {
-                            activeChats.remove((String) friend.getPhoneNum());
-                        });
+                    if (!activeChats.containsKey(friend.getPhoneNum())) {
+                    Parent root = loader.load(getClass().getResource("/mychatclient/view/view/chatwindow.fxml").openStream());
+                    
+                    System.out.println("3adda el loader.load inside display");
+                    Scene scene = new Scene(root);
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    stage.setTitle(friend.getPhoneNum());
+                    stage.show();
+                    activeChats.put(friend.getPhoneNum(), cc);
+                    System.out.println("testing hashmap return wla la " + friend.getName() + activeChats.get((String) friend.getPhoneNum()));
+                    cc.display(message,false);
+                    stage.setOnCloseRequest((event2) -> {
+                        activeChats.remove((String) friend.getPhoneNum());
+                    });
                     }
                 } catch (IOException ex) {
                     Logger.getLogger(HomePageBase.class.getName()).log(Level.SEVERE, null, ex);
+                }catch(NullPointerException ex){
+                    ex.printStackTrace();
                 }
             });
 
         } else {
             System.err.println("cc is not null");
-            cc.display(message);
+            cc.display(message,false);
         }
 
     }

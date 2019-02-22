@@ -27,7 +27,7 @@ import mychatserver.model.DAOImpl.UserStatisticsDAO;
 public class Controller {
 
     ArrayList<User> onlineUsers = new ArrayList<User>();
-    Map<User, ClientService> client = new HashMap<User, ClientService>();
+    Map<String, ClientService> client = new HashMap<String, ClientService>();
 
     private int online = 0;
     private int offline = 0;
@@ -40,6 +40,7 @@ public class Controller {
     private static Controller controllerInstance = new Controller();
 
     private Controller() {
+
     }
 
     public static Controller getInstance() {
@@ -48,13 +49,12 @@ public class Controller {
 
     public void addOnlineUser(User user, ClientService clientService) {
         onlineUsers.add(user);
-        client.put(user, clientService);
-//        online++;
+        client.put(user.getPhoneNum(), clientService);
     }
 
     public void removeOnlineUser(User user, ClientService clientService) {
         onlineUsers.remove(user);
-        client.remove(user, clientService);
+        client.remove(user.getPhoneNum(), clientService);
         //      online--;
     }
 
@@ -95,19 +95,9 @@ public class Controller {
     public ArrayList<User> getOnlineUsers() {
         return onlineUsers;
     }
+
     public ClientService getClientInterfaceObject(User user) {
         return client.get(user.getPhoneNum());
     }
 
-    //lesa m7taga tzbet
-/*    public void broadCast(Message message) {
-     for (User user : onlineUsers) {
-     try {
-     clientService.receiveMsg(message);
-     } catch (RemoteException ex) {
-     ex.printStackTrace();
-     }
-     }
-     }
-     */
 }
