@@ -20,7 +20,7 @@ public interface ServerService extends Remote {
     public User login(String phone , String password) throws RemoteException;
     public boolean register(User user) throws RemoteException;
     //chat session msh 3arfen da a asln we yalla chatbot kaman aha
-    public void sendMessage(Message message)throws RemoteException;
+    public void sendMessage(String message, ArrayList<User> phoneNumberList, String SenderPhoneNumber) throws RemoteException;
     //public void sendFile(File file);
     public boolean updateProfile(User user)throws RemoteException;
     public void updateMode(User user)throws RemoteException;
