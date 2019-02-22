@@ -91,8 +91,8 @@ public class User implements Serializable {
     private String status;
     private String mode;
     private byte[] picture;
-    private int entryTimes;
-
+    private int entryTimes ;
+    
     public User(String name, String phoneNum, String Email, String password, String gender, String country, String dateOfBirth, String BIO) {
         this.name = name;
         this.phoneNum = phoneNum;
@@ -144,6 +144,7 @@ public class User implements Serializable {
         this.entryTimes = entryTimes;
     }
 
+    
     @Override
     public String toString() {
         return name;
@@ -157,5 +158,6 @@ public class User implements Serializable {
             return false;
         }
     }*/
+    }
 
-}
+

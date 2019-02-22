@@ -15,6 +15,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
+
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -23,6 +24,8 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import mychatclient.controller.MyChatClient;
+
+import javafx.scene.web.HTMLEditor;
 
 /**
  * FXML Controller class
@@ -64,6 +67,11 @@ public class ChatwindowController implements Initializable {
 //        });
     }
 
+    public ChatwindowController(User user) {
+        this.user = user;
+
+    }
+
     /**
      * Initializes the controller class.
      */
@@ -98,4 +106,5 @@ public class ChatwindowController implements Initializable {
 
     }
 
+    // TODO
 }

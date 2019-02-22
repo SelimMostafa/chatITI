@@ -13,7 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import mychatserver.model.DAOInteraface.UserDAOInterface;
 import mychatserver.model.DataSourceFactory;
-import mychatserver.model.MyChatServer;
+//import mychatserver.model.MyChatServer;
 import mychatserver.model.MyChatServiceImpl;
 
 /**

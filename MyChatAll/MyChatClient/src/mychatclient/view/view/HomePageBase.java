@@ -46,9 +46,11 @@ import mychatclient.view.controller.ChatwindowController;
 //import mychatclient.view.controller.AddContactHandler;
 
 public class HomePageBase extends AnchorPane {
-ChatwindowController cc;
+
+    ChatwindowController cc;
     User friend;
     Map<String, ChatwindowController> activeChats;
+
     protected final Pane pane;
     protected final MenuBar menuBar;
     protected final Menu menu;
@@ -65,7 +67,7 @@ ChatwindowController cc;
     protected final ListView onlineListView;
     protected final Tab offlineTab;
     protected final AnchorPane anchorPane1;
-    protected final ListView<String> offlineListView;
+    protected final ListView<String> friendsListView;
     protected final Tab RequestTab;
     protected final AnchorPane anchorPane2;
     protected final ListView<String> requestListView;
@@ -126,6 +128,7 @@ ChatwindowController cc;
         activeChats = new HashMap<>();
         this.user = user;
         System.out.println("i am " + user.getPhoneNum());
+        this.user = user;
         this.contactsTF = new ArrayList<TextField>();
         this.model = new ClientModel();
         pane = new Pane();
@@ -144,7 +147,7 @@ ChatwindowController cc;
         onlineListView = new ListView();
         offlineTab = new Tab();
         anchorPane1 = new AnchorPane();
-        offlineListView = new ListView<String>();
+        friendsListView = new ListView<String>();
         RequestTab = new Tab();
         anchorPane2 = new AnchorPane();
         requestListView = new ListView<String>();
@@ -251,10 +254,10 @@ ChatwindowController cc;
         anchorPane1.setPrefHeight(180.0);
         anchorPane1.setPrefWidth(200.0);
 
-        offlineListView.setLayoutX(14.0);
-        offlineListView.setLayoutY(25.0);
-        offlineListView.setPrefHeight(424.0);
-        offlineListView.setPrefWidth(325.0);
+        friendsListView.setLayoutX(14.0);
+        friendsListView.setLayoutY(25.0);
+        friendsListView.setPrefHeight(424.0);
+        friendsListView.setPrefWidth(325.0);
         offlineTab.setContent(anchorPane1);
 
         RequestTab.setText("Requests");
@@ -441,7 +444,7 @@ ChatwindowController cc;
         pane.getChildren().add(userNameLabel);
         anchorPane0.getChildren().add(onlineListView);
         tabPane.getTabs().add(onlineTab);
-        anchorPane1.getChildren().add(offlineListView);
+        anchorPane1.getChildren().add(friendsListView);
         tabPane.getTabs().add(offlineTab);
         anchorPane2.getChildren().add(requestListView);
         tabPane.getTabs().add(RequestTab);
@@ -489,6 +492,7 @@ ChatwindowController cc;
         onlineListView.setOnMouseClicked((event) -> {
             if (event.getClickCount() == 2) {
                 try {
+
                     System.out.println("open the chat window with" + ((User) (onlineListView.getSelectionModel().getSelectedItem())).getPhoneNum());
                     FXMLLoader loader = new FXMLLoader();
                     //get the friend phone number to add to the hashmap
@@ -562,25 +566,26 @@ ChatwindowController cc;
             }
         });
 
-//        Runnable viewRequestsTask = () -> {
-        friendRequests = model.getRequests(user);
+        Runnable viewRequestsTask = () -> {
 
-        requestsObsrvList = FXCollections.<String>observableArrayList();
-        for (String friend : friendRequests) {
-            requestsObsrvList.add(friend);
-        }
+            friendRequests = model.getRequests(user);
 
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-
-                requestListView.setItems(requestsObsrvList);
-
+            requestsObsrvList = FXCollections.<String>observableArrayList();
+            for (String friend : friendRequests) {
+                requestsObsrvList.add(friend);
             }
-        });
-        //      };
 
-        /*        Runnable viewFriendsTask = () -> {
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+
+                    requestListView.setItems(requestsObsrvList);
+
+                }
+            });
+        };
+
+        Runnable viewFriendsTask = () -> {
             friends = model.getFriends(user);
             friendsObsrvList = FXCollections.<String>observableArrayList();
 
@@ -591,47 +596,48 @@ ChatwindowController cc;
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
-                    offlineListView.setItems(friendsObsrvList);
+                    friendsListView.setItems(friendsObsrvList);
                 }
             });
-        };*/
-        //    Runnable viewOnlineFriendsTask = () -> {
-        onlineFriends = model.getOnlineFriends(user);
-        onlineFriendsObsrvList = FXCollections.<User>observableArrayList();
+        };
 
-        for (User friend : onlineFriends) {
-            onlineFriendsObsrvList.add(friend);
-        }
+        Runnable viewOnlineFriendsTask = () -> {
+            onlineFriends = model.getOnlineFriends(user);
+            onlineFriendsObsrvList = FXCollections.<User>observableArrayList();
 
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                onlineListView.setItems(onlineFriendsObsrvList);
+            for (User friend : onlineFriends) {
+                onlineFriendsObsrvList.add(friend);
             }
-        });
-        //  };
 
-        //Runnable viewOfflineFriendsTask = () -> {
-        offlineFriends = model.getOfflineFriends(user);
-        offlineFriendsObsrvList = FXCollections.<String>observableArrayList();
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    onlineListView.setItems(onlineFriendsObsrvList);
+                }
+            });
+        };
 
-        for (User friend : offlineFriends) {
-            offlineFriendsObsrvList.add(friend.getName() + " : " + friend.getPhoneNum());
-        }
+        Runnable viewOfflineFriendsTask = () -> {
+            offlineFriends = model.getOfflineFriends(user);
+            offlineFriendsObsrvList = FXCollections.<String>observableArrayList();
 
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                offlineListView.setItems(offlineFriendsObsrvList);
+            for (User friend : offlineFriends) {
+                offlineFriendsObsrvList.add(friend.getName() + " : " + friend.getPhoneNum());
             }
-        });
-        // };
 
-        /*  ScheduledExecutorService executorService = Executors.newScheduledThreadPool(4);
-         executorService.scheduleAtFixedRate(viewRequestsTask, 0, 2, TimeUnit.SECONDS);
-         //executorService.scheduleAtFixedRate(viewFriendsTask, 0, 2, TimeUnit.SECONDS);
-         executorService.scheduleAtFixedRate(viewOnlineFriendsTask, 0, 2, TimeUnit.SECONDS);
-         executorService.scheduleAtFixedRate(viewOfflineFriendsTask, 0, 2, TimeUnit.SECONDS);*/
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    friendsListView.setItems(offlineFriendsObsrvList);
+                }
+            });
+        };
+
+        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(4);
+        executorService.scheduleAtFixedRate(viewRequestsTask, 0, 2, TimeUnit.SECONDS);
+        //executorService.scheduleAtFixedRate(viewFriendsTask, 0, 2, TimeUnit.SECONDS);
+        executorService.scheduleAtFixedRate(viewOnlineFriendsTask, 0, 2, TimeUnit.SECONDS);
+        executorService.scheduleAtFixedRate(viewOfflineFriendsTask, 0, 2, TimeUnit.SECONDS);
         this.userNameLabel.setText(user.getName() + " : " + user.getPhoneNum());
 
     }
@@ -665,7 +671,7 @@ ChatwindowController cc;
             @Override
             public void run() {
                 onlineListView.setItems(onlineFriendsObsrvList);
-                offlineListView.setItems(offlineFriendsObsrvList);
+                // offlineListView.setItems(offlineFriendsObsrvList);
             }
         });
     }
@@ -682,7 +688,7 @@ ChatwindowController cc;
             public void run() {
 
                 onlineListView.setItems(onlineFriendsObsrvList);
-                offlineListView.setItems(offlineFriendsObsrvList);
+                //offlineListView.setItems(offlineFriendsObsrvList);
             }
         });
     }
@@ -714,20 +720,20 @@ ChatwindowController cc;
             Platform.runLater(() -> {
                 try {
                     if (!activeChats.containsKey((String) friend.getPhoneNum())) {
-                    Parent root = loader.load(getClass().getResource("/mychatclient/view/view/chatwindow.fxml").openStream());
-                    
-                    System.out.println("3adda el loader.load inside display");
-                    Scene scene = new Scene(root);
-                    Stage stage = new Stage();
-                    stage.setScene(scene);
-                    stage.setTitle(friend.getPhoneNum());
-                    stage.show();
-                    activeChats.put(friend.getPhoneNum(), cc);
-                    System.out.println("testing hashmap return wla la " + friend.getName() + activeChats.get((String) friend.getPhoneNum()));
-                    cc.display(message);
-                    stage.setOnCloseRequest((event2) -> {
-                        activeChats.remove((String) friend.getPhoneNum());
-                    });
+                        Parent root = loader.load(getClass().getResource("/mychatclient/view/view/chatwindow.fxml").openStream());
+
+                        System.out.println("3adda el loader.load inside display");
+                        Scene scene = new Scene(root);
+                        Stage stage = new Stage();
+                        stage.setScene(scene);
+                        stage.setTitle(friend.getPhoneNum());
+                        stage.show();
+                        activeChats.put(friend.getPhoneNum(), cc);
+                        System.out.println("testing hashmap return wla la " + friend.getName() + activeChats.get((String) friend.getPhoneNum()));
+                        cc.display(message);
+                        stage.setOnCloseRequest((event2) -> {
+                            activeChats.remove((String) friend.getPhoneNum());
+                        });
                     }
                 } catch (IOException ex) {
                     Logger.getLogger(HomePageBase.class.getName()).log(Level.SEVERE, null, ex);

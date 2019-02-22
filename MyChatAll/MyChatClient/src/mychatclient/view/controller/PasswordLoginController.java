@@ -45,9 +45,9 @@ public class PasswordLoginController implements Initializable {
     MyChatClient controller;
     String phone;
 
-    PasswordLoginController(String phone, MyChatClient controller) {
+    PasswordLoginController(String phone,MyChatClient controller) {
         this.phone = phone;
-        this.controller = controller;
+        this.controller=controller;
     }
 
     public PasswordLoginController() {
@@ -66,26 +66,22 @@ public class PasswordLoginController implements Initializable {
 
         if (user == null) {
 
-            /*   Alert alert = new Alert(Alert.AlertType.INFORMATION);
-             alert.setContentText("not valid!");
-             alert.show();
-             */
+         /*   Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setContentText("not valid!");
+            alert.show();
+*/
 //            Alert alert = new Alert(Alert.AlertType.INFORMATION);
 //            alert.setContentText("not valid!");
             System.out.println("NotVALID!");
 
         } else {
 //            controller.getModel().connectToServer();
-            stage = (Stage) signInButton.getScene().getWindow();
-            HomePageBase home = new HomePageBase(stage, user);
-            controller.setHome(home);
-            
-            Parent root = home;
-
-            Scene scene = new Scene(root);
+            stage=(Stage)signInButton.getScene().getWindow();
+            Parent root=new HomePageBase(stage, user);
+            Scene scene=new Scene(root);
             stage.setScene(scene);
             stage.show();
-
+           
         }
     }
 

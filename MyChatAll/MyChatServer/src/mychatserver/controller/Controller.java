@@ -27,8 +27,8 @@ import mychatserver.model.DAOImpl.UserStatisticsDAO;
 public class Controller {
 
     ArrayList<User> onlineUsers = new ArrayList<User>();
-    Map<String, ClientService> client = new HashMap<String, ClientService>();
-
+    Map<User,ClientService> client = new HashMap<User,ClientService>();
+    
     private int online = 0;
     private int offline = 0;
     private int female = 0;
@@ -36,25 +36,17 @@ public class Controller {
     private Map<String, Integer> countryStatistics = new HashMap<String, Integer>();
     private Map<String, Integer> entryStatistics = new HashMap<String, Integer>();
     private UserStatisticsDAO userStatObject = new UserStatisticsDAO();
-
-    private static Controller controllerInstance = new Controller();
-
-    private Controller() {
-
-    }
-
-    public static Controller getInstance() {
-        return controllerInstance;
-    }
-
-    public void addOnlineUser(User user, ClientService clientService) {
+    
+    
+    public void addOnlineUser(User user , ClientService clientService) {
         onlineUsers.add(user);
-        client.put(user.getPhoneNum(), clientService);
+        client.put(user, clientService);
+//        online++;
     }
 
-    public void removeOnlineUser(User user, ClientService clientService) {
+    public void removeOnlineUser(User user ,ClientService clientService) {
         onlineUsers.remove(user);
-        client.remove(user.getPhoneNum(), clientService);
+        client.remove(user, clientService);
         //      online--;
     }
 
@@ -96,8 +88,17 @@ public class Controller {
         return onlineUsers;
     }
 
-    public ClientService getClientInterfaceObject(User user) {
-        return client.get(user.getPhoneNum());
-    }
+    //lesa m7taga tzbet
+/*    public void broadCast(Message message) {
+     for (User user : onlineUsers) {
+     try {
+     clientService.receiveMsg(message);
+     } catch (RemoteException ex) {
+     ex.printStackTrace();
+     }
+     }
+     }
+     */
 
+    
 }
