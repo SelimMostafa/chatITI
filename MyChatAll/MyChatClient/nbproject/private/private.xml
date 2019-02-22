@@ -3,5 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group/>
+        <group name="MyChatAll">
+            <file>file:/C:/Users/AmrHesham/Desktop/MyChatAll/MyChatClient/src/mychatclient/view/view/HomePageBase.java</file>
+            <file>file:/C:/Users/AmrHesham/Desktop/MyChatAll/MyChatClient/src/mychatclient/model/ClientModel.java</file>
+            <file>file:/C:/Users/AmrHesham/Desktop/MyChatAll/MyChatClient/src/mychatclient/model/ClientServiceImpl.java</file>
+        </group>
     </open-files>
 </project-private>

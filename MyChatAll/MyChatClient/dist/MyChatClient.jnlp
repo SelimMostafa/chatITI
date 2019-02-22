@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp spec="1.0" xmlns:jfx="http://javafx.com" href="MyChatClient.jnlp">
+  <information>
+    <title>MyChatClient</title>
+    <vendor>AmrHesham</vendor>
+    <description>null</description>
+    <offline-allowed/>
+  </information>
+  <resources>
+    <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
+    <jar href="MyChatClient.jar" size="73299" download="eager" />
+    <jar href="lib\AnimateFX-1.2.0.jar" size="85823" download="eager" />
+    <jar href="lib\CommonService.jar" size="9073" download="eager" />
+    <jar href="lib\controlsfx-8.40.14.jar" size="1215643" download="eager" />
+    <jar href="lib\jfoenix-8.0.8.jar" size="2708772" download="eager" />
+    <jar href="lib\jsoup-1.11.3.jar" size="395748" download="eager" />
+  </resources>
+  <applet-desc  width="800" height="600" main-class="com.javafx.main.NoJavaFXFallback"  name="MyChatClient" >
+    <param name="requiredFXVersion" value="8.0+"/>
+  </applet-desc>
+  <jfx:javafx-desc  width="800" height="600" main-class="mychatclient.controller.MyChatClient"  name="MyChatClient" />
+  <update check="always"/>
+</jnlp>
