@@ -13,7 +13,7 @@ import java.rmi.RemoteException;
  * @author AmrHesham
  */
 public interface ClientService extends Remote{
-    public void receiveMsg(String message)throws RemoteException;
+    public void receiveMsg(String message,String chatWindowID)throws RemoteException;
     //public void receiveFile(Message message)throws RemoteException;
     public void notifyOnline(User friend)throws RemoteException;
     public void notifyOffline(User friend)throws RemoteException;

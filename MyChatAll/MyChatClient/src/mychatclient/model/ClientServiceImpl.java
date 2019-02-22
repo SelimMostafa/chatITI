@@ -121,8 +121,8 @@ public class ClientServiceImpl extends UnicastRemoteObject implements ClientServ
     }
 
     @Override
-    public void receiveMsg(String message) throws RemoteException {
-        System.err.println(message);
+    public void receiveMsg(String message,String chatWindowID) throws RemoteException {
+        controller.display(message,chatWindowID);
     }
 
 }

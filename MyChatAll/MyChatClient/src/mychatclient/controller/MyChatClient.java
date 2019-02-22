@@ -32,6 +32,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import mychatclient.model.ClientModel;
 import mychatclient.model.ClientServiceImpl;
+import mychatclient.view.controller.ChatwindowController;
 import mychatclient.view.view.HomePageBase;
 
 /**
@@ -43,6 +44,7 @@ public class MyChatClient extends Application {
     ClientModel model;
     public ClientServiceImpl clientServiceImpl ;
     public HomePageBase home = null ;
+    //ChatwindowController chatwindowController=null;
     public MyChatClient() {
 
         try {
@@ -114,6 +116,10 @@ public class MyChatClient extends Application {
 
     public void setHome(HomePageBase home) {
         this.home = home;
+    }
+
+    public void display(String message,String chatWindowID) {
+        home.display(message,chatWindowID);
     }
     
     

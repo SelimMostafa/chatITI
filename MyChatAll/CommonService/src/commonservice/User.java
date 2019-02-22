@@ -149,13 +149,13 @@ public class User implements Serializable {
         return name;
     }
 
-    @Override
+   /* @Override
     public boolean equals(Object obj) {
         if (this.getPhoneNum().equals(((User) obj).getPhoneNum())) {
             return true;
         } else {
             return false;
         }
-    }
+    }*/
 
 }

@@ -4,6 +4,9 @@ import commonservice.ServerService;
 import commonservice.User;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -43,8 +46,9 @@ import mychatclient.view.controller.ChatwindowController;
 //import mychatclient.view.controller.AddContactHandler;
 
 public class HomePageBase extends AnchorPane {
-
-    ArrayList<String> activeChats;
+ChatwindowController cc;
+    User friend;
+    Map<String, ChatwindowController> activeChats;
     protected final Pane pane;
     protected final MenuBar menuBar;
     protected final Menu menu;
@@ -112,14 +116,16 @@ public class HomePageBase extends AnchorPane {
 
 //public ServerService serverService ;
     User user;
+    User userFriend;
     double y = 60.0;
     ArrayList<TextField> contactsTF;
     ClientModel model;
 
     public HomePageBase(Stage Stage, User user) {
-        activeChats = new ArrayList<>();
+
+        activeChats = new HashMap<>();
         this.user = user;
-        System.out.println("i am "+user.getPhoneNum());
+        System.out.println("i am " + user.getPhoneNum());
         this.contactsTF = new ArrayList<TextField>();
         this.model = new ClientModel();
         pane = new Pane();
@@ -485,11 +491,13 @@ public class HomePageBase extends AnchorPane {
                 try {
                     System.out.println("open the chat window with" + ((User) (onlineListView.getSelectionModel().getSelectedItem())).getPhoneNum());
                     FXMLLoader loader = new FXMLLoader();
+                    //get the friend phone number to add to the hashmap
                     User userFromOnlineFriendsList = (User) (onlineListView.getSelectionModel().getSelectedItem());
-                    if (!activeChats.contains((String) userFromOnlineFriendsList.getPhoneNum())) {
-                        activeChats.add(userFromOnlineFriendsList.getPhoneNum());
 
-                        ChatwindowController chatwindowController = new ChatwindowController(userFromOnlineFriendsList, user, activeChats);
+                    //check the the friend phone number in the map to prevent opening the session twice
+                    if (!activeChats.containsKey((String) userFromOnlineFriendsList.getPhoneNum())) {
+
+                        ChatwindowController chatwindowController = new ChatwindowController(userFromOnlineFriendsList, user);
 
                         //ChatwindowController chatwindowController = new ChatwindowController(userFromOnlineFriendsList, user);
                         loader.setController(chatwindowController);
@@ -499,6 +507,8 @@ public class HomePageBase extends AnchorPane {
                         stage.setScene(scene);
                         stage.setTitle(userFromOnlineFriendsList.getPhoneNum());
                         stage.show();
+                        activeChats.put(userFromOnlineFriendsList.getPhoneNum(), loader.getController());
+                        System.out.println("testing hashmap return wla la " + activeChats.get((String) userFromOnlineFriendsList.getPhoneNum()));
                         stage.setOnCloseRequest((event2) -> {
                             activeChats.remove((String) userFromOnlineFriendsList.getPhoneNum());
                         });
@@ -689,6 +699,58 @@ public class HomePageBase extends AnchorPane {
 
             }
         });
+    }
+
+    public void display(String message, String chatWindowID) {
+
+        cc = activeChats.get((String) chatWindowID);
+
+        if (cc == null) {
+
+            FXMLLoader loader = new FXMLLoader();
+            friend = getUserWithPhoneNumber(chatWindowID);
+            cc = new ChatwindowController(friend, user);
+            loader.setController(cc);
+            Platform.runLater(() -> {
+                try {
+                    if (!activeChats.containsKey((String) friend.getPhoneNum())) {
+                    Parent root = loader.load(getClass().getResource("/mychatclient/view/view/chatwindow.fxml").openStream());
+                    
+                    System.out.println("3adda el loader.load inside display");
+                    Scene scene = new Scene(root);
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    stage.setTitle(friend.getPhoneNum());
+                    stage.show();
+                    activeChats.put(friend.getPhoneNum(), cc);
+                    System.out.println("testing hashmap return wla la " + friend.getName() + activeChats.get((String) friend.getPhoneNum()));
+                    cc.display(message);
+                    stage.setOnCloseRequest((event2) -> {
+                        activeChats.remove((String) friend.getPhoneNum());
+                    });
+                    }
+                } catch (IOException ex) {
+                    Logger.getLogger(HomePageBase.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            });
+
+        } else {
+            System.err.println("cc is not null");
+            cc.display(message);
+        }
+
+    }
+
+    private User getUserWithPhoneNumber(String userPhoneNumber) {
+
+        onlineFriends.forEach((t) -> {
+            if (t.getPhoneNum().equals(userPhoneNumber)) {
+                userFriend = t;
+
+            }
+        });
+
+        return userFriend;
     }
 
 }

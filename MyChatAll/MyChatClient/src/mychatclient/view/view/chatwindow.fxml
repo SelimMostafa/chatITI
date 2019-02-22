@@ -5,12 +5,12 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.web.HTMLEditor?>
-
+<?import javafx.scene.layout.VBox?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="474.0" prefWidth="611.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <HTMLEditor fx:id="htmlEditor" htmlText="&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body contenteditable=&quot;true&quot;&gt;&lt;/body&gt;&lt;/html&gt;" layoutY="324.0" prefHeight="151.0" prefWidth="611.0" />
-      <ScrollPane fx:id="chatArea" layoutY="-1.0" prefHeight="325.0" prefWidth="499.0" />
+      <VBox fx:id="chatArea" layoutY="-1.0" prefHeight="325.0" prefWidth="499.0" />
       <ImageView fx:id="userImage" fitHeight="165.0" fitWidth="112.0" layoutX="499.0" pickOnBounds="true" preserveRatio="true" />
       <Label fx:id="sendFileLabel" accessibleRole="BUTTON" layoutX="499.0" layoutY="332.0" text="Send File" />
    </children>
