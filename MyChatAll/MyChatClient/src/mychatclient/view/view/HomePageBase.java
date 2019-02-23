@@ -124,7 +124,7 @@ public class HomePageBase extends AnchorPane {
     User userFriend;
     double y = 60.0;
     ArrayList<TextField> contactsTF;
-    ClientModel model;
+    ClientModel model = ClientModel.getInstance();
 
     public HomePageBase(Stage Stage, User user) {
 
@@ -132,7 +132,7 @@ public class HomePageBase extends AnchorPane {
         this.user = user;
         System.out.println("i am " + user.getPhoneNum());
         this.contactsTF = new ArrayList<TextField>();
-        this.model = new ClientModel();
+        
         pane = new Pane();
         menuBar = new MenuBar();
         menu = new Menu();
@@ -493,7 +493,7 @@ public class HomePageBase extends AnchorPane {
         getChildren().add(pane);
 
         contactsTF.add(this.phoneAddedTF);
-
+        
         onlineListView.setOnMouseClicked((event) -> {
             if (event.getClickCount() == 2) {
                 try {

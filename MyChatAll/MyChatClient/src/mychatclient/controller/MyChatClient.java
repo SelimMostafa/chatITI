@@ -41,14 +41,13 @@ import mychatclient.view.view.HomePageBase;
  */
 public class MyChatClient extends Application {
 
-    ClientModel model;
+    ClientModel model = ClientModel.getInstance();
     public ClientServiceImpl clientServiceImpl ;
     public HomePageBase home = null ;
     //ChatwindowController chatwindowController=null;
     public MyChatClient() {
 
         try {
-            model = new ClientModel();
             clientServiceImpl=new ClientServiceImpl(this);
         } catch (RemoteException ex) {
             Logger.getLogger(MyChatClient.class.getName()).log(Level.SEVERE, null, ex);

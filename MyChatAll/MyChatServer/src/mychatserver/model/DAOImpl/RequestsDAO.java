@@ -3,6 +3,7 @@
  */
 package mychatserver.model.DAOImpl;
 
+import com.mysql.cj.jdbc.MysqlDataSource;
 import commonservice.User;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mychatserver.model.DAOInteraface.RequestsDAOInterface;
+import mychatserver.model.DataSourceFactory;
 
 /**
  *
@@ -19,24 +21,30 @@ import mychatserver.model.DAOInteraface.RequestsDAOInterface;
  */
 public class RequestsDAO implements RequestsDAOInterface {
 
-    Connection connection;
     User user;
     FriendsDAO friendDAO;
+    MysqlDataSource mysqlDataSource = DataSourceFactory.getMySQLDataSource();
+    Connection connection;
 
-    public RequestsDAO(Connection connection, User user) {
-        this.connection = connection;
+    public RequestsDAO(User user) {
         this.user = user;
-        friendDAO = new FriendsDAO(connection, user);
+        try {
+            connection = mysqlDataSource.getConnection();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        friendDAO = new FriendsDAO(user);
     }
 
     @Override
     public boolean addFriendRequest(String phoneNumber) {
         boolean check = false;
+        System.out.println("inside add friendRequest = friend ->" + phoneNumber + " ,my number =" + user.getPhoneNum());
 
         if (!friendDAO.isFriend(phoneNumber)) {
             try {
 
-                if (!checkFriendRequest(user.getPhoneNum(),phoneNumber)) {
+                if (!checkFriendRequestToNumber(phoneNumber)) {
                     System.out.println("this user doesn't request this number before");
                     String query = " insert into requests values (?,?) ";
 
@@ -67,15 +75,15 @@ public class RequestsDAO implements RequestsDAOInterface {
     }
 
     @Override
-    public boolean checkFriendRequest(String sender,String receiver) {
+    public boolean checkFriendRequestToNumber(String phoneNumber) {
         boolean check = false;
 
         try {
             String query = " select Sender from requests where Sender = ? AND Receiver =? ";
 
             PreparedStatement preparedStmt = connection.prepareStatement(query);
-            preparedStmt.setString(1, sender);
-            preparedStmt.setString(2, receiver);
+            preparedStmt.setString(1, user.getPhoneNum());
+            preparedStmt.setString(2, phoneNumber);
             // execute the preparedstatement
             preparedStmt.execute();
             ResultSet resultSet = preparedStmt.getResultSet();
@@ -106,9 +114,8 @@ public class RequestsDAO implements RequestsDAOInterface {
             // execute the preparedstatement
             preparedStmt.execute();
             ResultSet resultSet = preparedStmt.getResultSet();
-            
-            while(resultSet.next())
-            {
+
+            while (resultSet.next()) {
                 String phone = resultSet.getString(1);
                 friendsNums.add(phone);
             }
@@ -121,7 +128,6 @@ public class RequestsDAO implements RequestsDAOInterface {
 
     }
 
-    
     //requests of others to me
     @Override
     public ArrayList<String> retrieveIncomingRequests() {
@@ -135,9 +141,8 @@ public class RequestsDAO implements RequestsDAOInterface {
             // execute the preparedstatement
             preparedStmt.execute();
             ResultSet resultSet = preparedStmt.getResultSet();
-            
-            while(resultSet.next())
-            {
+
+            while (resultSet.next()) {
                 String phone = resultSet.getString(1);
                 friendsNums.add(phone);
             }
@@ -150,20 +155,74 @@ public class RequestsDAO implements RequestsDAOInterface {
 
     }
 
-    
-    @Override
-    public boolean deleteRequest(String sender,String receiver) {
+    // @Override
+//    public boolean deleteRequestToNumber(String sender, String receiver) {
+        /*
+     boolean check = false;
 
+     try {
+     if (checkFriendRequestfromNumber(sender,receiver)) {
+     //                System.out.println("this user doesn't request this number before");
+     String query = " delete from requests where Sender = ? AND Receiver =?  ";
+
+     PreparedStatement preparedStmt = connection.prepareStatement(query);
+     preparedStmt.setString(1, sender);
+     preparedStmt.setString(2, receiver);
+     // execute the preparedstatement
+     preparedStmt.execute();
+     check = true;
+     //                    return true;
+     } else {
+     check = false;
+
+     }
+     } catch (SQLException ex) {
+     check = false;
+     ex.printStackTrace();
+     } finally {
+     return check;
+     }
+     */ //return true;
+    // }
+    @Override
+    public boolean checkFriendRequestFromNumber(String phoneNumber) {
         boolean check = false;
 
         try {
-            if (checkFriendRequest(sender,receiver)) {
+            String query = " select Sender from requests where Sender = ? AND Receiver =? ";
+
+            PreparedStatement preparedStmt = connection.prepareStatement(query);
+            preparedStmt.setString(1, phoneNumber);
+            preparedStmt.setString(2, user.getPhoneNum());
+            // execute the preparedstatement
+            preparedStmt.execute();
+            ResultSet resultSet = preparedStmt.getResultSet();
+
+            if (resultSet.next()) {
+                check = true;
+            } else {
+                check = false;
+            }
+        } catch (SQLException ex) {
+            check = false;
+            ex.printStackTrace();
+        } finally {
+            return check;
+        }
+    }
+
+    @Override
+    public boolean deleteRequestFromNumber(String phoneNumber) {
+        boolean check = false;
+
+        try {
+            if (checkFriendRequestFromNumber(phoneNumber)) {
 //                System.out.println("this user doesn't request this number before");
                 String query = " delete from requests where Sender = ? AND Receiver =?  ";
 
                 PreparedStatement preparedStmt = connection.prepareStatement(query);
-                preparedStmt.setString(1, sender);
-                preparedStmt.setString(2, receiver);
+                preparedStmt.setString(1, phoneNumber);
+                preparedStmt.setString(2, user.getPhoneNum());
                 // execute the preparedstatement
                 preparedStmt.execute();
                 check = true;
@@ -178,6 +237,36 @@ public class RequestsDAO implements RequestsDAOInterface {
         } finally {
             return check;
         }
+
+    }
+
+    @Override
+    public boolean deleteRequestToNumber(String phoneNumber) {
+        boolean check = false;
+
+        try {
+            if (checkFriendRequestToNumber(phoneNumber)) {
+//                System.out.println("this user doesn't request this number before");
+                String query = " delete from requests where Sender = ? AND Receiver =?  ";
+
+                PreparedStatement preparedStmt = connection.prepareStatement(query);
+                preparedStmt.setString(1, user.getPhoneNum());
+                preparedStmt.setString(2, phoneNumber);
+                // execute the preparedstatement
+                preparedStmt.execute();
+                check = true;
+//                    return true;
+            } else {
+                check = false;
+
+            }
+        } catch (SQLException ex) {
+            check = false;
+            ex.printStackTrace();
+        } finally {
+            return check;
+        }
+
     }
 
 }

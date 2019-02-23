@@ -1,5 +1,6 @@
 package mychatserver.model.DAOImpl;
 
+import com.mysql.cj.jdbc.MysqlDataSource;
 import commonservice.User;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mychatserver.model.DAOInteraface.FriendsDAOInterface;
+import mychatserver.model.DataSourceFactory;
 
 /**
  *
@@ -16,19 +18,26 @@ import mychatserver.model.DAOInteraface.FriendsDAOInterface;
  */
 public class FriendsDAO implements FriendsDAOInterface {
 
-    Connection connection;
     User user;
+    MysqlDataSource mysqlDataSource = DataSourceFactory.getMySQLDataSource();
+    Connection connection ;
 
-    public FriendsDAO(Connection connection, User user) {
-        this.connection = connection;
+
+    public FriendsDAO(User user) {
         this.user = user;
+        try {
+            connection = mysqlDataSource.getConnection();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
     }
 
     @Override
     public boolean addFriend(String phoneNumber) {
         try {
+            System.out.println("inside add friend = friend ->" + phoneNumber + " ,my number =" + user.getPhoneNum());
 
-            if (!isFriend(phoneNumber)) {
+            if (!isFriend(phoneNumber) && !phoneNumber.equals(user.getPhoneNum())) {
                 String query = " insert into Friends values (?,?) ";
 
                 // create the mysql insert preparedstatement
@@ -39,11 +48,13 @@ public class FriendsDAO implements FriendsDAOInterface {
                 preparedStmt.execute();
 
                 // create the mysql insert preparedstatement
-                preparedStmt = connection.prepareStatement(query);
-                preparedStmt.setString(1, phoneNumber);
-                preparedStmt.setString(2, user.getPhoneNum());
+                query = " insert into Friends values (?,?) ";
+
+                PreparedStatement preparedStmt2 = connection.prepareStatement(query);
+                preparedStmt2.setString(1, phoneNumber);
+                preparedStmt2.setString(2, user.getPhoneNum());
                 // execute the preparedstatement
-                preparedStmt.execute();
+                preparedStmt2.execute();
 
                 return true;
             } else {
@@ -190,7 +201,7 @@ public class FriendsDAO implements FriendsDAOInterface {
             // execute the preparedstatement
             preparedStmt.execute();
             ResultSet resultSet = preparedStmt.getResultSet();
-            
+
             while (resultSet.next()) {
 //              System.out.println("this number is a friend to the user ");
 
