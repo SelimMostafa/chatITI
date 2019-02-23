@@ -36,8 +36,8 @@ public class ClientServiceImpl extends UnicastRemoteObject implements ClientServ
             public void run() {
                 controller.getHome().updateOnlineList(friend);
 
-                Notifications onlineNotification = Notifications.create().title(friend.getName() + " go Online")
-                        .text(friend.getName() + " go Online").graphic(null)
+                Notifications onlineNotification = Notifications.create().title(friend.getName() + " is Online")
+                        .text(friend.getName() + " is Online").graphic(null)
                         .hideAfter(Duration.seconds(10)).position(Pos.BOTTOM_RIGHT);
 
                 onlineNotification.show();
@@ -53,8 +53,8 @@ public class ClientServiceImpl extends UnicastRemoteObject implements ClientServ
             @Override
             public void run() {
                 controller.getHome().updateOfflineList(friend);
-                Notifications offlineNotification = Notifications.create().title(friend.getName() + " go Offline")
-                        .text(friend.getName() + " go Offline").graphic(null)
+                Notifications offlineNotification = Notifications.create().title(friend.getName() + " is Offline")
+                        .text(friend.getName() + " is Offline").graphic(null)
                         .hideAfter(Duration.seconds(10)).position(Pos.BOTTOM_RIGHT);
 
                 offlineNotification.show();
@@ -89,8 +89,8 @@ public class ClientServiceImpl extends UnicastRemoteObject implements ClientServ
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                Notifications modeNotification = Notifications.create().title(friend.getName() + " go " + friend.getMode())
-                        .text(friend.getName() + " go " + friend.getMode()).graphic(null)
+                Notifications modeNotification = Notifications.create().title(friend.getName() + " is " + friend.getMode())
+                        .text(friend.getName() + " is " + friend.getMode()).graphic(null)
                         .hideAfter(Duration.seconds(10)).position(Pos.BOTTOM_RIGHT);
 
                 modeNotification.show();
@@ -121,6 +121,18 @@ public class ClientServiceImpl extends UnicastRemoteObject implements ClientServ
     @Override
     public void receiveMsg(String message, String chatWindowID) throws RemoteException {
         controller.display(message, chatWindowID);
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                Notifications msgNotification = Notifications.create().title("New Message")
+                        .text("New Message").graphic(null)
+                        .hideAfter(Duration.seconds(10)).position(Pos.BOTTOM_RIGHT);
+
+                msgNotification.show();
+
+            }
+        });
+
     }
 
 }
