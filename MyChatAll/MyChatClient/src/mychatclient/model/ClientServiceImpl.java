@@ -34,17 +34,17 @@ public class ClientServiceImpl extends UnicastRemoteObject implements ClientServ
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
+                controller.getHome().updateOnlineList(friend);
+
                 Notifications onlineNotification = Notifications.create().title(friend.getName() + " go Online")
                         .text(friend.getName() + " go Online").graphic(null)
                         .hideAfter(Duration.seconds(10)).position(Pos.BOTTOM_RIGHT);
 
                 onlineNotification.show();
-                controller.getHome().updateOnlineList(friend);
 
             }
         });
 
-     
     }
 
     @Override
@@ -52,6 +52,7 @@ public class ClientServiceImpl extends UnicastRemoteObject implements ClientServ
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
+                controller.getHome().updateOfflineList(friend);
                 Notifications offlineNotification = Notifications.create().title(friend.getName() + " go Offline")
                         .text(friend.getName() + " go Offline").graphic(null)
                         .hideAfter(Duration.seconds(10)).position(Pos.BOTTOM_RIGHT);
@@ -61,8 +62,7 @@ public class ClientServiceImpl extends UnicastRemoteObject implements ClientServ
             }
         });
 
-        this.controller.getHome().updateOfflineList(friend);
-
+       // this.controller.getHome().updateOfflineList(friend);
     }
 
     @Override
@@ -70,6 +70,7 @@ public class ClientServiceImpl extends UnicastRemoteObject implements ClientServ
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
+          controller.getHome().updateRequestList(phoneNumber);
                 Notifications requestNotification = Notifications.create().title("New Friend Request")
                         .text(phoneNumber).graphic(null)
                         .hideAfter(Duration.seconds(10)).position(Pos.BOTTOM_RIGHT);
@@ -79,17 +80,17 @@ public class ClientServiceImpl extends UnicastRemoteObject implements ClientServ
             }
         });
 
-        this.controller.getHome().updateRequestList(phoneNumber);
+        //this.controller.getHome().updateRequestList(phoneNumber);
 
     }
 
     @Override
     public void notifyMode(User friend) throws RemoteException {
-         Platform.runLater(new Runnable() {
+        Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                Notifications modeNotification = Notifications.create().title(friend.getName() + " go "+friend.getMode())
-                        .text(friend.getName() + " go "+friend.getMode()).graphic(null)
+                Notifications modeNotification = Notifications.create().title(friend.getName() + " go " + friend.getMode())
+                        .text(friend.getName() + " go " + friend.getMode()).graphic(null)
                         .hideAfter(Duration.seconds(10)).position(Pos.BOTTOM_RIGHT);
 
                 modeNotification.show();
@@ -97,19 +98,16 @@ public class ClientServiceImpl extends UnicastRemoteObject implements ClientServ
             }
         });
 
-      //  this.controller.getHome().updateModeList(friend);
+        //  this.controller.getHome().updateModeList(friend);
     }
-    
-    
-    
-    
+
     @Override
     public void notifyAdd(User friend) throws RemoteException {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
                 Notifications addNotification = Notifications.create().title("New Friend is added to your Contacts")
-                        .text(friend.getPhoneNum()+" : "+friend.getName()).graphic(null)
+                        .text(friend.getPhoneNum() + " : " + friend.getName()).graphic(null)
                         .hideAfter(Duration.seconds(10)).position(Pos.BOTTOM_RIGHT);
 
                 addNotification.show();
@@ -118,12 +116,11 @@ public class ClientServiceImpl extends UnicastRemoteObject implements ClientServ
         });
 
        // this.controller.getHome().updateRequestList(phoneNumber);
-
     }
 
     @Override
-    public void receiveMsg(String message,String chatWindowID) throws RemoteException {
-        controller.display(message,chatWindowID);
+    public void receiveMsg(String message, String chatWindowID) throws RemoteException {
+        controller.display(message, chatWindowID);
     }
 
 }

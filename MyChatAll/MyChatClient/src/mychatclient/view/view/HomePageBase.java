@@ -19,6 +19,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -40,13 +41,17 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import mychatclient.model.ClientModel;
 import mychatclient.view.controller.AddContactHandler;
 import mychatclient.view.controller.ChatwindowController;
+import mychatclient.view.controller.LoginFormController;
+import org.controlsfx.control.Notifications;
 //import mychatclient.view.controller.AddContactHandler;
 
 public class HomePageBase extends AnchorPane {
-ChatwindowController cc;
+
+    ChatwindowController cc;
     User friend;
     Map<String, ChatwindowController> activeChats;
     protected final Pane pane;
@@ -95,8 +100,8 @@ ChatwindowController cc;
     protected final Button addBtn;
     protected final Button signoutBtn;
     protected final ImageView imageView;
-    // protected final SplitMenuButton statusMenu;
-    protected final ComboBox statusMenu;
+    // protected final SplitMenuButton modeMenu;
+    protected final ComboBox modeMenu;
 
     /*protected final RadioMenuItem availableItem;
      protected final ToggleGroup status;
@@ -158,13 +163,16 @@ ChatwindowController cc;
         dobLabel = new Label();
         countryLabel = new Label();
         bioLabel = new Label();
-        nameTF = new TextField();
-        passwordTF = new TextField();
-        emailTF = new TextField();
-        genderTF = new TextField();
-        dobTF = new TextField();
-        countryTF = new TextField();
-        bioTF = new TextField();
+
+        //updateprofile  tab TFs
+        nameTF = new TextField(user.getName());
+        passwordTF = new TextField(user.getPassword());
+        emailTF = new TextField(user.getEmail());
+        genderTF = new TextField(user.getGender());
+        dobTF = new TextField(user.getDateOfBirth());
+        countryTF = new TextField(user.getCountry());
+        bioTF = new TextField(user.getBIO());
+
         updateBtn = new Button();
         addContactTab = new Tab();
         anchorPane4 = new AnchorPane();
@@ -175,7 +183,7 @@ ChatwindowController cc;
         signoutBtn = new Button();
         imageView = new ImageView();
         //statusMenu = new SplitMenuButton();
-        statusMenu = new ComboBox();
+        modeMenu = new ComboBox();
 
         /*   availableItem = new RadioMenuItem();
          status = new ToggleGroup();
@@ -408,10 +416,10 @@ ChatwindowController cc;
         imageView.setPickOnBounds(true);
         imageView.setPreserveRatio(true);
 
-        statusMenu.setLayoutX(88.0);
-        statusMenu.setLayoutY(65.0);
-        /*   // statusMenu.setMnemonicParsing(false);
-         // statusMenu.setText("What are you doing ?");
+        modeMenu.setLayoutX(88.0);
+        modeMenu.setLayoutY(65.0);
+        /*   // modeMenu.setMnemonicParsing(false);
+         // modeMenu.setText("What are you doing ?");
 
          availableItem.setMnemonicParsing(false);
          availableItem.setText("Available");
@@ -472,15 +480,15 @@ ChatwindowController cc;
         pane.getChildren().add(signoutBtn);
         pane.getChildren().add(imageView);
 
-        /*statusMenu.getItems().add(availableItem);
-         statusMenu.getItems().add(busyItem);
-         statusMenu.getItems().add(awayItem);
+        /*modeMenu.getItems().add(availableItem);
+         modeMenu.getItems().add(busyItem);
+         modeMenu.getItems().add(awayItem);
          */
-        this.statusMenu.getItems().add("Available");
-        this.statusMenu.getItems().add("Busy");
-        this.statusMenu.getItems().add("Away");
+        this.modeMenu.getItems().add("Available");
+        this.modeMenu.getItems().add("Busy");
+        this.modeMenu.getItems().add("Away");
 
-        pane.getChildren().add(statusMenu);
+        pane.getChildren().add(modeMenu);
         pane.getChildren().add(chatbotCheckBox);
         getChildren().add(pane);
 
@@ -523,13 +531,14 @@ ChatwindowController cc;
             }
         });
 
-        this.statusMenu.setOnAction(new EventHandler<ActionEvent>() {
+        this.modeMenu.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
             public void handle(ActionEvent event) {
-                user.setStatus((String) statusMenu.getValue());
+                String mode = (String) modeMenu.getValue();
+                user.setMode(mode);
                 model.updateMode(user);
-                System.out.println(user.getStatus());
+                System.out.println(user.getMode());
 
             }
         });
@@ -553,15 +562,69 @@ ChatwindowController cc;
             }
         });
 
+        //handling updateBtn
         this.updateBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                User updatedUser = new User();
+                boolean nameNotNull = nameTF.getText() != null;
+                boolean passwordNotNull = passwordTF.getText() != null;
+                boolean emailNotNull = emailTF.getText() != null;
+                boolean genderNotNull = genderTF.getText() != null;
+                boolean dobNotNull = dobTF.getText() != null;
+                boolean countryNotNull = countryTF.getText() != null;
+                boolean bioNotNull = bioTF.getText() != null;
 
+                if (nameNotNull && passwordNotNull && emailNotNull && genderNotNull && dobNotNull && countryNotNull && bioNotNull) {
+
+                    user.setName(nameTF.getText());
+                    user.setPassword(passwordTF.getText());
+                    user.setEmail(emailTF.getText());
+                    user.setGender(genderTF.getText());
+                    user.setDateOfBirth(dobTF.getText());
+                    user.setCountry(countryTF.getText());
+                    user.setBIO(bioTF.getText());
+                    model.updateProfile(user);
+
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            Notifications updateNotification = Notifications.create().title(" Update Done Successfully ")
+                                    .text(" Update Done Successfully ").graphic(null)
+                                    .hideAfter(Duration.seconds(10)).position(Pos.BOTTOM_RIGHT);
+
+                            updateNotification.show();
+
+                        }
+                    });
+
+                }
             }
         });
 
-//        Runnable viewRequestsTask = () -> {
+        /*
+        this.signoutBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                model.signOut();
+
+                try {
+                    FXMLLoader loader2 = new FXMLLoader();
+                    LoginFormController loginController = new LoginFormController();
+                    loader2.setController(loginController);
+                    Parent root = loader2.load(getClass().getResource("/mychatclient/view/view/LoginForm.fxml").openStream());
+                    loginController.getPhoneNumberTF().setText(user.getPhoneNum());
+
+                    Scene scene = new Scene(root);
+                    Stage.setScene(scene);
+                    Stage.show();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+
+            }
+        });
+*/
+        //handling requestListView
         friendRequests = model.getRequests(user);
 
         requestsObsrvList = FXCollections.<String>observableArrayList();
@@ -577,24 +640,8 @@ ChatwindowController cc;
 
             }
         });
-        //      };
 
-        /*        Runnable viewFriendsTask = () -> {
-            friends = model.getFriends(user);
-            friendsObsrvList = FXCollections.<String>observableArrayList();
-
-            for (User friend : friends) {
-                friendsObsrvList.add(friend.getName() + " : " + friend.getPhoneNum());
-            }
-
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    offlineListView.setItems(friendsObsrvList);
-                }
-            });
-        };*/
-        //    Runnable viewOnlineFriendsTask = () -> {
+        //handling onlinelistView
         onlineFriends = model.getOnlineFriends(user);
         onlineFriendsObsrvList = FXCollections.<User>observableArrayList();
 
@@ -608,9 +655,8 @@ ChatwindowController cc;
                 onlineListView.setItems(onlineFriendsObsrvList);
             }
         });
-        //  };
 
-        //Runnable viewOfflineFriendsTask = () -> {
+        //handling offlinelistView
         offlineFriends = model.getOfflineFriends(user);
         offlineFriendsObsrvList = FXCollections.<String>observableArrayList();
 
@@ -624,13 +670,7 @@ ChatwindowController cc;
                 offlineListView.setItems(offlineFriendsObsrvList);
             }
         });
-        // };
 
-        /*  ScheduledExecutorService executorService = Executors.newScheduledThreadPool(4);
-         executorService.scheduleAtFixedRate(viewRequestsTask, 0, 2, TimeUnit.SECONDS);
-         //executorService.scheduleAtFixedRate(viewFriendsTask, 0, 2, TimeUnit.SECONDS);
-         executorService.scheduleAtFixedRate(viewOnlineFriendsTask, 0, 2, TimeUnit.SECONDS);
-         executorService.scheduleAtFixedRate(viewOfflineFriendsTask, 0, 2, TimeUnit.SECONDS);*/
         this.userNameLabel.setText(user.getName() + " : " + user.getPhoneNum());
 
     }
@@ -713,31 +753,31 @@ ChatwindowController cc;
             Platform.runLater(() -> {
                 try {
                     if (!activeChats.containsKey(friend.getPhoneNum())) {
-                    Parent root = loader.load(getClass().getResource("/mychatclient/view/view/chatwindow.fxml").openStream());
-                    
-                    System.out.println("3adda el loader.load inside display");
-                    Scene scene = new Scene(root);
-                    Stage stage = new Stage();
-                    stage.setScene(scene);
-                    stage.setTitle(friend.getPhoneNum());
-                    stage.show();
-                    activeChats.put(friend.getPhoneNum(), cc);
-                    System.out.println("testing hashmap return wla la " + friend.getName() + activeChats.get((String) friend.getPhoneNum()));
-                    cc.display(message,false);
-                    stage.setOnCloseRequest((event2) -> {
-                        activeChats.remove((String) friend.getPhoneNum());
-                    });
+                        Parent root = loader.load(getClass().getResource("/mychatclient/view/view/chatwindow.fxml").openStream());
+
+                        System.out.println("3adda el loader.load inside display");
+                        Scene scene = new Scene(root);
+                        Stage stage = new Stage();
+                        stage.setScene(scene);
+                        stage.setTitle(friend.getPhoneNum());
+                        stage.show();
+                        activeChats.put(friend.getPhoneNum(), cc);
+                        System.out.println("testing hashmap return wla la " + friend.getName() + activeChats.get((String) friend.getPhoneNum()));
+                        cc.display(message, false);
+                        stage.setOnCloseRequest((event2) -> {
+                            activeChats.remove((String) friend.getPhoneNum());
+                        });
                     }
                 } catch (IOException ex) {
                     Logger.getLogger(HomePageBase.class.getName()).log(Level.SEVERE, null, ex);
-                }catch(NullPointerException ex){
+                } catch (NullPointerException ex) {
                     ex.printStackTrace();
                 }
             });
 
         } else {
             System.err.println("cc is not null");
-            cc.display(message,false);
+            cc.display(message, false);
         }
 
     }

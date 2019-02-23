@@ -54,16 +54,42 @@ public class ClientConnection {
         }
     }
 
-/*    public void requestNotificationFriend(String phoneNumber) {
-        ClientService clientService = control.getClientInterfaceObject(phoneNumber);
-        if (clientService != null) {
+    public void modeNotification() {
+
+        ArrayList<User> friends = this.chatService.friendDAO.retrieveOnlineFriends();
+        System.out.println("friendslist length = " + friends.size());
+
+        for (int counter = 0; counter < friends.size(); counter++) {
+            if (friends.get(counter).getStatus().equals("Online")) {
+
+                ClientService clientService = control.getClientInterfaceObject(friends.get(counter));
+                try {
+                    clientService.notifyMode(chatService.user);
+                } catch (RemoteException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public void notifyAdded(User friend) {
+        if (friend.equals("Online")) {
+
+            ClientService clientService = control.getClientInterfaceObject(friend);
             try {
-                clientService.notifyRequest(chatService.user);
+                clientService.notifyAdd(chatService.user);
             } catch (RemoteException ex) {
                 ex.printStackTrace();
             }
         }
-
     }
-    */
+
+    public void updateRequestList(String phoneNumber) {
+        ClientService userClientService = control.getClientInterfaceObject(chatService.user);
+        try {
+            userClientService.notifyRequest(phoneNumber);
+        } catch (RemoteException ex) {
+            ex.printStackTrace();
+        }
+    }
 }

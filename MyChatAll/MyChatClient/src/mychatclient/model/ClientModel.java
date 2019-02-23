@@ -27,7 +27,7 @@ import java.util.logging.Logger;
 public class ClientModel {
 
     public static ServerService serverservice;
-    
+
     public ClientModel() {
         try {
             Registry registry = LocateRegistry.getRegistry("127.0.0.1", 5000);
@@ -83,10 +83,10 @@ public class ClientModel {
         }
     }
 
-    public User checkPassword(String PhoneNumber, String password,ClientServiceImpl clientServiceImpl) {
+    public User checkPassword(String PhoneNumber, String password, ClientServiceImpl clientServiceImpl) {
         User user = null;
         try {
-            user = serverservice.login(PhoneNumber, password,clientServiceImpl);
+            user = serverservice.login(PhoneNumber, password, clientServiceImpl);
 
         } catch (RemoteException ex) {
             Logger.getLogger(ClientModel.class.getName()).log(Level.SEVERE, null, ex);
@@ -118,18 +118,6 @@ public class ClientModel {
         }
     }
 
-    /* public boolean updateProfile(User user) {
-     boolean check = false ;
-     try {
-     check = serverservice.updateProfile(user);
-     } catch (RemoteException ex) {
-     ex.printStackTrace();
-     }
-     finally{
-     return check ;
-     }
-        
-     }*/
     public void updateMode(User user) {
         try {
             serverservice.updateMode(user);
@@ -137,22 +125,33 @@ public class ClientModel {
             ex.printStackTrace();
         }
     }
-    
-/*    public void connectToServer()
-    {
-        clientService = new ClientServiceImpl ();
-        try {
-            serverservice.connectToServer(clientService);
-        } catch (RemoteException ex) {
-            ex.printStackTrace();
-        }
-    }
-*/
-    public void sendMessage(String message,ArrayList<User> phoneNumbersList,String senderPhoneNumber){
+
+    public void sendMessage(String message, ArrayList<User> phoneNumbersList, String senderPhoneNumber) {
         try {
             serverservice.sendMessage(message, phoneNumbersList, senderPhoneNumber);
         } catch (RemoteException ex) {
             Logger.getLogger(ClientModel.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+    public ServerService getServerservice() {
+        return serverservice;
+    }
+
+    public void signOut() {
+        try {
+            serverservice.signout();
+        } catch (RemoteException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void updateProfile(User user) {
+        try {
+            serverservice.updateProfile(user);
+        } catch (RemoteException ex) {
+            ex.printStackTrace();
+        }
+    }
+
 }

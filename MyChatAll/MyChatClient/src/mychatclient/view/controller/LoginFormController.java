@@ -32,7 +32,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
+//import javafx.scene.control.Alert;
 //import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -83,11 +83,11 @@ public class LoginFormController implements Initializable {
     public LoginFormController() {
         try {
             controller = new MyChatClient();
-            File logoFile = new File("D:\\ITI\\chatITI\\MyChatAll\\Bird_Logo.png");
+            File logoFile = new File("C:\\Users\\HP\\Documents\\GitHub\\chatITI\\MyChatAll\\MyChatClient\\src\\mychatclient\\view\\controller\\Bird_Logo.png");
             BufferedImage logoBufferedImage = ImageIO.read(logoFile);
             logoImage = SwingFXUtils.toFXImage(logoBufferedImage, null);
 
-            File birdFile = new File("D:\\ITI\\chatITI\\MyChatAll\\flyBird.png");
+            File birdFile = new File("C:\\Users\\HP\\Documents\\GitHub\\chatITI\\MyChatAll\\MyChatClient\\src\\mychatclient\\view\\controller\\flyBird.png");
             BufferedImage birdBufferedImage = ImageIO.read(birdFile);
             birdImage = SwingFXUtils.toFXImage(birdBufferedImage, null);
 
@@ -158,9 +158,9 @@ public class LoginFormController implements Initializable {
             }
 
         } else {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setContentText("user does not exist");
-            alert.showAndWait();
+            /*            Alert alert = new Alert(Alert.AlertType.WARNING);
+             alert.setContentText("user does not exist");
+             alert.showAndWait();*/
             System.out.println("user does not exist");
         }
         // a b2a ?
@@ -183,4 +183,7 @@ public class LoginFormController implements Initializable {
 
     }
 
+    public TextField getPhoneNumberTF() {
+        return phoneNumberTF;
+    }
 }

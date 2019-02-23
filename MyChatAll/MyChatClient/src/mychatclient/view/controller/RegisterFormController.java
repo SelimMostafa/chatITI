@@ -28,12 +28,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
+//import javafx.scene.control.Alert;
+//import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
-import javafx.scene.control.DialogPane;
+//import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -248,7 +248,7 @@ public class RegisterFormController implements Initializable {
                 goBackButton.fire();
 
             } else {
-                Alert alert = new Alert(AlertType.INFORMATION);
+/*                Alert alert = new Alert(AlertType.INFORMATION);
 
             alert.setTitle("Welcome back !");
             alert.setHeaderText("Your number is already registred !");
@@ -259,11 +259,11 @@ public class RegisterFormController implements Initializable {
             dialogPane.getStyleClass().add("dialog-pane");
 
             alert.showAndWait();
-            }
+  */          }
         } else {
             
             
-            Alert alert = new Alert(AlertType.INFORMATION);
+    /*        Alert alert = new Alert(AlertType.INFORMATION);
 
             alert.setTitle("Validation Error");
             alert.setHeaderText("Results:");
@@ -274,7 +274,7 @@ public class RegisterFormController implements Initializable {
             dialogPane.getStyleClass().add("dialog-pane");
 
             alert.showAndWait();
-        }
+    */    }
     }
 
     public void handleGoBackButton(ActionEvent event) {
