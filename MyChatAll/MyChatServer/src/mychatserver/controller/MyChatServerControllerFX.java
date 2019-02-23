@@ -28,7 +28,7 @@ public class MyChatServerControllerFX extends Application {
     public void start(Stage primaryStage) {
 
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/mychatserver/view/view/AdminProfileGUI.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/mychatserver/view/view/AdminProfilePage.fxml"));
             Scene scene = new Scene(root);            
             primaryStage.setTitle("Admin Home Page");
             primaryStage.setScene(scene);

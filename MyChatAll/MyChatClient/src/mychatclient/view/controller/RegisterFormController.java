@@ -135,6 +135,7 @@ public class RegisterFormController implements Initializable {
             Image invalidImage = SwingFXUtils.toFXImage(invalidBufferedImage, null);
             
             File validFile = new File("C:\\Users\\HP\\Documents\\GitHub\\chatITI\\MyChatAll\\MyChatClient\\src\\mychatclient\\view\\controller\\valid.png");
+            
             BufferedImage validBufferedImage = ImageIO.read(validFile);
             Image validImage = SwingFXUtils.toFXImage(validBufferedImage, null);
             
