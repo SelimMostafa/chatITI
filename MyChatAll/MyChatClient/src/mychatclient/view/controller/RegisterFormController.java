@@ -130,11 +130,11 @@ public class RegisterFormController implements Initializable {
             // TODO
 
 
-            File invalidFile = new File("D:\\ITI\\chatITI\\MyChatAll\\invalid.png");
+            File invalidFile = new File("C:\\Users\\Ahmed-pc\\Documents\\GitHub\\chatITI\\MyChatAll\\invalid.png");
             BufferedImage invalidBufferedImage = ImageIO.read(invalidFile);
             Image invalidImage = SwingFXUtils.toFXImage(invalidBufferedImage, null);
             
-            File validFile = new File("D:\\ITI\\chatITI\\MyChatAll\\valid.png");
+            File validFile = new File("C:\\Users\\Ahmed-pc\\Documents\\GitHub\\chatITI\\MyChatAll\\valid.png");
             BufferedImage validBufferedImage = ImageIO.read(validFile);
             Image validImage = SwingFXUtils.toFXImage(validBufferedImage, null);
             

@@ -5,11 +5,20 @@
  */
 package mychatserver.view.controller;
 
+import commonservice.ServerService;
+import commonservice.User;
 import java.net.URL;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -28,7 +37,10 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import mychatserver.controller.MyChatServerControllerFX;
+import mychatserver.model.DAOImpl.UserDAO;
 import mychatserver.model.DAOImpl.UserStatisticsDAO;
+import mychatserver.model.MyChatServiceImpl;
 
 /**
  * FXML Controller class
@@ -36,6 +48,15 @@ import mychatserver.model.DAOImpl.UserStatisticsDAO;
  * @author Ahmed-pc
  */
 public class AdminProfilePageController implements Initializable {
+
+    MyChatServerControllerFX controller;
+
+    @FXML
+    private TextField genderTF;
+
+    public AdminProfilePageController() {
+        controller = new MyChatServerControllerFX();
+    }
 
     @FXML
     private Tab servicesTab;
@@ -91,13 +112,44 @@ public class AdminProfilePageController implements Initializable {
     private Button entriesLoadButton;
 
     UserStatisticsDAO statisticsdao = new UserStatisticsDAO();
+    User user;
+    MyChatServiceImpl chatService;
+    UserDAO userdao = new UserDAO();
+    ServerService serverservice;
+    Registry registry;
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        try {
+            registry = LocateRegistry.createRegistry(5000);
+            // TODO
+        } catch (RemoteException ex) {
+            Logger.getLogger(AdminProfilePageController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    @FXML
+    public void handleRegisterButton(ActionEvent event) {
+
+        user = new User();
+        user.setName(nameTF.getText());
+        user.setPhoneNum(phoneNumberTF.getText());
+        user.setGender(genderTF.getText());
+        user.setCountry(countryTF.getText());
+        user.setDateOfBirth(dobTF.getText());
+        user.setPassword(passwordTF.getText());
+        user.setEmail(emailTF.getText());
+
+        if (userdao.addUser(user)) {
+
+            System.out.println("Registered Successfully by Admin");
+
+        } else {
+            System.out.println("Not Registered");
+        }
     }
 
     @FXML
@@ -152,68 +204,91 @@ public class AdminProfilePageController implements Initializable {
         //Preparing ObservbleList object         
         ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
         countriesPieChart.setClockwise(true);
-        //Setting the length of the label line 
-        //countriesPieChart.setLabelLineLength(50);
-        //Setting the labels of the pie chart visible  
         countriesPieChart.setLabelsVisible(true);
 
         Map<String, Integer> countryStatistics = new HashMap<>();
         countryStatistics = statisticsdao.groupByCountry();
-        
-        for(Map.Entry<String,Integer> entry : countryStatistics.entrySet() )
-        {
-            if(entry.getValue() > 0)
-            {
+
+        for (Map.Entry<String, Integer> entry : countryStatistics.entrySet()) {
+            if (entry.getValue() > 0) {
                 String countryName = entry.getKey();
-                pieChartData.add(new PieChart.Data(countryName,entry.getValue()));
-                       
+                pieChartData.add(new PieChart.Data(countryName, entry.getValue()));
+
             }
         }
         countriesPieChart.setData(pieChartData);
-        
-        for(PieChart.Data data : countriesPieChart.getData())
-        {
+
+        for (PieChart.Data data : countriesPieChart.getData()) {
             Node slice = data.getNode();
-            double percent = (data.getPieValue()/60)*100;
-            String tip = data.getName()+ " = " +String.format("%.2f", percent)+"%";
+            double percent = (data.getPieValue() / 60) * 100;
+            String tip = data.getName() + " = " + String.format("%.2f", percent) + "%";
             Tooltip mytooltip = new Tooltip(tip);
             Tooltip.install(slice, mytooltip);
-            
+
         }
 
     }
-    
+
     @FXML
     private void handleUserEntriesPieChart(ActionEvent event) {
 
         //Preparing ObservbleList object         
         ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
-        entriesPieChart.setClockwise(true);  
+        entriesPieChart.setClockwise(true);
         entriesPieChart.setLabelsVisible(true);
 
         Map<String, Integer> entryStatistics = new HashMap<>();
         entryStatistics = statisticsdao.getEntryTimes();
-        
-        for(Map.Entry<String,Integer> entry : entryStatistics.entrySet() )
-        {
-            if(entry.getValue() > 0)
-            {
+
+        for (Map.Entry<String, Integer> entry : entryStatistics.entrySet()) {
+            if (entry.getValue() > 0) {
                 String username = entry.getKey();
-                pieChartData.add(new PieChart.Data(username,entry.getValue()));
-                       
+                pieChartData.add(new PieChart.Data(username, entry.getValue()));
+
             }
         }
         entriesPieChart.setData(pieChartData);
-        
-        for(PieChart.Data data : entriesPieChart.getData())
-        {
+
+        for (PieChart.Data data : entriesPieChart.getData()) {
             Node slice = data.getNode();
-            double percent = (data.getPieValue()/60)*100;
-            String tip = data.getName()+ " = " +String.format("%.2f", percent)+"%";
+            double percent = (data.getPieValue() / 60) * 100;
+            String tip = data.getName() + " = " + String.format("%.2f", percent) + "%";
             Tooltip mytooltip = new Tooltip(tip);
             Tooltip.install(slice, mytooltip);
-            
+
         }
 
     }
+
+    @FXML
+    private void handleStartServiceButton(ActionEvent event) {
+        try {
+            registry = LocateRegistry.getRegistry(5000);
+            chatService = new MyChatServiceImpl();
+            registry.rebind("chatService", chatService);
+            System.out.println("Server is running");
+
+        } catch (RemoteException ex) {
+            Logger.getLogger(AdminProfilePageController.class
+                    .getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+    @FXML
+    private void handleStopServiceButton(ActionEvent event) {
+
+        try {
+            registry = LocateRegistry.getRegistry(5000);
+            registry.unbind("chatService");
+            //UnicastRemoteObject.unexportObject(registry, false);
+            System.out.println("Server has stopped");
+        } catch (RemoteException ex) {
+            ex.printStackTrace();
+        } catch (NotBoundException ex) {
+            ex.printStackTrace();
+        }
+
+    }
+
 }
