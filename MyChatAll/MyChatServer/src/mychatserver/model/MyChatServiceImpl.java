@@ -58,26 +58,21 @@ public class MyChatServiceImpl extends UnicastRemoteObject implements Remote, co
             userTest.setStatus("Online");
             int times = userTest.getEntryTimes() + 1;
             userTest.setEntryTimes(times);
-            this.user = userTest;
-            try {
+            user = userTest;
 
-                this.clientInterface = clientInterface;
-                this.friendDAO = new FriendsDAO(mysqlDataSource.getConnection(), user);
-                this.requestDAO = new RequestsDAO(mysqlDataSource.getConnection(), user);
-                this.userDAO.updateEntryTimes(user);
-                this.userDAO.updateStatus(user);
-                control.addOnlineUser(this.user, clientInterface);
-                System.out.println("Times of login = " + user.getEntryTimes());
-                System.out.println("user is logined successfully");
-                clientConnection = new ClientConnection(this);
+            // this.clientInterface = clientInterface;
+            friendDAO = new FriendsDAO(user);
+            requestDAO = new RequestsDAO(user);
+            userDAO.updateEntryTimes(user);
+            userDAO.updateStatus(user);
+            control.addOnlineUser(user, clientInterface);
+            System.out.println("Times of login = " + user.getEntryTimes());
+            System.out.println("user is logined successfully");
+            clientConnection = new ClientConnection();
 
-                clientConnection.onlineNotificationFriends();
+            clientConnection.onlineNotificationFriends(user);
 
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            } finally {
-                return userTest;
-            }
+            return userTest;
 
         }
         return userTest;
@@ -97,21 +92,24 @@ public class MyChatServiceImpl extends UnicastRemoteObject implements Remote, co
     }
 
     @Override
-    public User addNewContact(String phoneNumber) throws RemoteException {
-
+    public User addNewContact(User user, String phoneNumber) throws RemoteException {
         User friend = null;
-        if (this.requestDAO.addFriendRequest(phoneNumber)) {
-            boolean checkRequest = this.requestDAO.checkFriendRequest(phoneNumber, user.getPhoneNum());
+        System.out.println("inside add new Contact = friend ->" + phoneNumber + " ,my number =" + user.getPhoneNum());
+        RequestsDAO requestDAO = new RequestsDAO(user);
+        FriendsDAO friendsDAO = new FriendsDAO(user);
+
+        if (requestDAO.addFriendRequest(phoneNumber)) {
+            boolean checkRequest = requestDAO.checkFriendRequestFromNumber(phoneNumber);
             //if the number doesn't request the user
             if (!checkRequest) {
                 System.out.println("cannot add the contact because the contact hasn't request the user but a request by the user is made");
 //                return null ;
             } else {
-                if (this.friendDAO.addFriend(phoneNumber)) {
+                if (friendsDAO.addFriend(phoneNumber)) {
                     System.out.println("is added successfully");
-                    friend = this.friendDAO.retrieveFriend(phoneNumber);
-                    this.requestDAO.deleteRequest(user.getPhoneNum(), phoneNumber);
-                    this.requestDAO.deleteRequest(phoneNumber, user.getPhoneNum());
+                    friend = friendsDAO.retrieveFriend(phoneNumber);
+                    requestDAO.deleteRequestToNumber(phoneNumber);
+                    requestDAO.deleteRequestFromNumber(phoneNumber);
                 } else {
                     System.out.println("failed to add");
                 }
@@ -139,11 +137,6 @@ public class MyChatServiceImpl extends UnicastRemoteObject implements Remote, co
     }
 
     @Override
-    public void notifyOnlineOffline() throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public boolean register(User user) throws RemoteException {
         return userDAO.addUser(user);
 
@@ -161,27 +154,27 @@ public class MyChatServiceImpl extends UnicastRemoteObject implements Remote, co
 
     @Override
     public ArrayList<String> getIncomingRequests(User user) throws RemoteException {
-        return this.requestDAO.retrieveIncomingRequests();
+        return new RequestsDAO(user).retrieveIncomingRequests();
     }
 
     @Override
     public ArrayList<User> getFriends(User user) throws RemoteException {
-        return this.friendDAO.retrieveAllFriends();
+        return new FriendsDAO(user).retrieveAllFriends();
     }
 
     @Override
     public ArrayList<User> getOnlineFriends(User user) throws RemoteException {
-        return this.friendDAO.retrieveOnlineFriends();
+        return new FriendsDAO(user).retrieveOnlineFriends();
     }
 
     @Override
     public ArrayList<User> getOfflineFriends(User user) throws RemoteException {
-        return this.friendDAO.retrieveOfflineFriends();
+        return new FriendsDAO(user).retrieveOfflineFriends();
     }
 
     @Override
     public void updateMode(User user) throws RemoteException {
-        this.userDAO.updateMode(user);
+        new UserDAO().updateMode(user);
     }
 
 }

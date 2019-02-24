@@ -13,9 +13,11 @@ import java.util.ArrayList;
 public interface RequestsDAOInterface {
     
     public boolean addFriendRequest(String phoneNumber);
-    public boolean checkFriendRequest(String sender , String receiver);
+    public boolean checkFriendRequestToNumber(String phoneNumber);
+    public boolean checkFriendRequestFromNumber(String phoneNumber);
     public ArrayList<String> retrieveOutgoingRequests();
     public ArrayList<String> retrieveIncomingRequests();
-    public boolean deleteRequest(String sender , String receiver);
+    public boolean deleteRequestFromNumber(String phoneNumber);
+    public boolean deleteRequestToNumber(String phoneNumber);
     
 }

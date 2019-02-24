@@ -10,6 +10,7 @@ import commonservice.User;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import mychatserver.controller.Controller;
+import mychatserver.model.DAOImpl.FriendsDAO;
 
 /**
  *
@@ -17,46 +18,44 @@ import mychatserver.controller.Controller;
  */
 public class ClientConnection {
 
-    MyChatServiceImpl chatService;
     Controller control = Controller.getInstance();
 
-    public ClientConnection(MyChatServiceImpl chatService) {
-        this.chatService = chatService;
-
+    public ClientConnection() {
+    
     }
 
-    public void onlineNotificationFriends() {
+    public void onlineNotificationFriends(User user) {
 
-        ArrayList<User> friends = this.chatService.friendDAO.retrieveOnlineFriends();
+        ArrayList<User> friends = new FriendsDAO(user).retrieveOnlineFriends();
         System.out.println("friendslist length = " + friends.size());
 
         for (int counter = 0; counter < friends.size(); counter++) {
             ClientService clientService = control.getClientInterfaceObject(friends.get(counter));
             try {
-                clientService.notifyOnline(chatService.user);
+                clientService.notifyOnline(user);
             } catch (RemoteException ex) {
                 ex.printStackTrace();
             }
         }
     }
 
-    public void offlineNotificationFriends() {
-        ArrayList<User> friends = this.chatService.friendDAO.retrieveOnlineFriends();
+    public void offlineNotificationFriends(User user) {
+        ArrayList<User> friends = new FriendsDAO(user).retrieveOnlineFriends();
         System.out.println("friendslist length = " + friends.size());
 
         for (int counter = 0; counter < friends.size(); counter++) {
             ClientService clientService = control.getClientInterfaceObject(friends.get(counter));
             try {
-                clientService.notifyOffline(chatService.user);
+                clientService.notifyOffline(user);
             } catch (RemoteException ex) {
                 ex.printStackTrace();
             }
         }
     }
 
-    public void modeNotification() {
+    public void modeNotification(User user) {
 
-        ArrayList<User> friends = this.chatService.friendDAO.retrieveOnlineFriends();
+        ArrayList<User> friends = new FriendsDAO(user).retrieveOnlineFriends();
         System.out.println("friendslist length = " + friends.size());
 
         for (int counter = 0; counter < friends.size(); counter++) {
@@ -64,7 +63,7 @@ public class ClientConnection {
 
                 ClientService clientService = control.getClientInterfaceObject(friends.get(counter));
                 try {
-                    clientService.notifyMode(chatService.user);
+                    clientService.notifyMode(user);
                 } catch (RemoteException ex) {
                     ex.printStackTrace();
                 }
@@ -72,20 +71,20 @@ public class ClientConnection {
         }
     }
 
-    public void notifyAdded(User friend) {
+    public void notifyAdded(User friend,User user) {
         if (friend.equals("Online")) {
 
             ClientService clientService = control.getClientInterfaceObject(friend);
             try {
-                clientService.notifyAdd(chatService.user);
+                clientService.notifyAdd(user);
             } catch (RemoteException ex) {
                 ex.printStackTrace();
             }
         }
     }
 
-    public void updateRequestList(String phoneNumber) {
-        ClientService userClientService = control.getClientInterfaceObject(chatService.user);
+    public void updateRequestList(String phoneNumber,User user) {
+        ClientService userClientService = control.getClientInterfaceObject(user);
         try {
             userClientService.notifyRequest(phoneNumber);
         } catch (RemoteException ex) {

@@ -27,14 +27,16 @@ public class AddContactHandler implements EventHandler {
     HomePageBase addContactObject;
     ServerService serverservice;
     User user;
+    ClientModel model = ClientModel.getInstance();
 
     //  String phone ;
     public AddContactHandler(HomePageBase addContactObject) {
 
         this.addContactObject = addContactObject;
         //  this.serverservice = this.addContactObject.serverservice;
-        this.serverservice = ClientModel.serverservice;
+        this.serverservice = model.serverservice;
         this.user = addContactObject.getUser();
+        System.out.println("inside AddContact Handler user ="+this.user.getPhoneNum());
 //        this.phone = this.addContactObject.getPhoneTF().getText();
     }
 
@@ -47,8 +49,8 @@ public class AddContactHandler implements EventHandler {
 
             if (!phone.equals("") && !phone.equals(user.getPhoneNum())) {
                 try {
-
-                    friend = this.serverservice.addNewContact(this.addContactObject.getContactsTF().get(counter).getText());
+                    System.out.println("request phone number"+phone);
+                    friend = this.serverservice.addNewContact(user,phone);
                     if (friend == null) {
                         System.out.println("Doesn't Exist in the DB or is already a friend or doesn't request user");
 

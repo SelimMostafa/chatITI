@@ -26,9 +26,10 @@ import java.util.logging.Logger;
  */
 public class ClientModel {
 
-    public static ServerService serverservice;
+    public ServerService serverservice;
+    private static ClientModel clientModelInstance = new ClientModel();
 
-    public ClientModel() {
+    private ClientModel() {
         try {
             Registry registry = LocateRegistry.getRegistry("127.0.0.1", 5000);
             serverservice = (ServerService) registry.lookup("chatService");
@@ -37,6 +38,10 @@ public class ClientModel {
         } catch (RemoteException ex) {
             Logger.getLogger(ClientModel.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public static ClientModel getInstance() {
+        return clientModelInstance;
     }
 
     public boolean checkUser(String phoneNum) {

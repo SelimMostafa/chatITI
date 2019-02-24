@@ -26,14 +26,14 @@ public class MyChatServer  {
     public MysqlDataSource mysqlDataSource=DataSourceFactory.getMySQLDataSource();
     
     public MyChatServer() {
-        try {
-            Registry registry=LocateRegistry.createRegistry(5000);
-            MyChatServiceImpl chatService= new MyChatServiceImpl();
-            registry.rebind("chatService", chatService);
-            System.out.println("Server is running");
-        } catch (RemoteException ex) {
-            Logger.getLogger(MyChatServer.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        try {
+//            Registry registry=LocateRegistry.createRegistry(5000);
+//            MyChatServiceImpl chatService= new MyChatServiceImpl();
+//            registry.rebind("chatService", chatService);
+//            System.out.println("Server is running");
+//        } catch (RemoteException ex) {
+//            Logger.getLogger(MyChatServer.class.getName()).log(Level.SEVERE, null, ex);
+//        }
         
     }
 

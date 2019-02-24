@@ -30,9 +30,7 @@ public interface ServerService extends Remote {
 
     public void updateMode(User user) throws RemoteException;
 
-    public void notifyOnlineOffline() throws RemoteException;
-
-    public User addNewContact(String phoneNumber) throws RemoteException;
+    public User addNewContact(User user ,String phoneNumber) throws RemoteException;
 
     public void showFriendsStatus() throws RemoteException;
 

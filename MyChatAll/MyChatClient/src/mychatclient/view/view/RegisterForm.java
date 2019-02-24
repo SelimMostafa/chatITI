@@ -10,12 +10,38 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
+import mychatclient.model.ClientModel;
 import mychatclient.view.controller.RegisterFormHandler;
-import static mychatclient.model.ClientModel.serverservice;
 
 
 public class RegisterForm extends Pane {
 
+        protected final Label label;
+    protected final Label label0;
+    protected final Label label1;
+    protected final Label label2;
+    protected final Label label3;
+    protected final Label label4;
+    protected final Label label5;
+    protected final Label label6;
+    protected final Label label7;
+    protected final TextField phoneNumberTF;
+    protected final TextField nameTF;
+    protected final TextField passwordTF;
+    protected final TextField confirmpasswordTF;
+    protected final TextField emailTF;
+    protected final TextField dateOfBirthTF;
+    protected final TextField countryTF;
+    //protected final DropdownButton dropdownButton;
+    protected final MenuItem menuItem;
+    protected final MenuItem menuItem0;
+    protected final MenuItem menuItem1;
+    protected final TextField genderTF;
+    protected final TextField bioTF;
+    protected final Label label8;
+    protected final Button button;
+
+    ClientModel model = ClientModel.getInstance();
     public TextField getPhoneNumberTF() {
         return phoneNumberTF;
     }
@@ -56,30 +82,6 @@ public class RegisterForm extends Pane {
         return button;
     }
 
-    protected final Label label;
-    protected final Label label0;
-    protected final Label label1;
-    protected final Label label2;
-    protected final Label label3;
-    protected final Label label4;
-    protected final Label label5;
-    protected final Label label6;
-    protected final Label label7;
-    protected final TextField phoneNumberTF;
-    protected final TextField nameTF;
-    protected final TextField passwordTF;
-    protected final TextField confirmpasswordTF;
-    protected final TextField emailTF;
-    protected final TextField dateOfBirthTF;
-    protected final TextField countryTF;
-    //protected final DropdownButton dropdownButton;
-    protected final MenuItem menuItem;
-    protected final MenuItem menuItem0;
-    protected final MenuItem menuItem1;
-    protected final TextField genderTF;
-    protected final TextField bioTF;
-    protected final Label label8;
-    protected final Button button;
 
     public RegisterForm() {
 
@@ -238,6 +240,6 @@ public class RegisterForm extends Pane {
         getChildren().add(bioTF);
         getChildren().add(label8);
         getChildren().add(button);
-        button.setOnAction(new RegisterFormHandler(this,serverservice));
+        button.setOnAction(new RegisterFormHandler(this,model.serverservice));
     }
 }
