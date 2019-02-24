@@ -82,7 +82,7 @@ public class PasswordLoginController implements Initializable {
             
             Parent root = home;
 
-            Scene scene = new Scene(root);
+            Scene scene = new Scene(home);
             stage.setScene(scene);
             stage.show();
 
