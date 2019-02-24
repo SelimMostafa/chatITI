@@ -6,22 +6,27 @@
 package mychatclient.view.controller;
 
 import commonservice.User;
+import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.HTMLEditor;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import mychatclient.controller.MyChatClient;
 import org.jsoup.Jsoup;
@@ -35,7 +40,7 @@ import org.jsoup.select.Elements;
  * @author AmrHesham
  */
 public class ChatwindowController implements Initializable {
-
+    
     public ChatwindowController() {
     }
 
@@ -60,7 +65,9 @@ public class ChatwindowController implements Initializable {
         chatUsers = new ArrayList<>();
         chatUsers.add(user);
         chatUsers.add(userFromOnlineList);
-
+        Platform.runLater(() -> {
+            sendFileLabel.setGraphic(new ImageView("/mychatclient/view/view/attachment3.png"));
+        });
 //        System.out.println(user.getPhoneNum());
 //        System.out.println(userFromOnlineList.getPhoneNum());
 //        Stage stage = (Stage) sendFileLabel.getScene().getWindow();
@@ -74,45 +81,51 @@ public class ChatwindowController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
+        sendFileLabel.setOnMouseClicked((event) -> {
+            FileChooser fileChooser=new FileChooser();
+            File file = fileChooser.showOpenDialog(null);
+            controller.sendFile(file);
+        });
         htmlEditor.setOnKeyPressed((event) -> {
             if (event.getCode().equals(KeyCode.ENTER)) {
                 String msg = htmlEditor.getHtmlText();
                 String senderPhone = user.getPhoneNum();
                 controller.sendMessage(msg, chatUsers, senderPhone);
                 htmlEditor.setHtmlText("");
-                display(msg,true);
+                display(msg, true);
 
             }
         });
 
     }
 
-    public void display(String message,boolean isSender) {
+    public void display(String message, boolean isSender) {
         System.out.println("inside display method in chatWindowController");
         System.out.println("Delivered Successfully " + message);
-        
+
         /*
         
         Document document = Jsoup.parse(message);
         Elements element = document.getElementsByTag("font");
         String msg = element.first().text().trim();
-        */
-            Platform.runLater(() -> {
-            
+         */
+        Platform.runLater(() -> {
+
             WebView webView = new WebView();
             webView.getEngine().loadContent(message);
             webView.setStyle("-fx-background-color: #1B887D");
             HBox hbox = new HBox(webView);
-            
-            if(isSender){
+
+            if (isSender) {
                 hbox.setAlignment(Pos.BASELINE_RIGHT);
-            }else{
+            } else {
                 hbox.setAlignment(Pos.BASELINE_LEFT);
             }
             chatArea.getChildren().add(hbox);
         });
 
     }
+    
+    
 
 }

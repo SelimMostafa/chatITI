@@ -5,10 +5,16 @@
  */
 package mychatserver.model;
 
+import com.healthmarketscience.rmiio.RemoteInputStream;
+import com.healthmarketscience.rmiio.RemoteInputStreamClient;
 import com.mysql.cj.jdbc.MysqlDataSource;
 import commonservice.ClientService;
 import commonservice.Message;
 import commonservice.User;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -177,4 +183,49 @@ public class MyChatServiceImpl extends UnicastRemoteObject implements Remote, co
         new UserDAO().updateMode(user);
     }
 
+    @Override
+    public void sendFile(RemoteInputStream ristream) throws RemoteException {
+        InputStream istream = null;
+        try {
+
+            istream = RemoteInputStreamClient.wrap(ristream);
+            FileOutputStream ostream = null;
+            try {
+                
+                File tempFile = File.createTempFile("sentFile_", ".dat");
+                ostream = new FileOutputStream(tempFile);
+                System.out.println("Writing file " + tempFile);
+                
+                byte[] buf = new byte[1024];
+                
+                int bytesRead = 0;
+                while ((bytesRead = istream.read(buf)) >= 0) {
+                    ostream.write(buf, 0, bytesRead);
+                }
+                ostream.flush();
+                
+                System.out.println("Finished writing file " + tempFile);
+                
+            } finally {
+                try {
+                    if (istream != null) {
+                        istream.close();
+                    }
+                } finally {
+                    if (ostream != null) {
+                        ostream.close();
+                    }
+                }
+            }
+
+        } catch (IOException ex) {
+            Logger.getLogger(MyChatServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                istream.close();
+            } catch (IOException ex) {
+                Logger.getLogger(MyChatServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
 }

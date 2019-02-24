@@ -5,7 +5,9 @@
  */
 package commonservice;
 
+import com.healthmarketscience.rmiio.RemoteInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -24,7 +26,7 @@ public interface ServerService extends Remote {
 
     public void sendMessage(String message, ArrayList<User> phoneNumberList, String SenderPhoneNumber) throws RemoteException;
 
-    //public void sendFile(File file);
+   public void sendFile(RemoteInputStream ristream) throws RemoteException;
 
     public boolean updateProfile(User user) throws RemoteException;
 
