@@ -100,4 +100,7 @@ public class Controller {
         return client.get(user.getPhoneNum());
     }
 
+    public ClientService getClientInterfaceObjectByPhone(String phoneNumber) {
+        return client.get(phoneNumber);
+    }
 }

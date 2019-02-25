@@ -2,8 +2,11 @@ package commonservice;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.TimeZone;
 
-public class Message implements Serializable{
+public class Message implements Serializable {
 
     private String fontStyle;
     private String fontColor;
@@ -13,29 +16,25 @@ public class Message implements Serializable{
     private boolean italic;
     private boolean bold;
     private boolean underlined;
-    private Timestamp timestamp;
+    private String formattedMsg;
+
+    private TimeZone time;
+
     private User sender;
-    private User receiver;
+    private ArrayList<User> receiver;
 
-    public User getReceiver() {
-        return receiver;
-    }
-
-    public void setReciever(User receiver) {
-        this.receiver = receiver;
-    }
-
-    public Message(User sender,User receiver) {
+    public Message(User sender, ArrayList<User> receiver) {
         fontColor = "BLUE";
         fontStyle = "comic-sans";
         fontSize = "10";
         textBackGround = "WHITE";
-        italic=false;
-        bold=false;
-        underlined=false;
-        timestamp=getTimestamp();
-        this.sender=sender;
-        this.receiver=receiver;
+        italic = false;
+        bold = false;
+        underlined = false;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        this.time = simpleDateFormat.getTimeZone();
+        this.sender = sender;
+        this.receiver = receiver;
     }
 
     public String getFontStyle() {
@@ -102,12 +101,12 @@ public class Message implements Serializable{
         this.underlined = underlined;
     }
 
-    public Timestamp getTimestamp() {
-        return timestamp;
+    public TimeZone getTime() {
+        return time;
     }
 
-    public void setTimestamp(Timestamp timestamp) {
-        this.timestamp = timestamp;
+    public void setTime(TimeZone time) {
+        this.time = time;
     }
 
     public User getSender() {
@@ -116,6 +115,22 @@ public class Message implements Serializable{
 
     public void setSender(User sender) {
         this.sender = sender;
+    }
+
+    public ArrayList<User> getReceiver() {
+        return receiver;
+    }
+
+    public void setReceiver(ArrayList<User> receiver) {
+        this.receiver = receiver;
+    }
+
+    public String getFormattedMsg() {
+        return formattedMsg;
+    }
+
+    public void setFormattedMsg(String formattedMsg) {
+        this.formattedMsg = formattedMsg;
     }
 
 }

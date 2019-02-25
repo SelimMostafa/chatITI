@@ -2,6 +2,15 @@ package mychatclient.view.view;
 
 import commonservice.ServerService;
 import commonservice.User;
+import java.awt.AWTException;
+import java.awt.PopupMenu;
+import java.awt.SystemTray;
+import java.awt.TrayIcon;
+import java.awt.*;
+import java.awt.event.*;
+import java.net.URL;
+import javax.swing.*;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,16 +40,19 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioMenuItem;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.SplitMenuButton;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 import mychatclient.model.ClientModel;
 import mychatclient.view.controller.AddContactHandler;
@@ -51,7 +63,7 @@ import org.controlsfx.control.Notifications;
 
 public class HomePageBase extends AnchorPane {
 
-    ChatwindowController cc;
+    ChatwindowController chatWindowController;
     User friend;
     Map<String, ChatwindowController> activeChats;
     protected final Pane pane;
@@ -102,6 +114,7 @@ public class HomePageBase extends AnchorPane {
     protected final ImageView imageView;
     // protected final SplitMenuButton modeMenu;
     protected final ComboBox modeMenu;
+    protected final Button addGroupChatBtn;
 
     /*protected final RadioMenuItem availableItem;
      protected final ToggleGroup status;
@@ -123,16 +136,20 @@ public class HomePageBase extends AnchorPane {
     User user;
     User userFriend;
     double y = 60.0;
+    int trayIcon = 0;
     ArrayList<TextField> contactsTF;
     ClientModel model = ClientModel.getInstance();
 
+    Stage stage;
+
     public HomePageBase(Stage Stage, User user) {
 
+        this.stage = stage;
         activeChats = new HashMap<>();
         this.user = user;
         System.out.println("i am " + user.getPhoneNum());
         this.contactsTF = new ArrayList<TextField>();
-        
+
         pane = new Pane();
         menuBar = new MenuBar();
         menu = new Menu();
@@ -184,6 +201,8 @@ public class HomePageBase extends AnchorPane {
         imageView = new ImageView();
         //statusMenu = new SplitMenuButton();
         modeMenu = new ComboBox();
+        addGroupChatBtn= new Button();
+        modeMenu.setPromptText(user.getMode());
 
         /*   availableItem = new RadioMenuItem();
          status = new ToggleGroup();
@@ -250,6 +269,7 @@ public class HomePageBase extends AnchorPane {
         onlineListView.setLayoutY(25.0);
         onlineListView.setPrefHeight(424.0);
         onlineListView.setPrefWidth(325.0);
+        onlineListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         onlineTab.setContent(anchorPane0);
 
         offlineTab.setText("Offline");
@@ -418,22 +438,12 @@ public class HomePageBase extends AnchorPane {
 
         modeMenu.setLayoutX(88.0);
         modeMenu.setLayoutY(65.0);
-        /*   // modeMenu.setMnemonicParsing(false);
-         // modeMenu.setText("What are you doing ?");
 
-         availableItem.setMnemonicParsing(false);
-         availableItem.setText("Available");
-
-         availableItem.setToggleGroup(status);
-
-         busyItem.setMnemonicParsing(false);
-         busyItem.setText("Busy");
-         busyItem.setToggleGroup(status);
-
-         awayItem.setMnemonicParsing(false);
-         awayItem.setText("Away");
-         awayItem.setToggleGroup(status);
-         */
+        addGroupChatBtn.setLayoutX(268.0);
+        addGroupChatBtn.setLayoutY(35);
+        addGroupChatBtn.setGraphic(new ImageView("/mychatclient/view/view/plusIcon.png"));
+        addGroupChatBtn.setTooltip(new Tooltip("Create Group Chat"));
+        
         chatbotCheckBox.setLayoutX(28.0);
         chatbotCheckBox.setLayoutY(107.0);
         chatbotCheckBox.setMnemonicParsing(false);
@@ -479,11 +489,8 @@ public class HomePageBase extends AnchorPane {
         pane.getChildren().add(anchorPane);
         pane.getChildren().add(signoutBtn);
         pane.getChildren().add(imageView);
+        pane.getChildren().add(addGroupChatBtn);
 
-        /*modeMenu.getItems().add(availableItem);
-         modeMenu.getItems().add(busyItem);
-         modeMenu.getItems().add(awayItem);
-         */
         this.modeMenu.getItems().add("Available");
         this.modeMenu.getItems().add("Busy");
         this.modeMenu.getItems().add("Away");
@@ -493,7 +500,7 @@ public class HomePageBase extends AnchorPane {
         getChildren().add(pane);
 
         contactsTF.add(this.phoneAddedTF);
-        
+
         onlineListView.setOnMouseClicked((event) -> {
             if (event.getClickCount() == 2) {
                 try {
@@ -501,12 +508,17 @@ public class HomePageBase extends AnchorPane {
                     FXMLLoader loader = new FXMLLoader();
                     //get the friend phone number to add to the hashmap
                     User userFromOnlineFriendsList = (User) (onlineListView.getSelectionModel().getSelectedItem());
-
+                    onlineListView.getSelectionModel().clearSelection();
+                    
                     //check the the friend phone number in the map to prevent opening the session twice
                     if (!activeChats.containsKey((String) userFromOnlineFriendsList.getPhoneNum())) {
+                        //
+                        ArrayList<User> chatUsers = new ArrayList<User>();
+                        chatUsers.add(user);
+                        chatUsers.add(userFromOnlineFriendsList);
+                        ChatwindowController chatwindowController = new ChatwindowController(chatUsers, user);
 
-                        ChatwindowController chatwindowController = new ChatwindowController(userFromOnlineFriendsList, user);
-
+//                        ChatwindowController chatwindowController = new ChatwindowController(userFromOnlineFriendsList, user);
                         //ChatwindowController chatwindowController = new ChatwindowController(userFromOnlineFriendsList, user);
                         loader.setController(chatwindowController);
                         Parent root = loader.load(getClass().getResource("/mychatclient/view/view/chatwindow.fxml").openStream());
@@ -602,28 +614,28 @@ public class HomePageBase extends AnchorPane {
         });
 
         /*
-        this.signoutBtn.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                model.signOut();
+         this.signoutBtn.setOnAction(new EventHandler<ActionEvent>() {
+         @Override
+         public void handle(ActionEvent event) {
+         model.signOut();
 
-                try {
-                    FXMLLoader loader2 = new FXMLLoader();
-                    LoginFormController loginController = new LoginFormController();
-                    loader2.setController(loginController);
-                    Parent root = loader2.load(getClass().getResource("/mychatclient/view/view/LoginForm.fxml").openStream());
-                    loginController.getPhoneNumberTF().setText(user.getPhoneNum());
+         try {
+         FXMLLoader loader2 = new FXMLLoader();
+         LoginFormController loginController = new LoginFormController();
+         loader2.setController(loginController);
+         Parent root = loader2.load(getClass().getResource("/mychatclient/view/view/LoginForm.fxml").openStream());
+         loginController.getPhoneNumberTF().setText(user.getPhoneNum());
 
-                    Scene scene = new Scene(root);
-                    Stage.setScene(scene);
-                    Stage.show();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
+         Scene scene = new Scene(root);
+         Stage.setScene(scene);
+         Stage.show();
+         } catch (IOException ex) {
+         ex.printStackTrace();
+         }
 
-            }
-        });
-*/
+         }
+         });
+         */
         //handling requestListView
         friendRequests = model.getRequests(user);
 
@@ -672,7 +684,81 @@ public class HomePageBase extends AnchorPane {
         });
 
         this.userNameLabel.setText(user.getName() + " : " + user.getPhoneNum());
+        
+        this.addGroupChatBtn.setOnAction((event) -> {
+            try {
+                ObservableList<User> selectedUsers = onlineListView.getSelectionModel().getSelectedItems();
 
+                //Creating Arraylist since observableList is not modifiable
+                ArrayList<User> groupChatUsers = new ArrayList<>();
+
+                if (selectedUsers.size() == 1) {
+                    /*Alert alert = new Alert(Alert.AlertType.ERROR, "Please Choose Two Or More Contacts For Group Chat");
+                    alert.showAndWait();*/
+                } else {
+                    selectedUsers.forEach((t) -> {
+                        groupChatUsers.add(t);
+                    });
+                    groupChatUsers.add(user);
+                    ChatwindowController chatwindowController = new ChatwindowController(groupChatUsers, user);
+                    activeChats.put((String) generateGroupChatID(groupChatUsers), chatwindowController);
+
+                    FXMLLoader loader = new FXMLLoader();
+                    loader.setController(chatwindowController);
+                    Parent root = loader.load(getClass().getResource("/mychatclient/view/view/chatwindow.fxml").openStream());
+                    Scene scene = new Scene(root);
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    stage.setTitle("Group Chat");
+                    stage.show();
+
+                    stage.setOnCloseRequest((e) -> {
+                        activeChats.remove((String) generateGroupChatID(groupChatUsers));
+                    });
+                    onlineListView.getSelectionModel().clearSelection();
+                }
+
+            } catch (IOException ex) {
+                Logger.getLogger(HomePageBase.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+
+
+        Stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+
+            @Override
+            public void handle(WindowEvent event) {
+                try {
+                    UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+                    //UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
+                } catch (UnsupportedLookAndFeelException ex) {
+                    ex.printStackTrace();
+                } catch (IllegalAccessException ex) {
+                    ex.printStackTrace();
+                } catch (InstantiationException ex) {
+                    ex.printStackTrace();
+                } catch (ClassNotFoundException ex) {
+                    ex.printStackTrace();
+                }
+                /* Turn off metal's use of bold fonts */
+                UIManager.put("swing.boldMetal", Boolean.FALSE);
+                //Schedule a job for the event-dispatching thread:
+                //adding TrayIcon.
+
+                Platform.runLater(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        if (trayIcon == 0) {
+                            createAndShowGUI();
+                            trayIcon = 1;
+                        }
+                        Stage stage = (Stage) userNameLabel.getScene().getWindow();
+                        stage.hide();
+                    }
+                });
+            }
+        });
     }
 
     public TextField getPhoneAddedTF() {
@@ -740,16 +826,36 @@ public class HomePageBase extends AnchorPane {
         });
     }
 
+    public void addFriend(User friend) {
+
+        requestsObsrvList.remove((String) friend.getPhoneNum());
+        if (friend.getStatus().equals("Online")) {
+            updateOnlineList(friend);
+        } else if (friend.getStatus().equals("Offline")) {
+            updateOfflineList(friend);
+        }
+
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                requestListView.setItems(requestsObsrvList);
+            }
+        });
+    }
+
     public void display(String message, String chatWindowID) {
 
-        cc = activeChats.get((String) chatWindowID);
+        chatWindowController = activeChats.get((String) chatWindowID);
 
-        if (cc == null) {
+        if (chatWindowController == null) {
 
             FXMLLoader loader = new FXMLLoader();
             friend = getUserWithPhoneNumber(chatWindowID);
-            cc = new ChatwindowController(friend, user);
-            loader.setController(cc);
+            ArrayList<User> singleChatUser = new ArrayList<User>();
+            singleChatUser.add(user);
+            singleChatUser.add(friend);
+            chatWindowController = new ChatwindowController(singleChatUser, user);
+            loader.setController(chatWindowController);
             Platform.runLater(() -> {
                 try {
                     if (!activeChats.containsKey(friend.getPhoneNum())) {
@@ -761,9 +867,9 @@ public class HomePageBase extends AnchorPane {
                         stage.setScene(scene);
                         stage.setTitle(friend.getPhoneNum());
                         stage.show();
-                        activeChats.put(friend.getPhoneNum(), cc);
+                        activeChats.put(friend.getPhoneNum(), chatWindowController);
                         System.out.println("testing hashmap return wla la " + friend.getName() + activeChats.get((String) friend.getPhoneNum()));
-                        cc.display(message, false);
+                        chatWindowController.display(message, false);
                         stage.setOnCloseRequest((event2) -> {
                             activeChats.remove((String) friend.getPhoneNum());
                         });
@@ -776,8 +882,7 @@ public class HomePageBase extends AnchorPane {
             });
 
         } else {
-            System.err.println("cc is not null");
-            cc.display(message, false);
+            chatWindowController.display(message, false);
         }
 
     }
@@ -794,4 +899,108 @@ public class HomePageBase extends AnchorPane {
         return userFriend;
     }
 
+    private void createAndShowGUI() {
+        //Check the SystemTray support
+        if (!SystemTray.isSupported()) {
+            System.out.println("SystemTray is not supported");
+            return;
+        }
+        final java.awt.PopupMenu popup = new java.awt.PopupMenu();
+        final java.awt.TrayIcon trayIcon = new java.awt.TrayIcon(createImage("available.png", "tray icon"));
+        final java.awt.SystemTray tray = java.awt.SystemTray.getSystemTray();
+
+        // Create a popup menu components
+        java.awt.MenuItem openItem = new java.awt.MenuItem("Open Pssst");
+        java.awt.MenuItem exitItem = new java.awt.MenuItem("Exit");
+
+        //Add components to popup menu
+        popup.add(openItem);
+        popup.addSeparator();
+        popup.add(exitItem);
+
+        trayIcon.setPopupMenu(popup);
+
+        try {
+            tray.add(trayIcon);
+        } catch (AWTException e) {
+            System.out.println("TrayIcon could not be added.");
+            return;
+        }
+
+        openItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                Platform.runLater(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        Stage stage = (Stage) userNameLabel.getScene().getWindow();
+                        stage.show();
+                    }
+                });
+            }
+        });
+
+        exitItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                model.signOut();
+                System.exit(0);
+            }
+        });
+    }
+
+    public void displayGroupChat(String message, ArrayList groupChatUsers) {
+        String groupChatID = generateGroupChatID(groupChatUsers);
+        chatWindowController = activeChats.get((String) groupChatID);
+
+        if (chatWindowController == null) {
+
+            FXMLLoader loader = new FXMLLoader();
+            chatWindowController = new ChatwindowController(groupChatUsers, user);
+            loader.setController(chatWindowController);
+            activeChats.put(groupChatID, chatWindowController);
+            Platform.runLater(() -> {
+                try {
+                    System.out.println(user.getPhoneNum() + ": in the add group btn handler--> " + groupChatID);
+                    Parent root = loader.load(getClass().getResource("/mychatclient/view/view/chatwindow.fxml").openStream());
+                    System.out.println("3adda el loader.load inside display");
+                    Scene scene = new Scene(root);
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    stage.setTitle("Group Chat");
+                    stage.show();
+                    stage.setOnCloseRequest((event2) -> {
+                        activeChats.remove((String) groupChatID);
+                    });
+
+                } catch (IOException ex) {
+                }
+            });
+        }
+        chatWindowController.display(message, false);
+
+    }
+
+//******************************************************************************
+    private String generateGroupChatID(ArrayList<User> users) {
+        StringBuilder id = new StringBuilder();
+        users.forEach((t) -> {
+            id.append(t.getPhoneNum());
+        });
+
+        return id.toString();
+    }
+
+    //Obtain the image URL
+    protected Image createImage(String path, String description) {
+        URL imageURL = HomePageBase.class.getResource(path);
+
+        if (imageURL == null) {
+            System.err.println("Resource not found: " + path);
+            return null;
+        } else {
+            return (new ImageIcon(imageURL, description)).getImage();
+        }
+    }
 }

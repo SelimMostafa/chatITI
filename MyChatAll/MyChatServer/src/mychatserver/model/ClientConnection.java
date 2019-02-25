@@ -21,7 +21,7 @@ public class ClientConnection {
     Controller control = Controller.getInstance();
 
     public ClientConnection() {
-    
+
     }
 
     public void onlineNotificationFriends(User user) {
@@ -71,7 +71,7 @@ public class ClientConnection {
         }
     }
 
-    public void notifyAdded(User friend,User user) {
+    public void notifyAdded(User friend, User user) {
         if (friend.equals("Online")) {
 
             ClientService clientService = control.getClientInterfaceObject(friend);
@@ -83,12 +83,23 @@ public class ClientConnection {
         }
     }
 
-    public void updateRequestList(String phoneNumber,User user) {
+    /*
+    public void updateRequestList(String phoneNumber, User user) {
         ClientService userClientService = control.getClientInterfaceObject(user);
         try {
             userClientService.notifyRequest(phoneNumber);
         } catch (RemoteException ex) {
             ex.printStackTrace();
         }
+    }*/
+
+    public void notifyRequest(String phoneNumber) {
+        ClientService userClientService = control.getClientInterfaceObjectByPhone(phoneNumber);
+        try {
+            userClientService.notifyRequest(phoneNumber);
+        } catch (RemoteException ex) {
+            ex.printStackTrace();
+        }
+
     }
 }

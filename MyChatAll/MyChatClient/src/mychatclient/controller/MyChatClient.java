@@ -120,6 +120,10 @@ public class MyChatClient extends Application {
     public void display(String message,String chatWindowID) {
         home.display(message,chatWindowID);
     }
+
+    public void displayGroupMessage(String message, ArrayList users) {
+        home.displayGroupChat(message, users);
+    }
     
     
 }

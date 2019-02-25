@@ -6,6 +6,7 @@
 package commonservice;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -46,4 +47,5 @@ public interface ServerService extends Remote {
 
     public ArrayList<User> getOfflineFriends(User user) throws RemoteException;
 
+    public void saveChatSession(ArrayList<Message> msgs , File file) throws RemoteException;
 }

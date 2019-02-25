@@ -6,6 +6,9 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.web.HTMLEditor?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Button?>
+<?import com.jfoenix.controls.*?>
+
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="474.0" prefWidth="611.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
    <children>
@@ -13,5 +16,6 @@
       <VBox fx:id="chatArea" layoutY="-1.0" prefHeight="325.0" prefWidth="499.0" />
       <ImageView fx:id="userImage" fitHeight="165.0" fitWidth="112.0" layoutX="499.0" pickOnBounds="true" preserveRatio="true" />
       <Label fx:id="sendFileLabel"  layoutX="499.0" layoutY="332.0" text="Send File" />
-   </children>
+    <JFXButton fx:id="saveSessionBtn" buttonType="RAISED" defaultButton="true" layoutX="119.0" layoutY="364.0" prefHeight="27.0" prefWidth="76.0" ripplerFill="#428075" text="Next" />
+         </children>
 </AnchorPane>

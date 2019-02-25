@@ -7,6 +7,7 @@ package commonservice;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 
 /**
  *
@@ -20,5 +21,6 @@ public interface ClientService extends Remote{
     public void notifyRequest(String phoneNumber)throws RemoteException;
     public void notifyMode(User friend)throws RemoteException;
     public void notifyAdd(User friend)throws RemoteException;
+    public void receiveGroupMsg(String message,ArrayList users) throws RemoteException;
     
 }

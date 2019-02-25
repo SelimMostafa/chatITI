@@ -9,6 +9,9 @@ import com.mysql.cj.jdbc.MysqlDataSource;
 import commonservice.ClientService;
 import commonservice.Message;
 import commonservice.User;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -19,11 +22,18 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import mychatserver.controller.Controller;
 //import javafx.scene.control.Alert;
 import mychatserver.model.DAOImpl.FriendsDAO;
 import mychatserver.model.DAOImpl.RequestsDAO;
 import mychatserver.model.DAOImpl.UserDAO;
+import mychatserver.model.chatsession.ChatSessionType;
+import mychatserver.model.chatsession.MsgType;
+import mychatserver.model.chatsession.ObjectFactory;
 
 /**
  *
@@ -79,11 +89,21 @@ public class MyChatServiceImpl extends UnicastRemoteObject implements Remote, co
     }
 
     @Override
-    public void sendMessage(String message, ArrayList<User> phoneNumbersList, String senderPhoneNumber) throws RemoteException {
-        phoneNumbersList.forEach((c) -> {
+    public void sendMessage(String message, ArrayList<User> chatUsers, String senderPhoneNumber) throws RemoteException {
+        System.out.println("inside server sending to the client");
+        System.out.println(chatUsers.size() + "Chatusers size");
+        chatUsers.forEach((c) -> {
             try {
                 if (!c.getPhoneNum().equals(senderPhoneNumber)) {
-                    control.getClientInterfaceObject(c).receiveMsg(message, senderPhoneNumber);
+                    if (chatUsers.size() == 2) {
+                        System.out.println("Sending to user inside server");
+                        control.getClientInterfaceObject(c).receiveMsg(message, senderPhoneNumber);
+                    }else{
+                         control.getClientInterfaceObject(c).receiveGroupMsg(message, chatUsers);
+                    }
+
+                }else{
+                    System.out.println("This is sender msg");
                 }
             } catch (RemoteException ex) {
                 ex.printStackTrace();
@@ -103,13 +123,14 @@ public class MyChatServiceImpl extends UnicastRemoteObject implements Remote, co
             //if the number doesn't request the user
             if (!checkRequest) {
                 System.out.println("cannot add the contact because the contact hasn't request the user but a request by the user is made");
-//                return null ;
+                clientConnection.notifyRequest(phoneNumber);
             } else {
                 if (friendsDAO.addFriend(phoneNumber)) {
                     System.out.println("is added successfully");
                     friend = friendsDAO.retrieveFriend(phoneNumber);
                     requestDAO.deleteRequestToNumber(phoneNumber);
                     requestDAO.deleteRequestFromNumber(phoneNumber);
+                    clientConnection.notifyAdded(friend, user);
                 } else {
                     System.out.println("failed to add");
                 }
@@ -175,6 +196,57 @@ public class MyChatServiceImpl extends UnicastRemoteObject implements Remote, co
     @Override
     public void updateMode(User user) throws RemoteException {
         new UserDAO().updateMode(user);
+    }
+
+    @Override
+    public void saveChatSession(ArrayList<Message> msgs, File file) throws RemoteException {
+        // FileOutputStream result = null;
+        try {
+
+            JAXBContext context = JAXBContext.newInstance("mychatserver.model.chatsession");
+            ObjectFactory factory = new ObjectFactory();
+            ChatSessionType chatSession = factory.createChatSessionType();
+
+            for (int counter = 0; counter < msgs.size(); counter++) {
+                MsgType newMsg = factory.createMsgType();
+
+                User sender = msgs.get(counter).getSender();
+                String senderPhone = sender.getPhoneNum();
+                String senderName = sender.getName();
+
+                newMsg.setFrom(senderPhone + " : " + senderName);
+
+                for (int recieverIndx = 0; recieverIndx < msgs.get(counter).getReceiver().size(); recieverIndx++) {
+
+                    Message currentMsg = msgs.get(counter);
+                    User receiver = currentMsg.getReceiver().get(recieverIndx);
+                    String receiverPhone = receiver.getPhoneNum();
+                    String receiverName = receiver.getName();
+
+                    System.out.println(receiverName + " --> " + receiverPhone);
+                    newMsg.getTo().add(receiverPhone + " : " + receiverName);
+                }
+
+                newMsg.setBody(msgs.get(counter).getMessageText());
+                newMsg.setFontStyle(msgs.get(counter).getFontStyle());
+                newMsg.setFontSize(msgs.get(counter).getFontSize());
+                newMsg.setFontColor(msgs.get(counter).getFontColor());
+                newMsg.setBold(msgs.get(counter).isBold());
+                newMsg.setItalic(msgs.get(counter).isItalic());
+                newMsg.setUnderlined(msgs.get(counter).isUnderlined());
+
+//   newMsg.setTime(msgs.get(counter).getTime());
+                chatSession.getMsg().add(newMsg);
+
+            }
+
+            JAXBElement mymsg = factory.createChatSession(chatSession);
+            Marshaller marshaller = context.createMarshaller();
+
+            marshaller.marshal(mymsg, file);
+        } catch (JAXBException ex) {
+            ex.printStackTrace();
+        }
     }
 
 }

@@ -10,6 +10,7 @@ import commonservice.User;
 import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.util.Duration;
@@ -62,7 +63,6 @@ public class ClientServiceImpl extends UnicastRemoteObject implements ClientServ
             }
         });
 
-       // this.controller.getHome().updateOfflineList(friend);
     }
 
     @Override
@@ -70,7 +70,7 @@ public class ClientServiceImpl extends UnicastRemoteObject implements ClientServ
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-          controller.getHome().updateRequestList(phoneNumber);
+                controller.getHome().updateRequestList(phoneNumber);
                 Notifications requestNotification = Notifications.create().title("New Friend Request")
                         .text(phoneNumber).graphic(null)
                         .hideAfter(Duration.seconds(10)).position(Pos.BOTTOM_RIGHT);
@@ -80,8 +80,6 @@ public class ClientServiceImpl extends UnicastRemoteObject implements ClientServ
             }
         });
 
-        //this.controller.getHome().updateRequestList(phoneNumber);
-
     }
 
     @Override
@@ -89,6 +87,7 @@ public class ClientServiceImpl extends UnicastRemoteObject implements ClientServ
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
+//                controller.getHome().updateModeList(friend);
                 Notifications modeNotification = Notifications.create().title(friend.getName() + " is " + friend.getMode())
                         .text(friend.getName() + " is " + friend.getMode()).graphic(null)
                         .hideAfter(Duration.seconds(10)).position(Pos.BOTTOM_RIGHT);
@@ -98,14 +97,15 @@ public class ClientServiceImpl extends UnicastRemoteObject implements ClientServ
             }
         });
 
-        //  this.controller.getHome().updateModeList(friend);
     }
 
     @Override
     public void notifyAdd(User friend) throws RemoteException {
+
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
+                controller.getHome().addFriend(friend);
                 Notifications addNotification = Notifications.create().title("New Friend is added to your Contacts")
                         .text(friend.getPhoneNum() + " : " + friend.getName()).graphic(null)
                         .hideAfter(Duration.seconds(10)).position(Pos.BOTTOM_RIGHT);
@@ -115,7 +115,6 @@ public class ClientServiceImpl extends UnicastRemoteObject implements ClientServ
             }
         });
 
-       // this.controller.getHome().updateRequestList(phoneNumber);
     }
 
     @Override
@@ -135,4 +134,10 @@ public class ClientServiceImpl extends UnicastRemoteObject implements ClientServ
 
     }
 
+    @Override
+    public void receiveGroupMsg(String message, ArrayList users) throws RemoteException {
+        controller.displayGroupMessage(message,users);
+    }
+
+   
 }
