@@ -83,11 +83,11 @@ public class LoginFormController implements Initializable {
     public LoginFormController() {
         try {
             controller = new MyChatClient();
-            File logoFile = new File("C:\\Users\\Ahmed-pc\\Documents\\GitHub\\chatITI\\MyChatAll\\Bird_Logo.png");
+            File logoFile = new File("C:\\Users\\HP\\Documents\\GitHub\\chatITI\\MyChatAll\\MyChatClient\\src\\mychatclient\\view\\controller\\Bird_Logo.png");
             BufferedImage logoBufferedImage = ImageIO.read(logoFile);
             logoImage = SwingFXUtils.toFXImage(logoBufferedImage, null);
 
-            File birdFile = new File("C:\\Users\\Ahmed-pc\\Documents\\GitHub\\chatITI\\MyChatAll\\flyBird.png");
+            File birdFile = new File("C:\\Users\\HP\\Documents\\GitHub\\chatITI\\MyChatAll\\MyChatClient\\src\\mychatclient\\view\\controller\\flyBird.png");
             BufferedImage birdBufferedImage = ImageIO.read(birdFile);
             birdImage = SwingFXUtils.toFXImage(birdBufferedImage, null);
 
