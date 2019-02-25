@@ -5,14 +5,29 @@
  */
 package mychatclient.model;
 
+import com.healthmarketscience.rmiio.RemoteInputStream;
+import com.healthmarketscience.rmiio.RemoteInputStreamClient;
 import commonservice.ClientService;
 import commonservice.User;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.Optional;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
+//import javafx.scene.control.Alert;
+//import javafx.scene.control.ButtonType;
 import javafx.util.Duration;
 import mychatclient.controller.MyChatClient;
 import org.controlsfx.control.Notifications;
@@ -24,6 +39,10 @@ import org.controlsfx.control.Notifications;
 public class ClientServiceImpl extends UnicastRemoteObject implements ClientService {
 
     MyChatClient controller;
+//    volatile Optional<ButtonType> result;
+    InputStream istream = null;
+    File file;
+    Runnable recievingFileTask;
 
     public ClientServiceImpl(MyChatClient controller) throws RemoteException {
         this.controller = controller;
@@ -63,6 +82,7 @@ public class ClientServiceImpl extends UnicastRemoteObject implements ClientServ
             }
         });
 
+        // this.controller.getHome().updateOfflineList(friend);
     }
 
     @Override
@@ -80,6 +100,7 @@ public class ClientServiceImpl extends UnicastRemoteObject implements ClientServ
             }
         });
 
+        //this.controller.getHome().updateRequestList(phoneNumber);
     }
 
     @Override
@@ -115,6 +136,7 @@ public class ClientServiceImpl extends UnicastRemoteObject implements ClientServ
             }
         });
 
+        // this.controller.getHome().updateRequestList(phoneNumber);
     }
 
     @Override
@@ -140,4 +162,85 @@ public class ClientServiceImpl extends UnicastRemoteObject implements ClientServ
     }
 
    
+
+    public void receiveFile(RemoteInputStream ristream, String phoneNumber, String fileExtenstion) throws RemoteException {
+/*
+        System.out.println("inside where i want it to be ::D ");
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("FILE TRANSFER");
+            alert.setContentText("there's a file sent to you do you want to accept it ?");
+            result = alert.showAndWait();
+
+            if (result.get() == ButtonType.OK) {
+
+                recievingFileTask = () -> {
+                    try {
+                        istream = RemoteInputStreamClient.wrap(ristream);
+                        System.out.println("3adet el wrap :D ");
+                        FileOutputStream ostream = null;
+                        try {
+                            file = new File("D:\\Program Files\\serverToClient");
+                            File tempFile = File.createTempFile("recievedFile_", fileExtenstion, file);
+
+                            ostream = new FileOutputStream(tempFile);
+                            System.out.println("Writing file " + tempFile);
+
+                            byte[] buf = new byte[1024];
+                            //if(istream==null){System.out.println("istream is null before the infinite loop");}
+                            int bytesRead = 0;
+                            while ((bytesRead = istream.read(buf)) >= 0) {
+                                System.out.println("writing file to client");
+                                ostream.write(buf, 0, bytesRead);
+                            }
+                            System.out.println("3adena el while loop fel recieve file :D ");
+                            ostream.flush();
+                            Platform.runLater(() -> {
+                                Notifications msgNotification = Notifications.create().title("DOWNLOADS!!")
+                                        .text("The file has been downloaded").graphic(null)
+                                        .hideAfter(Duration.seconds(10)).position(Pos.BOTTOM_RIGHT);
+
+                                msgNotification.show();
+                            });
+
+                            //System.out.println("Finished writing file " + tempFile);
+                        } catch (FileNotFoundException ex) {
+                            Logger.getLogger(ClientServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                        } finally {
+                            try {
+                                if (istream != null) {
+                                    try {
+                                        istream.close();
+                                    } catch (IOException ex) {
+                                        Logger.getLogger(ClientServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
+                                }
+                            } finally {
+                                if (ostream != null) {
+                                    try {
+                                        ostream.close();
+                                    } catch (IOException ex) {
+                                        Logger.getLogger(ClientServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
+                                }
+                            }
+
+                        }
+                    } catch (IOException ex) {
+                        Logger.getLogger(ClientServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                    } finally {
+                        try {
+                            istream.close();
+                        } catch (IOException ex) {
+                            Logger.getLogger(ClientServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                };
+
+            }
+            ExecutorService executorService = Executors.newSingleThreadExecutor();
+            executorService.submit(recievingFileTask);
+        }
+        );*/
+    }
 }

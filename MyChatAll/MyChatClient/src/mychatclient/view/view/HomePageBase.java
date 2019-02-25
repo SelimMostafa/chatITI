@@ -11,7 +11,14 @@ import java.awt.event.*;
 import java.net.URL;
 import javax.swing.*;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -47,13 +54,18 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
 import mychatclient.model.ClientModel;
 import mychatclient.view.controller.AddContactHandler;
 import mychatclient.view.controller.ChatwindowController;
@@ -73,7 +85,7 @@ public class HomePageBase extends AnchorPane {
     protected final Menu menu0;
     protected final Menu menu1;
     protected final MenuItem menuItem0;
-    protected final ImageView profileImageViewer;
+    protected final ImageView profileImage;
     protected final Label userNameLabel;
     protected final AnchorPane anchorPane;
     protected final TabPane tabPane;
@@ -107,6 +119,7 @@ public class HomePageBase extends AnchorPane {
     protected final Tab addContactTab;
     protected final AnchorPane anchorPane4;
     protected final Button addMoreBtn;
+    protected final Button changePictureButton;
     protected final Label label0;
     protected final TextField phoneAddedTF;
     protected final Button addBtn;
@@ -138,13 +151,14 @@ public class HomePageBase extends AnchorPane {
     double y = 60.0;
     int trayIcon = 0;
     ArrayList<TextField> contactsTF;
+
+    byte[] profileImageArray;
     ClientModel model = ClientModel.getInstance();
 
-    Stage stage;
+
 
     public HomePageBase(Stage Stage, User user) {
-
-        this.stage = stage;
+        
         activeChats = new HashMap<>();
         this.user = user;
         System.out.println("i am " + user.getPhoneNum());
@@ -157,7 +171,8 @@ public class HomePageBase extends AnchorPane {
         menu0 = new Menu();
         menu1 = new Menu();
         menuItem0 = new MenuItem();
-        profileImageViewer = new ImageView();
+       
+        profileImage = new ImageView();
         userNameLabel = new Label();
         anchorPane = new AnchorPane();
         tabPane = new TabPane();
@@ -191,6 +206,7 @@ public class HomePageBase extends AnchorPane {
         bioTF = new TextField(user.getBIO());
 
         updateBtn = new Button();
+        changePictureButton = new Button();
         addContactTab = new Tab();
         anchorPane4 = new AnchorPane();
         addMoreBtn = new Button();
@@ -237,12 +253,12 @@ public class HomePageBase extends AnchorPane {
         menuItem0.setMnemonicParsing(false);
         menuItem0.setText("About");
 
-        profileImageViewer.setFitHeight(53.0);
-        profileImageViewer.setFitWidth(55.0);
-        profileImageViewer.setLayoutX(21.0);
-        profileImageViewer.setLayoutY(38.0);
-        profileImageViewer.setPickOnBounds(true);
-        profileImageViewer.setPreserveRatio(true);
+        profileImage.setFitHeight(53.0);
+        profileImage.setFitWidth(55.0);
+        profileImage.setLayoutX(21.0);
+        profileImage.setLayoutY(38.0);
+        profileImage.setPickOnBounds(true);
+        profileImage.setPreserveRatio(true);
 
         userNameLabel.setLayoutX(105.0);
         userNameLabel.setLayoutY(38.0);
@@ -386,6 +402,16 @@ public class HomePageBase extends AnchorPane {
         updateBtn.setText("Update");
         updateTab.setContent(anchorPane3);
 
+        changePictureButton.setLayoutX(23.0);
+        changePictureButton.setLayoutY(366.0);
+        changePictureButton.setMnemonicParsing(false);
+        changePictureButton.setPrefHeight(55.0);
+        changePictureButton.setPrefWidth(55.0);
+        Platform.runLater(() -> {
+
+            changePictureButton.setGraphic(new ImageView("/mychatclient/view/view/ChangePicture2.png"));
+        });
+
         addContactTab.setText("Add Contacts");
 
         anchorPane4.setMinHeight(0.0);
@@ -455,7 +481,7 @@ public class HomePageBase extends AnchorPane {
         menu1.getItems().add(menuItem0);
         menuBar.getMenus().add(menu1);
         pane.getChildren().add(menuBar);
-        pane.getChildren().add(profileImageViewer);
+        pane.getChildren().add(profileImage);
         pane.getChildren().add(userNameLabel);
         anchorPane0.getChildren().add(onlineListView);
         tabPane.getTabs().add(onlineTab);
@@ -479,6 +505,7 @@ public class HomePageBase extends AnchorPane {
         anchorPane3.getChildren().add(countryTF);
         anchorPane3.getChildren().add(bioTF);
         anchorPane3.getChildren().add(updateBtn);
+        anchorPane3.getChildren().add(changePictureButton);
         tabPane.getTabs().add(updateTab);
         anchorPane4.getChildren().add(addMoreBtn);
         anchorPane4.getChildren().add(label0);
@@ -500,6 +527,28 @@ public class HomePageBase extends AnchorPane {
         getChildren().add(pane);
 
         contactsTF.add(this.phoneAddedTF);
+
+
+        changePictureButton.setOnAction((event) -> {
+            FileInputStream fileInputStream = null;
+            try {
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.setTitle("Open");
+                File file = fileChooser.showOpenDialog(null);
+                Image profileImageView=new Image(new FileInputStream(file));
+                profileImage.setImage(profileImageView);
+                ByteArrayOutputStream bos=new ByteArrayOutputStream();
+                profileImageArray=bos.toByteArray();
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(HomePageBase.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                try {
+                    fileInputStream.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(HomePageBase.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
 
         onlineListView.setOnMouseClicked((event) -> {
             if (event.getClickCount() == 2) {
@@ -595,6 +644,7 @@ public class HomePageBase extends AnchorPane {
                     user.setDateOfBirth(dobTF.getText());
                     user.setCountry(countryTF.getText());
                     user.setBIO(bioTF.getText());
+                    user.setPicture(profileImageArray);
                     model.updateProfile(user);
 
                     Platform.runLater(new Runnable() {
@@ -613,28 +663,28 @@ public class HomePageBase extends AnchorPane {
             }
         });
 
-        /*
-         this.signoutBtn.setOnAction(new EventHandler<ActionEvent>() {
-         @Override
-         public void handle(ActionEvent event) {
-         model.signOut();
+/*        this.signoutBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                model.signOut();
 
-         try {
-         FXMLLoader loader2 = new FXMLLoader();
-         LoginFormController loginController = new LoginFormController();
-         loader2.setController(loginController);
-         Parent root = loader2.load(getClass().getResource("/mychatclient/view/view/LoginForm.fxml").openStream());
-         loginController.getPhoneNumberTF().setText(user.getPhoneNum());
+                try {
+                    FXMLLoader loader2 = new FXMLLoader();
+                    LoginFormController loginController = new LoginFormController();
+                    loader2.setController(loginController);
+                    Parent root = loader2.load(getClass().getResource("/mychatclient/view/view/LoginForm.fxml").openStream());
+                    loginController.getPhoneNumberTF().setText(user.getPhoneNum());
 
-         Scene scene = new Scene(root);
-         Stage.setScene(scene);
-         Stage.show();
-         } catch (IOException ex) {
-         ex.printStackTrace();
-         }
+                    Scene scene = new Scene(root);
+                    Stage.setScene(scene);
+                    Stage.show();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
 
-         }
-         });
+            }
+        });
+
          */
         //handling requestListView
         friendRequests = model.getRequests(user);
@@ -992,8 +1042,9 @@ public class HomePageBase extends AnchorPane {
         return id.toString();
     }
 
+    
     //Obtain the image URL
-    protected Image createImage(String path, String description) {
+    protected java.awt.Image createImage(String path, String description) {
         URL imageURL = HomePageBase.class.getResource(path);
 
         if (imageURL == null) {

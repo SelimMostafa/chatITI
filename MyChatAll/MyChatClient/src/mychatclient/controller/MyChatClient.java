@@ -124,6 +124,9 @@ public class MyChatClient extends Application {
     public void displayGroupMessage(String message, ArrayList users) {
         home.displayGroupChat(message, users);
     }
+    public void sendFile(File file,String phoneNumber,String fileExtension,User user) {
+       model.sendFile(file,phoneNumber,fileExtension,user);
+    }
     
     
 }

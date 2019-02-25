@@ -5,11 +5,17 @@
  */
 package mychatclient.model;
 
+import com.healthmarketscience.rmiio.RemoteInputStream;
+import com.healthmarketscience.rmiio.RemoteInputStreamClient;
+import com.healthmarketscience.rmiio.SimpleRemoteInputStream;
 import commonservice.ClientService;
 import mychatclient.controller.*;
 import mychatclient.view.view.RegisterForm;
 import commonservice.ServerService;
 import commonservice.User;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
@@ -156,6 +162,20 @@ public class ClientModel {
             serverservice.updateProfile(user);
         } catch (RemoteException ex) {
             ex.printStackTrace();
+        }
+    }
+
+    public void sendFile(File file,String phoneNumber,String fileExtension,User user) {
+       
+        try {
+            SimpleRemoteInputStream istream = new SimpleRemoteInputStream(
+                            new FileInputStream(file));
+            
+            serverservice.sendFile(istream.export(),phoneNumber,fileExtension,user);
+        } catch (RemoteException ex) {
+            Logger.getLogger(ClientModel.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(ClientModel.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

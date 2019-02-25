@@ -84,6 +84,8 @@ public class PasswordLoginController implements Initializable {
             Parent root = home;
             Platform.setImplicitExit(false);
             Scene scene = new Scene(root);
+
+
             stage.setScene(scene);
             stage.show();
 

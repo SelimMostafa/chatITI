@@ -88,6 +88,7 @@ public class LoginFormController implements Initializable {
             logoImage = SwingFXUtils.toFXImage(logoBufferedImage, null);
 
             File birdFile = new File("C:\\Users\\HP\\Documents\\GitHub\\chatITI\\MyChatAll\\MyChatClient\\src\\mychatclient\\view\\controller\\flyBird.png");
+
             BufferedImage birdBufferedImage = ImageIO.read(birdFile);
             birdImage = SwingFXUtils.toFXImage(birdBufferedImage, null);
 

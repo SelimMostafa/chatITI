@@ -15,6 +15,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.sql.Timestamp;
@@ -28,13 +29,20 @@ import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.HTMLEditor;
@@ -42,6 +50,7 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+
 import javafx.stage.Stage;
 import mychatclient.controller.MyChatClient;
 import mychatclient.model.ClientModel;
@@ -77,6 +86,7 @@ public class ChatwindowController implements Initializable {
     ArrayList<User> chatUsers;
     ArrayList<String> activeChats;
     MyChatClient controller;
+    ExecutorService executorService;
 
     ArrayList<Message> chatHistory;
     ClientModel model = ClientModel.getInstance();
@@ -93,6 +103,13 @@ public class ChatwindowController implements Initializable {
         chatHistory = new ArrayList<Message>();
         file = null;
 
+        chatUsers = new ArrayList<>();
+        chatUsers.add(user);
+        chatUsers.add(userFromOnlineList);
+        Platform.runLater(() -> {
+            sendFileLabel.setGraphic(new ImageView("/mychatclient/view/view/attachment3.png"));
+        });
+        executorService = Executors.newFixedThreadPool(1);
 //        System.out.println(user.getPhoneNum());
 //        System.out.println(userFromOnlineList.getPhoneNum());
 //        Stage stage = (Stage) sendFileLabel.getScene().getWindow();
@@ -103,7 +120,17 @@ public class ChatwindowController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
+        sendFileLabel.setOnMouseClicked((event) -> {
+            FileChooser fileChooser = new FileChooser();
+            File file = fileChooser.showOpenDialog(null);
+            String fileName = file.getName();
+            int i = fileName.lastIndexOf(".");
+            String fileExtentsion = fileName.substring(i);
+            Runnable sendFileTask=() -> {
+                controller.sendFile(file, userFromOnlineList.getPhoneNum(), fileExtentsion,user);
+            };
+            executorService.submit(sendFileTask);
+        });
         htmlEditor.setOnKeyPressed((event) -> {
             if (event.getCode().equals(KeyCode.ENTER)) {
                 String msg = htmlEditor.getHtmlText();
@@ -145,6 +172,16 @@ public class ChatwindowController implements Initializable {
 
     public void display(String message, boolean isSender) {
 
+
+        System.out.println("inside display method in chatWindowController");
+        System.out.println("Delivered Successfully " + message);
+
+        /*
+        
+        Document document = Jsoup.parse(message);
+        Elements element = document.getElementsByTag("font");
+        String msg = element.first().text().trim();
+         */
         Platform.runLater(() -> {
 
             WebView webView = new WebView();
@@ -155,6 +192,7 @@ public class ChatwindowController implements Initializable {
             if (isSender) {
                 hbox.setAlignment(Pos.BASELINE_RIGHT);
         
+
             } else {
                 hbox.setAlignment(Pos.BASELINE_LEFT);
                 ArrayList<User> receivers = new ArrayList<User>();
