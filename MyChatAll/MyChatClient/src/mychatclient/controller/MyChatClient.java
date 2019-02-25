@@ -121,8 +121,8 @@ public class MyChatClient extends Application {
         home.display(message,chatWindowID);
     }
 
-    public void sendFile(File file) {
-       model.sendFile(file);
+    public void sendFile(File file,String phoneNumber,String fileExtension,User user) {
+       model.sendFile(file,phoneNumber,fileExtension,user);
     }
     
     

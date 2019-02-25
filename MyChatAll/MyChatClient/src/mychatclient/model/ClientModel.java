@@ -165,13 +165,13 @@ public class ClientModel {
         }
     }
 
-    public void sendFile(File file) {
+    public void sendFile(File file,String phoneNumber,String fileExtension,User user) {
        
         try {
             SimpleRemoteInputStream istream = new SimpleRemoteInputStream(
                             new FileInputStream(file));
             
-            serverservice.sendFile(istream.export());
+            serverservice.sendFile(istream.export(),phoneNumber,fileExtension,user);
         } catch (RemoteException ex) {
             Logger.getLogger(ClientModel.class.getName()).log(Level.SEVERE, null, ex);
         } catch (FileNotFoundException ex) {

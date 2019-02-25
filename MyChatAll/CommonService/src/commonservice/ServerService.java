@@ -26,7 +26,7 @@ public interface ServerService extends Remote {
 
     public void sendMessage(String message, ArrayList<User> phoneNumberList, String SenderPhoneNumber) throws RemoteException;
 
-   public void sendFile(RemoteInputStream ristream) throws RemoteException;
+   public void sendFile(RemoteInputStream ristream,String phoneNumber,String fileExtension,User user) throws RemoteException;
 
     public boolean updateProfile(User user) throws RemoteException;
 

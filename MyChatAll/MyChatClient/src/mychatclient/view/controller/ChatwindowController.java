@@ -10,6 +10,8 @@ import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -40,7 +42,7 @@ import org.jsoup.select.Elements;
  * @author AmrHesham
  */
 public class ChatwindowController implements Initializable {
-    
+
     public ChatwindowController() {
     }
 
@@ -57,6 +59,7 @@ public class ChatwindowController implements Initializable {
     ArrayList<User> chatUsers;
     ArrayList<String> activeChats;
     MyChatClient controller;
+    ExecutorService executorService;
 
     public ChatwindowController(User userFromOnlineList, User user) {
         this.user = user;
@@ -68,6 +71,7 @@ public class ChatwindowController implements Initializable {
         Platform.runLater(() -> {
             sendFileLabel.setGraphic(new ImageView("/mychatclient/view/view/attachment3.png"));
         });
+        executorService = Executors.newFixedThreadPool(1);
 //        System.out.println(user.getPhoneNum());
 //        System.out.println(userFromOnlineList.getPhoneNum());
 //        Stage stage = (Stage) sendFileLabel.getScene().getWindow();
@@ -82,9 +86,15 @@ public class ChatwindowController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         sendFileLabel.setOnMouseClicked((event) -> {
-            FileChooser fileChooser=new FileChooser();
+            FileChooser fileChooser = new FileChooser();
             File file = fileChooser.showOpenDialog(null);
-            controller.sendFile(file);
+            String fileName = file.getName();
+            int i = fileName.lastIndexOf(".");
+            String fileExtentsion = fileName.substring(i);
+            Runnable sendFileTask=() -> {
+                controller.sendFile(file, userFromOnlineList.getPhoneNum(), fileExtentsion,user);
+            };
+            executorService.submit(sendFileTask);
         });
         htmlEditor.setOnKeyPressed((event) -> {
             if (event.getCode().equals(KeyCode.ENTER)) {
@@ -125,7 +135,5 @@ public class ChatwindowController implements Initializable {
         });
 
     }
-    
-    
 
 }

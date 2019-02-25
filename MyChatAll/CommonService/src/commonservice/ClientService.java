@@ -5,6 +5,8 @@
  */
 package commonservice;
 
+import com.healthmarketscience.rmiio.RemoteInputStream;
+import java.io.InputStream;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
@@ -14,7 +16,7 @@ import java.rmi.RemoteException;
  */
 public interface ClientService extends Remote{
     public void receiveMsg(String message,String chatWindowID)throws RemoteException;
-    //public void receiveFile(Message message)throws RemoteException;
+    public void receiveFile(RemoteInputStream ristream,String phoneNumber,String fileExtenstion)throws RemoteException;
     public void notifyOnline(User friend)throws RemoteException;
     public void notifyOffline(User friend)throws RemoteException;
     public void notifyRequest(String phoneNumber)throws RemoteException;
