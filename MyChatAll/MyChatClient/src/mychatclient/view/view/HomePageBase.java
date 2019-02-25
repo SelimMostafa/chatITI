@@ -155,10 +155,8 @@ public class HomePageBase extends AnchorPane {
     byte[] profileImageArray;
     ClientModel model = ClientModel.getInstance();
 
-
-
     public HomePageBase(Stage Stage, User user) {
-        
+
         activeChats = new HashMap<>();
         this.user = user;
         System.out.println("i am " + user.getPhoneNum());
@@ -171,7 +169,7 @@ public class HomePageBase extends AnchorPane {
         menu0 = new Menu();
         menu1 = new Menu();
         menuItem0 = new MenuItem();
-       
+
         profileImage = new ImageView();
         userNameLabel = new Label();
         anchorPane = new AnchorPane();
@@ -217,7 +215,7 @@ public class HomePageBase extends AnchorPane {
         imageView = new ImageView();
         //statusMenu = new SplitMenuButton();
         modeMenu = new ComboBox();
-        addGroupChatBtn= new Button();
+        addGroupChatBtn = new Button();
         modeMenu.setPromptText(user.getMode());
 
         /*   availableItem = new RadioMenuItem();
@@ -469,7 +467,7 @@ public class HomePageBase extends AnchorPane {
         addGroupChatBtn.setLayoutY(35);
         addGroupChatBtn.setGraphic(new ImageView("/mychatclient/view/view/plusIcon.png"));
         addGroupChatBtn.setTooltip(new Tooltip("Create Group Chat"));
-        
+
         chatbotCheckBox.setLayoutX(28.0);
         chatbotCheckBox.setLayoutY(107.0);
         chatbotCheckBox.setMnemonicParsing(false);
@@ -528,17 +526,16 @@ public class HomePageBase extends AnchorPane {
 
         contactsTF.add(this.phoneAddedTF);
 
-
         changePictureButton.setOnAction((event) -> {
             FileInputStream fileInputStream = null;
             try {
                 FileChooser fileChooser = new FileChooser();
                 fileChooser.setTitle("Open");
                 File file = fileChooser.showOpenDialog(null);
-                Image profileImageView=new Image(new FileInputStream(file));
+                Image profileImageView = new Image(new FileInputStream(file));
                 profileImage.setImage(profileImageView);
-                ByteArrayOutputStream bos=new ByteArrayOutputStream();
-                profileImageArray=bos.toByteArray();
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                profileImageArray = bos.toByteArray();
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(HomePageBase.class.getName()).log(Level.SEVERE, null, ex);
             } finally {
@@ -558,7 +555,7 @@ public class HomePageBase extends AnchorPane {
                     //get the friend phone number to add to the hashmap
                     User userFromOnlineFriendsList = (User) (onlineListView.getSelectionModel().getSelectedItem());
                     onlineListView.getSelectionModel().clearSelection();
-                    
+
                     //check the the friend phone number in the map to prevent opening the session twice
                     if (!activeChats.containsKey((String) userFromOnlineFriendsList.getPhoneNum())) {
                         //
@@ -663,12 +660,13 @@ public class HomePageBase extends AnchorPane {
             }
         });
 
-/*        this.signoutBtn.setOnAction(new EventHandler<ActionEvent>() {
+        this.signoutBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                model.signOut();
-
-                try {
+                user.setStatus("Offline");
+                model.signOut(user);
+                System.exit(0);
+              /*  try {
                     FXMLLoader loader2 = new FXMLLoader();
                     LoginFormController loginController = new LoginFormController();
                     loader2.setController(loginController);
@@ -680,12 +678,11 @@ public class HomePageBase extends AnchorPane {
                     Stage.show();
                 } catch (IOException ex) {
                     ex.printStackTrace();
-                }
+                }*/
 
             }
         });
 
-         */
         //handling requestListView
         friendRequests = model.getRequests(user);
 
@@ -734,7 +731,7 @@ public class HomePageBase extends AnchorPane {
         });
 
         this.userNameLabel.setText(user.getName() + " : " + user.getPhoneNum());
-        
+
         this.addGroupChatBtn.setOnAction((event) -> {
             try {
                 ObservableList<User> selectedUsers = onlineListView.getSelectionModel().getSelectedItems();
@@ -744,7 +741,7 @@ public class HomePageBase extends AnchorPane {
 
                 if (selectedUsers.size() == 1) {
                     /*Alert alert = new Alert(Alert.AlertType.ERROR, "Please Choose Two Or More Contacts For Group Chat");
-                    alert.showAndWait();*/
+                     alert.showAndWait();*/
                 } else {
                     selectedUsers.forEach((t) -> {
                         groupChatUsers.add(t);
@@ -772,7 +769,6 @@ public class HomePageBase extends AnchorPane {
                 Logger.getLogger(HomePageBase.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
-
 
         Stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 
@@ -994,7 +990,7 @@ public class HomePageBase extends AnchorPane {
         exitItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent e) {
-                model.signOut();
+                model.signOut(user);
                 System.exit(0);
             }
         });
@@ -1042,7 +1038,6 @@ public class HomePageBase extends AnchorPane {
         return id.toString();
     }
 
-    
     //Obtain the image URL
     protected java.awt.Image createImage(String path, String description) {
         URL imageURL = HomePageBase.class.getResource(path);

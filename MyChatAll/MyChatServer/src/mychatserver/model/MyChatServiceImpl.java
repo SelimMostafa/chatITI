@@ -156,9 +156,9 @@ public class MyChatServiceImpl extends UnicastRemoteObject implements Remote, co
     }
 
     @Override
-    public void signout() throws RemoteException {
-        //  Controller.removeOnlineUser(user, clientService);
-
+    public void signout(User user) throws RemoteException {
+        control.removeOnlineUser(user);
+        new UserDAO().updateStatus(user);
     }
 
     @Override

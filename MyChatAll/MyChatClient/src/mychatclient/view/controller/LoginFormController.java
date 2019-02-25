@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -133,13 +134,15 @@ public class LoginFormController implements Initializable {
             new RotateOutUpLeft(flyBirdRight3).playOnFinished(new RotateOutUpRight(flyBirdLeft3)).play();
         });
 
+       
+
     }
     User user = null;
     MyChatClient controller;
     Stage stage;
 
     @FXML
-    private void handleNextButton(ActionEvent event) {
+    private void handleNextButton() {
 
         String phone;
         phone = phoneNumberTF.getText();
@@ -168,7 +171,7 @@ public class LoginFormController implements Initializable {
     }
 
     @FXML
-    public void handleSignupButton(ActionEvent event) {
+    public void handleSignupButton() {
 
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/mychatclient/view/view/RegisterForm.fxml"));

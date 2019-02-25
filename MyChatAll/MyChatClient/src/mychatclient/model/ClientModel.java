@@ -149,9 +149,9 @@ public class ClientModel {
         return serverservice;
     }
 
-    public void signOut() {
+    public void signOut(User user) {
         try {
-            serverservice.signout();
+            serverservice.signout(user);
         } catch (RemoteException ex) {
             ex.printStackTrace();
         }

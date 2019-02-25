@@ -37,7 +37,7 @@ public interface ServerService extends Remote {
 
     public void showFriendsStatus() throws RemoteException;
 
-    public void signout() throws RemoteException;
+    public void signout(User user) throws RemoteException;
 
     public boolean checkUserAvailability(String phoneNumber) throws RemoteException;
 

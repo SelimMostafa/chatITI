@@ -52,9 +52,10 @@ public class Controller {
         client.put(user.getPhoneNum(), clientService);
     }
 
-    public void removeOnlineUser(User user, ClientService clientService) {
+    public void removeOnlineUser(User user) {
+        
         onlineUsers.remove(user);
-        client.remove(user.getPhoneNum(), clientService);
+        client.remove(user.getPhoneNum());
         //      online--;
     }
 

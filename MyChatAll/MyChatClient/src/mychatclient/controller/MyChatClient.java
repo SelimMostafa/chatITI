@@ -33,6 +33,7 @@ import javafx.stage.Stage;
 import mychatclient.model.ClientModel;
 import mychatclient.model.ClientServiceImpl;
 import mychatclient.view.controller.ChatwindowController;
+import mychatclient.view.controller.LoginFormController;
 import mychatclient.view.view.HomePageBase;
 
 /**
@@ -42,17 +43,18 @@ import mychatclient.view.view.HomePageBase;
 public class MyChatClient extends Application {
 
     ClientModel model = ClientModel.getInstance();
-    public ClientServiceImpl clientServiceImpl ;
-    public HomePageBase home = null ;
+    public ClientServiceImpl clientServiceImpl;
+    public HomePageBase home = null;
+
     //ChatwindowController chatwindowController=null;
     public MyChatClient() {
 
         try {
-            clientServiceImpl=new ClientServiceImpl(this);
+            clientServiceImpl = new ClientServiceImpl(this);
         } catch (RemoteException ex) {
             Logger.getLogger(MyChatClient.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
     }
 
     public void start(Stage primaryStage) {
@@ -62,7 +64,12 @@ public class MyChatClient extends Application {
             //it didnt work the normal and we checked stackoverflow and they suggested that we put the path into the url anad pass it
             // to the FXMLLoader.load()
             //URL url = new File("/mychatclient/view/view/LoginForm.fxml").toURL();
+            /*FXMLLoader loader = new FXMLLoader();
+             LoginFormController loginController = new LoginFormController();
+             loader.setController(loginController);*/
+            //          Parent root = loader.load(getClass().getResource("/mychatclient/view/view/LoginForm.fxml"));
             Parent root = FXMLLoader.load(getClass().getResource("/mychatclient/view/view/LoginForm.fxml"));
+
             Scene scene = new Scene(root);
             primaryStage.setTitle("My Chat");
             primaryStage.setScene(scene);
@@ -94,19 +101,19 @@ public class MyChatClient extends Application {
     }
 
     public User checkPassword(String phonenumber, String password) {
-        return model.checkPassword(phonenumber, password,clientServiceImpl);
+        return model.checkPassword(phonenumber, password, clientServiceImpl);
     }
 
     /*    public boolean updateProfile(User user)
-    {
-        return model.updateProfile(user);
-    }*/
+     {
+     return model.updateProfile(user);
+     }*/
     public ClientModel getModel() {
         return model;
     }
 
     public void sendMessage(String message, ArrayList<User> phoneNumbersList, String senderPhoneNumber) {
-        model.sendMessage(message,phoneNumbersList,senderPhoneNumber);
+        model.sendMessage(message, phoneNumbersList, senderPhoneNumber);
     }
 
     public HomePageBase getHome() {
@@ -117,16 +124,16 @@ public class MyChatClient extends Application {
         this.home = home;
     }
 
-    public void display(String message,String chatWindowID) {
-        home.display(message,chatWindowID);
+    public void display(String message, String chatWindowID) {
+        home.display(message, chatWindowID);
     }
 
     public void displayGroupMessage(String message, ArrayList users) {
         home.displayGroupChat(message, users);
     }
-    public void sendFile(File file,String phoneNumber,String fileExtension,User user) {
-       model.sendFile(file,phoneNumber,fileExtension,user);
+
+    public void sendFile(File file, String phoneNumber, String fileExtension, User user) {
+        model.sendFile(file, phoneNumber, fileExtension, user);
     }
-    
-    
+
 }

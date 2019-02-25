@@ -22,7 +22,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="580.0" prefWidth="304.0" style="-fx-background-color: #e6ffff;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mychatclient.view.controller.LoginFormController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="580.0" prefWidth="304.0" style="-fx-background-color: #e6ffff;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"  fx:controller="mychatclient.view.controller.LoginFormController">
    <children>
      
       <Label fx:id="logoLabel" layoutX="62.0" layoutY="79.0" prefHeight="108.0" prefWidth="192.0" text="Pssst Chat" textFill="#006666">
@@ -36,7 +36,7 @@
          </image></ImageView>
     
       <JFXTextField fx:id="phoneNumberTF" focusColor="#1cf8d7" layoutX="65.0" layoutY="258.0" maxWidth="227.0" minWidth="178.0" prefHeight="33.0" prefWidth="178.0" promptText="Enter your phone number" />
-      <JFXButton fx:id="nextButton" buttonType="RAISED" defaultButton="true" layoutX="119.0" layoutY="364.0" onAction="#handleNextButton" prefHeight="27.0" prefWidth="76.0" ripplerFill="#428075" text="Next" />
+      <JFXButton fx:id="nextButton" buttonType="RAISED" defaultButton="true" layoutX="119.0" layoutY="364.0" onAction="#handleNextButton"  prefHeight="27.0" prefWidth="76.0" ripplerFill="#428075" text="Next" />
       <JFXButton fx:id="signUpButton" buttonType="RAISED" defaultButton="true" layoutX="121.0" layoutY="423.0" onAction="#handleSignupButton" prefHeight="27.0" prefWidth="76.0" ripplerFill="#479083" text="Sign Up" />
       <ImageView fx:id="flyBirdLeft3" fitHeight="61.0" fitWidth="61.0" layoutX="1.0" layoutY="519.0" pickOnBounds="true" preserveRatio="true">
          <image>
